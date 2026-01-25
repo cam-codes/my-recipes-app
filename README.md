@@ -24,6 +24,7 @@ Browse a collection of recipes stored as markdown files with YAML front-matter, 
 - **Yarn Berry** (v4.12.0) with `nodeLinker: node-modules` (required for Vite/Vitest compatibility)
 
 ## Project Structure
+```
 my-recipes-app/
 ├── backend/
 │   ├── main.ts               # Core app logic (createApp, routes)
@@ -58,7 +59,7 @@ my-recipes-app/
 │   └── ... (other recipes)
 ├── tests/fixtures/recipes/       # Test fixtures (used in backend tests)
 └── README.md
-
+```
 
 ## Features
 

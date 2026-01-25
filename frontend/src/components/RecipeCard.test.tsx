@@ -1,0 +1,29 @@
+import { render, screen } from "@solidjs/testing-library";
+import RecipeCard from "./RecipeCard";
+import { API_BASE } from "../lib/config.ts";
+
+// mock the router before importing the component
+vi.mock("@solidjs/router", () => ({
+    useParams: () => ({ slug: "miso-salmon" }),
+    A: (props: any) => <a {...props} />,
+}));
+
+it("renders recipe card data", () => {
+    const recipe = {
+        slug: "miso-salmon",
+        title: "Miso Salmon",
+        image: "/recipes/miso-salmon/image.jpg",
+        description: "Great Recipe",
+    };
+
+    render(() => (
+        <RecipeCard recipe={recipe} />
+    ));
+
+    expect(screen.getByText("Miso Salmon")).toBeInTheDocument();
+    expect(screen.getByRole("img")).toHaveAttribute(
+        "src",
+        `${API_BASE}/recipes/miso-salmon/image.jpg`,
+    );
+    expect(screen.getByText("Great Recipe")).toBeInTheDocument();
+});

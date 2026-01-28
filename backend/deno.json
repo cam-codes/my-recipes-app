@@ -2,7 +2,8 @@
   "imports": {
     "@std/front-matter": "jsr:@std/front-matter@^1.0.9",
     "oak": "https://deno.land/x/oak@v12.6.1/mod.ts",
-    "std/": "https://deno.land/std@0.203.0/",
+    "oakCors": "https://deno.land/x/cors@v1.2.2/mod.ts",
+    "std/": "https://deno.land/std@0.203.0/"
   },
   "tasks": {
     "start": "deno run --allow-net --allow-read --allow-env server.ts",

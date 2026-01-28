@@ -5,8 +5,8 @@
     "std/": "https://deno.land/std@0.203.0/",
   },
   "tasks": {
-    "start": "deno run --allow-net --allow-read server.ts",
-    "test": "deno test --allow-read --allow-net --allow-import",
-    "test:coverage": "deno test --allow-read --allow-net --allow-import --coverage=coverage"
+    "start": "deno run --allow-net --allow-read --allow-env server.ts",
+    "test": "deno test --allow-read --allow-net --allow-import --allow-env",
+    "test:coverage": "deno test --allow-read --allow-net --allow-import --allow-env --coverage=coverage"
   }
 }

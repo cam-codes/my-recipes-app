@@ -1,4 +1,4 @@
-import { createResource, Show, createEffect } from 'solid-js';
+import { createResource, Show } from 'solid-js';
 import { getRecipes } from '../lib/api';
 import RecipeCard from '../components/RecipeCard';
 import LoadingSpinner from '../components/LoadingSpinner';

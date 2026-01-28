@@ -3,6 +3,7 @@ import RecipeDetail from "./RecipeDetail";
 
 // mock the api module
 import * as api from "../lib/api";
+import type {Recipe} from "../lib/types.ts";
 vi.mock("../lib/api");
 
 // mock the router before importing the component
@@ -11,9 +12,10 @@ vi.mock("@solidjs/router", () => ({
     A: (props: any) => <a {...props} />,
 }));
 
-const mockRecipe = {
+const mockRecipe: Recipe = {
     slug: "miso-salmon",
     title: "Miso Salmon",
+    description: "Description",
     image: "/img.jpg",
     estimatedCost: 25,
     prepTime: 15,

@@ -5,7 +5,7 @@ export const mockRecipes: RecipeListItem[] = [
         slug: "miso-salmon",
         title: "Miso Salmon",
         image: "/recipes/miso-salmon/image.jpg",
-        excerpt: "Savory and fast",
+        description: "Savory and fast",
         prepTime: 10,
         cookTime: 15,
     },

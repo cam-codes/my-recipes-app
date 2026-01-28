@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function RecipeCard(props: Props) {
-    const { title, description, prepTime, cookTime, image } = props.recipe;
+    const { title, description, prepTime, cookTime } = props.recipe;
     return (
         <A
             href={`/recipe/${props.recipe.slug}`}

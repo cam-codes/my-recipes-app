@@ -50,15 +50,15 @@ export default function RecipeDetail() {
                             </div>
                         </div>
 
-                        <h2 className="text-2xl font-semibold mb-4">Ingredients</h2>
+                        <h2 class="text-2xl font-semibold mb-4">Ingredients</h2>
                         <ul class="list-disc pl-6 mb-8 space-y-2">
                             {recipe()!.ingredients.map((ing) => (
                                 <li>{ing}</li>
                             ))}
                         </ul>
 
-                        <h2 className="text-2xl font-semibold mb-4">Instructions</h2>
-                        <ol className="list-disc pl-6 mb-8 space-y-2">
+                        <h2 class="text-2xl font-semibold mb-4">Instructions</h2>
+                        <ol class="list-disc pl-6 mb-8 space-y-2">
                             {recipe()!.instructions.map((step) => (
                                 <li>
                                     <SolidMarkdown>{step}</SolidMarkdown>
@@ -66,8 +66,8 @@ export default function RecipeDetail() {
                             ))}
                         </ol>
 
-                        <h2 className="text-2xl font-semibold mb-4">Tips</h2>
-                        <ul className="list-disc pl-6 mb-8 space-y-2">
+                        <h2 class="text-2xl font-semibold mb-4">Tips</h2>
+                        <ul class="list-disc pl-6 mb-8 space-y-2">
                             {recipe()!.tips.map((tip) => (
                                 <li>
                                     <SolidMarkdown>{tip}</SolidMarkdown>

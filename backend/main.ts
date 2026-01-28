@@ -7,11 +7,26 @@ export function createApp(recipesDir: URL): Application {
     const app = new Application();
     const router = new Router();
 
+
+    // app.use(async (ctx, next) => {
+
+    //     await next();
+    // });
+
     // CORS and static images
     app.use(async (ctx, next) => {
         ctx.response.headers.set("Access-Control-Allow-Origin", "http://localhost:5173");
         ctx.response.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
         ctx.response.headers.set("Access-Control-Allow-Headers", "Content-Type");
+
+        // Normalize /recipes/ → /recipes to avoid 301 redirects (CORS-safe)
+        if (ctx.request.url.pathname === "/recipes/") {
+          console.log("normalizing request...");
+          console.log("ctx.request.url: ", ctx.request.url);
+          ctx.request.url.pathname = "/recipes";
+          console.log("request normalized.")
+          console.log("ctx.request.url: ", ctx.request.url);
+        }
 
         if (ctx.request.method === "OPTIONS") {
             ctx.response.status = 204;

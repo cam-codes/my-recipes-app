@@ -1,6 +1,7 @@
 import { render, screen } from "@solidjs/testing-library";
 import RecipeCard from "./RecipeCard";
 import { API_BASE } from "../lib/config.ts";
+import makeRecipe from "../test/setup.ts"
 
 // mock the router before importing the component
 vi.mock("@solidjs/router", () => ({
@@ -9,12 +10,12 @@ vi.mock("@solidjs/router", () => ({
 }));
 
 it("renders recipe card data", () => {
-    const recipe = {
-        slug: "miso-salmon",
-        title: "Miso Salmon",
-        image: "/recipes/miso-salmon/image.jpg",
-        description: "Great Recipe",
-    };
+    const recipe = makeRecipe({
+      slug: "miso-salmon",
+      title: "Miso Salmon",
+      image: "/recipes/miso-salmon/image.jpg",
+      description: "Great Recipe",
+    })
 
     render(() => (
         <RecipeCard recipe={recipe} />

@@ -1,6 +1,8 @@
 import { render, screen, waitFor } from "@solidjs/testing-library";
 import Home from "./Home";
-import {expect, vi} from "vitest";
+import { expect, vi } from "vitest";
+import type { Recipe } from "../lib/types.ts";
+import makeRecipe from "../test/setup.ts"
 
 // mock the api module
 import * as api from "../lib/api";
@@ -21,9 +23,9 @@ vi.mock("../components/RecipeCard", () => ({
     ),
 }));
 
-const mockRecipes = [
-    { slug: "miso-salmon", title: "Miso Salmon", image: "/recipes/miso-salmon/salmon.jpg" },
-    { slug: "osso-bucco", title: "Osso Bucco", image: "/image.jpg" },
+const mockRecipes: Recipe[] = [
+  makeRecipe({ slug: "miso-salmon", title: "Miso Salmon", image: "/recipes/miso-salmon/salmon.jpg" }),
+  makeRecipe({ slug: "osso-bucco", title: "Osso Bucco", image: "/image.jpg" }),
 ];
 
 it("renders recipe list", async () => {

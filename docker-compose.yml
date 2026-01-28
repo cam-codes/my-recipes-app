@@ -1,0 +1,25 @@
+services:
+  backend:
+    image: my-recipes-backend
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      BACKEND_PORT: 3000
+      NODE_ENV: production
+      RECIPES_DIR: /app/recipes
+
+  frontend:
+    image: my-recipes-frontend
+    build:
+      context: ./frontend
+      dockerfile: frontend.Dockerfile
+      args:
+        # Use host.docker.internal so container can reach backend via host port
+        VITE_API_BASE: http://host.docker.internal:3000
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend

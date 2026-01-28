@@ -1,0 +1,22 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: ["Build & Push Images"]
+    types: [completed]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH deploy
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            docker pull ghcr.io/ORG/REPO/backend:latest
+            docker pull ghcr.io/ORG/REPO/frontend:latest
+            docker compose up -d

@@ -1,5 +1,5 @@
 ---
-title: Slightly Elevated Spaghetti with Meat Sauce
+title: Spaghetti with Meat Sauce
 description: A rich, umami-packed meat sauce with red wine, anchovy depth, carrot sweetness, and a butter finish—tossed with al dente spaghetti for classic comfort elevated.
 prepTime: 20
 cookTime: 45

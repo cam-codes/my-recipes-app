@@ -29,6 +29,8 @@ my-recipes-app/
 ├── backend/
 │   ├── main.ts               # Core app logic (createApp, routes)
 │   ├── server.ts             # Entry point (listens on port 3000)
+│   ├── utils/
+│   │   ├── recipe.ts         # normalizeRecipe (title from slug, defaults, etc.)
 │   ├── types.ts              # Recipe front-matter types
 │   └── tests/
 │       ├── main_test.ts      # Route tests, normalization, image serving

@@ -14,11 +14,8 @@ async function request(url: string, method = "GET") {
 }
 
 Deno.test("OPTIONS request returns 204", async () => {
-    const resp = await app.handle(
-        new Request("http://localhost/recipes", { method: "OPTIONS" })
-    );
-    assert(resp);
-    assertEquals(resp?.status, 204);
+    const { status } = await request("/recipes", "OPTIONS")
+    assertEquals(status, 204);
 });
 
 Deno.test("GET /recipes returns list of recipes", async () => {
@@ -38,27 +35,18 @@ Deno.test("GET /recipes/:slug returns recipe details", async () => {
 Deno.test("GET /recipes/:slug returns 500 for missing recipe", async () => {
     const { status, body } = await request("/recipes/non-existent");
     assertEquals(status, 500);
-    const json = JSON.parse(body as string);
-    assertEquals(json.error, "Internal Server Error");
+    assertEquals(body, "Internal Server Error");
 });
 
 Deno.test("serves recipe image", async () => {
-    const resp = await app.handle(
-        new Request("http://localhost/recipes/valid-recipe/image.jpg")
-    );
-
-    assert(resp);
-    assertEquals(resp.status, 200);
+    const { status } = await request("/recipes/valid-recipe/image.jpg");
+    assertEquals(status, 200);
 });
 
 Deno.test("missing image returns 404", async () => {
-    const resp = await app.handle(
-        new Request("http://localhost/recipes/nope/image.jpg")
-    );
-
-    assert(resp);
-    assertEquals(resp.status, 404);
-    assertEquals(await resp.json(), { error: "Not Found" });
+    const { status, body } = await request("/recipes/nope/image.jpg");
+    assertEquals(status, 404);
+    assertEquals(body, "Not Found");
 });
 
 Deno.test("non-directory entries are skipped", async () => {

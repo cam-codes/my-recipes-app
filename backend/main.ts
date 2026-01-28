@@ -1,10 +1,19 @@
 import { Application, Router, send, Context, RouterContext } from "oak";
+import { oakCors } from "oakCors";
 import { extractYaml } from "@std/front-matter";
 import { RecipeFrontMatter } from "./types.ts"
 import { normalizeRecipe } from "./utils/recipe.ts";
 
 export function createApp(recipesDir: URL): Application {
     const app = new Application();
+    app.use(
+        oakCors({
+            origin: "http://localhost:5173",
+            methods: ["GET", "POST", "OPTIONS"],
+            allowedHeaders: ["Content-Type"],
+        }),
+    );
+
     const router = new Router();
 
 
@@ -15,27 +24,8 @@ export function createApp(recipesDir: URL): Application {
 
     // CORS and static images
     app.use(async (ctx, next) => {
-        ctx.response.headers.set("Access-Control-Allow-Origin", "http://localhost:5173");
-        ctx.response.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-        ctx.response.headers.set("Access-Control-Allow-Headers", "Content-Type");
-
-        // Normalize /recipes/ → /recipes to avoid 301 redirects (CORS-safe)
-        if (ctx.request.url.pathname === "/recipes/") {
-          console.log("normalizing request...");
-          console.log("ctx.request.url: ", ctx.request.url);
-          ctx.request.url.pathname = "/recipes";
-          console.log("request normalized.")
-          console.log("ctx.request.url: ", ctx.request.url);
-        }
-
-        if (ctx.request.method === "OPTIONS") {
-            ctx.response.status = 204;
-            return;
-        }
-
         const pathname = ctx.request.url.pathname;
 
-        // expose recipes directory so images can be loaded on the frontend
         // serve static files ONLY if there's a file extension
         // e.g. /recipes/foo/image.jpg
         if (
@@ -52,10 +42,8 @@ export function createApp(recipesDir: URL): Application {
                     }
                 );
             } catch (err) {
-                // deno-coverage-ignore-next-line
                 console.error("Failed to serve static file:", err instanceof Error ? err.message : String(err));
-                ctx.response.status = 404;
-                ctx.response.body = { error: "Not Found" };
+                ctx.throw(404, "Not Found");
             }
             return;
         }
@@ -85,8 +73,7 @@ export function createApp(recipesDir: URL): Application {
         } catch (err) {
             // deno-coverage-ignore-next-line
             console.error(`"/recipes/:slug" :: [SKIPPED] ${slug}:`, err instanceof Error ? err.message : String(err));
-            ctx.response.status = 500;
-            ctx.response.body = { error: "Internal Server Error" };
+            ctx.throw(500, "Internal Server Error");
         }
     });
 

@@ -1,5 +1,5 @@
 ---
-title: Elevated Chicken Caesar Salad
+title: Chicken Caesar Salad
 description: Grilled lemony chicken atop crisp romaine, homemade garlicky croutons, and a perfectly emulsified anchovy-lemon dressing, finished with shaved Parmesan—restaurant-quality in one bowl.
 prepTime: 20
 cookTime: 20

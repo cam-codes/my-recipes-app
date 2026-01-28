@@ -1,5 +1,5 @@
 ---
-title: Elevated Chili Con Carne
+title: Chili Con Carne
 description: Deep, layered chili with ancho-guajillo paste, beef chuck + ground beef, dark beer, chocolate, and cinnamon—topped with crème fraîche, cheddar, avocado, and cilantro for bold, complex flavor.
 prepTime: 25
 cookTime: 120

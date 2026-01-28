@@ -1,0 +1,20 @@
+services:
+  backend:
+    image: my-recipes-backend
+    build: ./backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./recipes:/data/recipes:ro
+    environment:
+      RECIPES_DIR: /data/recipes
+      BACKEND_PORT: 3000
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_BASE: http://localhost:3000
+    depends_on:
+      - backend

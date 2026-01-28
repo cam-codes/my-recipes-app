@@ -36,10 +36,8 @@ export function createApp(recipesDir: URL): Application {
                     }
                 );
             } catch (err) {
-                // deno-coverage-ignore-next-line
                 console.error("Failed to serve static file:", err instanceof Error ? err.message : String(err));
-                ctx.response.status = 404;
-                ctx.response.body = { error: "Not Found" };
+                ctx.throw(404, "Not Found");
             }
             return;
         }
@@ -69,8 +67,7 @@ export function createApp(recipesDir: URL): Application {
         } catch (err) {
             // deno-coverage-ignore-next-line
             console.error(`"/recipes/:slug" :: [SKIPPED] ${slug}:`, err instanceof Error ? err.message : String(err));
-            ctx.response.status = 500;
-            ctx.response.body = { error: "Internal Server Error" };
+            ctx.throw(500, "Internal Server Error");
         }
     });
 

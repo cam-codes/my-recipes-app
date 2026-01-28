@@ -1,10 +1,16 @@
 import { createApp } from "./main.ts";
 
 if (import.meta.main) {
-    const RECIPES_DIR = new URL("../recipes/", import.meta.url);
+    // Use RECIPES_DIR env var in Docker; fallback for local dev
+    const RECIPES_DIR = Deno.env.get("RECIPES_DIR")
+        ? new URL(`file://${Deno.env.get("RECIPES_DIR")}/`)
+        : new URL("../recipes/", import.meta.url);
     const app = createApp(RECIPES_DIR);
 
-    const port = 8000;
-    console.log(`🚀 Server running at http://localhost:${port}`);
-    await app.listen({ port });
+    // Use BACKEND_PORT env var in Docker; fallback for local dev
+    const PORT = Deno.env.get("BACKEND_PORT")
+        ? Number(Deno.env.get("BACKEND_PORT"))
+        : 3000;
+    console.log(`🚀 Server running at http://localhost:${PORT}`);
+    await app.listen({ port: PORT });
 }

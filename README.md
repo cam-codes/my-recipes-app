@@ -27,7 +27,7 @@ Browse a collection of recipes stored as markdown files with YAML front-matter, 
 my-recipes-app/
 ├── backend/
 │   ├── main.ts               # Core app logic (createApp, routes)
-│   ├── server.ts             # Entry point (listens on port 8000)
+│   ├── server.ts             # Entry point (listens on port 3000)
 │   ├── utils/
 │   │   ├── recipe.ts         # normalizeRecipe (title from slug, defaults, etc.)
 │   │   └── logger.ts         # Structured JSON logger with colors
@@ -86,7 +86,7 @@ cd backend
 
 # Run server
 deno task start
-# → http://localhost:8000
+# → http://localhost:3000
 
 # Run tests
 deno task test

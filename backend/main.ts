@@ -56,10 +56,10 @@ export function createApp(recipesDir: URL): Application {
         async (ctx: RouterContext<"/recipes/:slug"> // ctx.params does exist at runtime, but TypeScript doesn’t know it unless the route context is typed as a RouterContext
     ) => {
         const slug = ctx.params.slug!;
-        const recipeFile = new URL(`${slug}/recipe.md`, recipesDir);
+        const recipeFilePath = `${recipesDir.pathname}/${slug}/recipe.md`;
 
         try {
-            const content = await Deno.readTextFile(recipeFile.pathname);
+            const content = await Deno.readTextFile(recipeFilePath);
             const { attrs= {} } = extractYaml<RecipeFrontMatter>(content);
 
             // normalize data and add to response body
@@ -79,16 +79,15 @@ export function createApp(recipesDir: URL): Application {
             if (!entry.isDirectory) continue;
 
             const slug = entry.name;
-            const recipeFile = new URL(`${slug}/recipe.md`, recipesDir);
+            const recipeFilePath = `${recipesDir.pathname}/${slug}/recipe.md`;
 
             try {
-                const content = await Deno.readTextFile(recipeFile.pathname);
+                const content = await Deno.readTextFile(recipeFilePath);
                 const { attrs } = extractYaml<RecipeFrontMatter>(content);
 
                 // normalize data and push
                 list.push(normalizeRecipe(entry.name, attrs));
             } catch (err) {
-                // deno-coverage-ignore-next-line
                 console.error(`recipes :: [SKIPPED] ${slug}:`, err instanceof Error ? err.message : String(err));
             }
 

@@ -16,5 +16,19 @@
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
+  ],
+  "compilerOptions": {
+    // Shared types visible to the whole project
+    "types": [
+      "vite/client",
+      "vitest/globals",
+      "@testing-library/jest-dom"
+    ]
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts",
+    "**/*.test.tsx"
   ]
 }

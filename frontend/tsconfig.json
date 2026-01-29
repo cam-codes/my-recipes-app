@@ -1,18 +1,5 @@
 {
   "files": [],
-  "compilerOptions": {
-    // Shared types visible to the whole project
-    "types": [
-      "vite/client",
-      "vitest/globals"
-    ]
-  },
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.test.ts",
-    "**/*.test.tsx"
-  ],
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }

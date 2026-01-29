@@ -1,8 +1,8 @@
 import { createApp } from "./main.ts";
 
 if (import.meta.main) {
-    // Use RECIPES_DIR env var in Docker; fallback for local dev
-    const recipesPath = Deno.env.get("RECIPES_DIR") ?? "../recipes";
+    // Use RECIPES_DIRECTORY env var in Docker; fallback for local dev
+    const recipesPath = Deno.env.get("RECIPES_DIRECTORY") ?? "../recipes";
     const RECIPES_DIR = new URL(recipesPath, import.meta.url);
 
     // Use BACKEND_PORT env var in Docker; fallback for local dev

@@ -2,19 +2,23 @@ services:
   backend:
     image: my-recipes-backend
     build: ./backend
+    container_name: my-recipes-backend
     ports:
-      - "3000:3000"
-    volumes:
-      - ./recipes:/data/recipes:ro
+      - "3000:3000"           # expose backend to host for browser and frontend testing
     environment:
-      RECIPES_DIR: /data/recipes
+      RECIPES_DIRECTORY: /recipes
       BACKEND_PORT: 3000
+    volumes:
+      - ./recipes:/recipes    # live recipes for testing
 
   frontend:
+    image: my-recipes-frontend
     build: ./frontend
+    container_name: my-recipes-frontend
     ports:
-      - "5173:5173"
+      - "5173:80"           # expose frontend to host
     environment:
-      VITE_API_BASE: http://localhost:3000
+      # API_BASE for the frontend, container can reach backend via service name
+      VITE_API_BASE: http://backend:3000
     depends_on:
       - backend

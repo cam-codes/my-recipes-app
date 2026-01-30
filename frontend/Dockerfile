@@ -3,18 +3,23 @@ FROM node:20-bullseye AS builder
 WORKDIR /app
 
 # Copy only the files needed to install deps
-COPY package.json yarn.lock .yarnrc.yml ./
+# First, copy file(s) at content root
+COPY .yarnrc.yml yarn.lock package.json ./
+
+# Copy workspace manifest
+COPY frontend/package.json frontend/
 
 # Install dependencies
-RUN corepack enable && yarn install --frozen-lockfile
+RUN corepack enable && yarn install --immutable
 
-# Copy only source and public files needed for build
-COPY src ./src
-COPY public ./public
-COPY index.html tsconfig.app.json tsconfig.json tsconfig.node.json vite.config.ts ./
+# Copy frontend source
+COPY frontend ./frontend
 
 # Build production assets
-RUN yarn build
+WORKDIR /app/frontend
+RUN --mount=type=cache,target=/root/.yarn \
+    --mount=type=cache,target=/root/.cache/yarn \
+    yarn build
 
 # Stage 2: Serve built frontend
 FROM nginx:alpine
@@ -22,7 +27,7 @@ FROM nginx:alpine
 RUN rm -rf /usr/share/nginx/html/*
 
 # Copy built dist from builder stage
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /app/frontend/dist /usr/share/nginx/html
 
 # Expose port
 EXPOSE 5173

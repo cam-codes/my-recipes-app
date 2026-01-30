@@ -11,6 +11,6 @@
     "lint": "deno lint",
     "start": "deno run --allow-net --allow-read --allow-env server.ts",
     "test": "deno test --allow-read --allow-net --allow-import --allow-env",
-    "test:coverage": "deno test --allow-read --allow-net --allow-import --allow-env --coverage=coverage"
+    "test:coverage": "deno test --allow-read --allow-net --allow-import --allow-env --coverage=coverage && deno coverage coverage --lcov > coverage.lcov"
   }
 }

@@ -48,6 +48,11 @@ export function createApp(recipesDir: URL): Application {
     await next();
   });
 
+  router.get("/health", (ctx) => {
+    ctx.response.status = 200;
+    ctx.response.body = { status: "OK" };
+  });
+
   /**
    * note: route order matters. if recipes came before /recipes/:slug, and the frontend requests
    * /recipes/chicken-caesar-salad, Oak tries to match /recipes first, doesn’t find a file named literally

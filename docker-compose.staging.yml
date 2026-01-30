@@ -3,7 +3,7 @@ services:
     image: ghcr.io/cam-codes/my-recipes-backend:${RELEASE_TAG}
     container_name: my-recipes-backend-staging
     ports:
-      - "3000:3000"
+      - "3001:3000"
     environment:
       RECIPES_DIRECTORY: /recipes
       BACKEND_PORT: 3000
@@ -26,4 +26,4 @@ services:
     ports:
       - "5173:80"
     environment:
-      VITE_API_BASE: http://localhost:3000
+      VITE_API_BASE: http://backend:3000

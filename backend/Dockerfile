@@ -7,9 +7,8 @@ COPY deno.json deno.lock ./
 COPY main.ts server.ts types.ts ./
 COPY utils ./utils
 
-# Cache deps
-RUN --mount=type=cache,target=/deno-dir \
-    deno cache server.ts
+# Cache deps -- Cant cache mount here because we want to write the cache into the image
+RUN deno cache server.ts
 
 EXPOSE 3000
 

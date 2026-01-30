@@ -11,7 +11,12 @@ services:
     volumes:
       - ./recipes:/recipes    # live recipes for testing
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:3000/recipes" ]
+      test: [
+        "CMD",
+        "deno",
+        "eval",
+        "fetch('http://localhost:3000/health').then(r=>{if(!r.ok)Deno.exit(1)})"
+      ]
       interval: 10s
       timeout: 3s
       retries: 5

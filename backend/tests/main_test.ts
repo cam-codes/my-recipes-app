@@ -19,7 +19,7 @@ Deno.test("GET /health", async () => {
 
   const json = JSON.parse(body as string);
   assertEquals(json.status, "OK");
-})
+});
 
 Deno.test("OPTIONS request returns 204", async () => {
   const { status } = await request("/recipes", "OPTIONS");

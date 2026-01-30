@@ -32,7 +32,7 @@ describe("api", () => {
             new Response(null, { status: 500 })
         ) as any;
 
-        expect(getRecipes()).rejects.toThrow(
+        await expect(getRecipes()).rejects.toThrow(
             "Failed to fetch recipe"
         );
     });
@@ -42,7 +42,7 @@ describe("api", () => {
             new Response(null, { status: 404 })
         ) as any;
 
-        expect(getRecipe("does-not-exist")).rejects.toThrow(
+        await expect(getRecipe("does-not-exist")).rejects.toThrow(
             "Recipe not found"
         );
     });
@@ -52,7 +52,7 @@ describe("api", () => {
             new Response(null, { status: 500 })
         ) as any;
 
-        expect(getRecipe("miso-salmon")).rejects.toThrow(
+        await expect(getRecipe("miso-salmon")).rejects.toThrow(
             "Failed to fetch recipe"
         );
     });

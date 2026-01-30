@@ -6,6 +6,10 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build-backend:
     runs-on: ubuntu-latest
@@ -31,10 +35,10 @@ jobs:
 
       - name: Build & Push Backend Image
         run: |
-          docker build -t ghcr.io/${{ github.repository }}/my-recipes-backend:${{ github.sha }} .
-          docker push ghcr.io/${{ github.repository }}/my-recipes-backend:${{ github.sha }}
-        env:
-          DENO_DIR: /deno-dir
+          docker build -f backend/Dockerfile \
+          -t ghcr.io/${{ github.repository_owner }}/my-recipes-backend:${{ github.sha }} .
+
+          docker push ghcr.io/${{ github.repository_owner }}/my-recipes-backend:${{ github.sha }}
 
   build-frontend:
     runs-on: ubuntu-latest
@@ -64,5 +68,7 @@ jobs:
 
       - name: Build & Push Frontend Image
         run: |
-          docker build -t ghcr.io/${{ github.repository }}/my-recipes-frontend:${{ github.sha }} .
-          docker push ghcr.io/${{ github.repository }}/my-recipes-frontend:${{ github.sha }}
+          docker build -f frontend/Dockerfile \
+          -t ghcr.io/${{ github.repository_owner }}/my-recipes-frontend:${{ github.sha }} .
+
+          docker push ghcr.io/${{ github.repository_owner }}/my-recipes-frontend:${{ github.sha }}

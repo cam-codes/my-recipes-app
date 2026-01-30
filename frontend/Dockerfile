@@ -13,7 +13,7 @@ COPY frontend/package.json frontend/
 RUN corepack enable && yarn install --immutable
 
 # Copy frontend source
-COPY frontend frontend/
+COPY ./frontend frontend/
 
 # Build production assets
 WORKDIR /app/frontend

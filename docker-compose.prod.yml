@@ -1,0 +1,29 @@
+services:
+  backend:
+    image: ghcr.io/cam-codes/my-recipes-backend:${RELEASE_TAG}
+    container_name: my-recipes-backend-prod
+    ports:
+      - "3000:3000"
+    environment:
+      RECIPES_DIRECTORY: /recipes
+      BACKEND_PORT: 3000
+    volumes:
+      - ./recipes:recipes:rw
+    healthcheck:
+      test: [
+        "CMD",
+        "deno",
+        "eval",
+        "fetch('http://localhost:3000/health').then(r=>{if(!r.ok)Deno.exit(1)})"
+      ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  frontend:
+    image: ghcr.io/cam-codes/my-recipes-frontend::${RELEASE_TAG}
+    container_name: my-recipes-frontend-prod
+    ports:
+      - "80:80"
+    environment:
+      VITE_API_BASE: http://backend:3000

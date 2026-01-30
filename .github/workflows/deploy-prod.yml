@@ -23,6 +23,6 @@ jobs:
 
             cd /opt/my-recipes/prod
             docker-compose -f docker-compose.prod.yml pull \
-              ghcr.io/${{ github.repository }}/my-recipes-backend:$RELEASE_TAG \
-              ghcr.io/${{ github.repository }}/my-recipes-frontend:$RELEASE_TAG
+              ghcr.io/${{ github.repository_owner }}/my-recipes-backend:$RELEASE_TAG \
+              ghcr.io/${{ github.repository_owner }}/my-recipes-frontend:$RELEASE_TAG
             docker-compose -f docker-compose.prod.yml up -d

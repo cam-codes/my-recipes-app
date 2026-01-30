@@ -10,10 +10,17 @@ services:
       BACKEND_PORT: 3000
     volumes:
       - ./recipes:/recipes    # live recipes for testing
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000/recipes" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
   frontend:
     image: my-recipes-frontend
-    build: ./frontend
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
     container_name: my-recipes-frontend
     ports:
       - "5173:80"           # expose frontend to host
@@ -21,4 +28,10 @@ services:
       # API_BASE for the frontend, container can reach backend via service name
       VITE_API_BASE: http://backend:3000
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5

@@ -1,0 +1,26 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH Deploy (staging)
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          script: |
+            set -e
+            export RELEASE_TAG=${{ github.sha }}
+            echo "Deploying to staging with release $RELEASE_TAG"
+
+            cd /opt/my-recipes/staging
+            docker-compose -f docker-compose.staging.yml pull \
+              ghcr.io/${{ github.repository }}/my-recipes-backend:$RELEASE_TAG \
+              ghcr.io/${{ github.repository }}/my-recipes-frontend:$RELEASE_TAG
+            docker-compose -f docker-compose.staging.yml up -d

@@ -1,0 +1,23 @@
+# ---------------------------
+# Staging
+# ---------------------------
+staging.myrecipes.example.com {
+    reverse_proxy localhost:3001
+    encode gzip
+    log {
+        output file /var/log/caddy/staging_access.log
+        format json
+    }
+}
+
+# ---------------------------
+# Production
+# ---------------------------
+myrecipes.example.com {
+    reverse_proxy localhost:3000
+    encode gzip
+    log {
+        output file /var/log/caddy/prod_access.log
+        format json
+    }
+}

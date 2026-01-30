@@ -1,0 +1,28 @@
+name: Deploy to Production
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  deploy-prod:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH Deploy (prod)
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          script: |
+            set -e
+            export RELEASE_TAG=${GITHUB_REF_NAME}
+            echo "Deploying to prod @ $RELEASE_TAG"
+
+            cd /opt/my-recipes/prod
+            docker-compose -f docker-compose.prod.yml pull \
+              ghcr.io/${{ github.repository }}/my-recipes-backend:$RELEASE_TAG \
+              ghcr.io/${{ github.repository }}/my-recipes-frontend:$RELEASE_TAG
+            docker-compose -f docker-compose.prod.yml up -d

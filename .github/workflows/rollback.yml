@@ -1,0 +1,38 @@
+name: Rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment (staging or prod)'
+        required: true
+        default: 'staging'
+        type: string
+      release_tag:
+        description: 'GitHub release tag to rollback to'
+        required: true
+        default: v1.0.0
+        type: string
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH Rollback
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ github.event.inputs.environment == 'prod' && secrets.PROD_HOST || secrets.STAGING_HOST }}
+          username: ${{ github.event.inputs.environment == 'prod' && secrets.PROD_USER || secrets.STAGING_USER }}
+          key: ${{ github.event.inputs.environment == 'prod' && secrets.PROD_SSH_KEY || secrets.STAGING_SSH_KEY }}
+          script: |
+            set -e
+            RELEASE_TAG=${{ github.event.inputs.release_tag }}
+            ENVIRONMENT=${{ github.event.inputs.environment }}
+
+            echo "Rolling back $ENVIRONMENT to release $RELEASE_TAG"
+
+            cd /opt/my-recipes/$ENVIRONMENT
+            docker-compose -f docker-compose.$ENVIRONMENT.yml pull \
+              ghcr.io/${{ github.repository }}/my-recipes-backend:$RELEASE_TAG \
+              ghcr.io/${{ github.repository }}/my-recipes-frontend:$RELEASE_TAG
+            docker-compose -f docker-compose.$ENVIRONMENT.yml up -d

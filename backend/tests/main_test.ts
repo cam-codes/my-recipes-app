@@ -13,6 +13,14 @@ async function request(url: string, method = "GET") {
   return { status: resp?.status, body };
 }
 
+Deno.test("GET /health", async () => {
+  const { status, body } = await request("/health");
+  assertEquals(status, 200);
+
+  const json = JSON.parse(body as string);
+  assertEquals(json.status, "OK");
+})
+
 Deno.test("OPTIONS request returns 204", async () => {
   const { status } = await request("/recipes", "OPTIONS");
   assertEquals(status, 204);

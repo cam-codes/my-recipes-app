@@ -7,7 +7,6 @@ interface Props {
 }
 
 export default function RecipeCard(props: Props) {
-    const { title, description, prepTime, cookTime } = props.recipe;
     return (
         <A
             href={`/recipe/${props.recipe.slug}`}
@@ -24,16 +23,16 @@ export default function RecipeCard(props: Props) {
 
             {/* Card content */}
             <div class="p-6">
-                <h3 class="text-xl font-semibold mb-2 line-clamp-2">{title}</h3>
-                {description && (
+                <h3 class="text-xl font-semibold mb-2 line-clamp-2">{props.recipe.title}</h3>
+                {props.recipe.description && (
                     <p class="text-sm text-gray-600 mb-4 line-clamp-3">
-                        {description}
+                        {props.recipe.description}
                     </p>
                 )}
                 {/* Prep & Cook Time */}
                 <div class="text-sm text-gray-500 mb-2 flex gap-4">
-                    <span>Prep: {prepTime} min</span>
-                    <span>Cook: {cookTime} min</span>
+                    <span>Prep: {props.recipe.prepTime} min</span>
+                    <span>Cook: {props.recipe.cookTime} min</span>
                 </div>
             </div>
         </A>

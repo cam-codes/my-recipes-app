@@ -8,7 +8,8 @@ COPY main.ts server.ts types.ts ./
 COPY utils ./utils
 
 # Cache deps
-RUN deno cache server.ts
+RUN --mount=type=cache,target=/deno-dir \
+    deno cache server.ts
 
 EXPOSE 3000
 

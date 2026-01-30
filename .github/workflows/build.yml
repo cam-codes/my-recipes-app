@@ -36,9 +36,6 @@ jobs:
       - name: Build & Push Backend Image
         run: |
           cd ..
-          pwd
-          ls -la
-          ls -la backend || echo "backend directory not found!"
           docker build -f backend/Dockerfile \
             -t ghcr.io/${{ github.repository_owner }}/my-recipes-backend:${{ github.sha }} \
             .
@@ -73,9 +70,6 @@ jobs:
       - name: Build & Push Frontend Image
         run: |
           cd ..
-          pwd
-          ls -la
-          ls -la frontend || echo "frontend directory not found!"
           docker build -f frontend/Dockerfile \
             -t ghcr.io/${{ github.repository_owner }}/my-recipes-frontend:${{ github.sha }} \
             .

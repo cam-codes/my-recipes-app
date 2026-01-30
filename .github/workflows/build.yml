@@ -35,7 +35,7 @@ jobs:
 
       - name: Build & Push Backend Image
         run: |
-          docker build -f backend/Dockerfile \
+          docker build -f ./backend/Dockerfile \
           -t ghcr.io/${{ github.repository_owner }}/my-recipes-backend:${{ github.sha }} .
 
           docker push ghcr.io/${{ github.repository_owner }}/my-recipes-backend:${{ github.sha }}
@@ -68,7 +68,7 @@ jobs:
 
       - name: Build & Push Frontend Image
         run: |
-          docker build -f frontend/Dockerfile \
+          docker build -f ./frontend/Dockerfile \
           -t ghcr.io/${{ github.repository_owner }}/my-recipes-frontend:${{ github.sha }} .
 
           docker push ghcr.io/${{ github.repository_owner }}/my-recipes-frontend:${{ github.sha }}

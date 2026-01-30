@@ -31,11 +31,19 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_PAT }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Debug workspace
+        run: |
+          pwd
+          ls -la
+          ls -la backend || echo "backend directory not found!"
 
       - name: Build & Push Backend Image
         run: |
           cd backend
+          pwd
+          ls -la
           docker build -t ghcr.io/${{ github.repository_owner }}/my-recipes-backend:${{ github.sha }} .
           docker push ghcr.io/${{ github.repository_owner }}/my-recipes-backend:${{ github.sha }}
 
@@ -63,10 +71,18 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_PAT }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Debug workspace
+        run: |
+          pwd
+          ls -la
+          ls -la frontend || echo "frontend directory not found!"
 
       - name: Build & Push Frontend Image
         run: |
           cd frontend
+          pwd
+          ls -la
           docker build -t ghcr.io/${{ github.repository_owner }}/my-recipes-frontend:${{ github.sha }} .
           docker push ghcr.io/${{ github.repository_owner }}/my-recipes-frontend:${{ github.sha }}

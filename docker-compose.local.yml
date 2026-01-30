@@ -1,8 +1,10 @@
 services:
   backend:
     image: my-recipes-backend
-    build: ./backend
-    container_name: my-recipes-backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: my-recipes-backend-local
     ports:
       - "3000:3000"           # expose backend to host for browser and frontend testing
     environment:

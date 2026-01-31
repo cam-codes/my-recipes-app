@@ -1,3 +1,5 @@
+import type {RecipeListItem} from "../frontend/src/lib/types.ts";
+
 export interface RecipeFrontMatter {
   title?: string;
 
@@ -17,4 +19,17 @@ export interface RecipeFrontMatter {
 
   // allow for future expansion
   [key: string]: unknown;
+}
+
+export interface Recipe {
+  slug: string;
+  title: string;
+  description: string;
+  prepTime: number;
+  cookTime: number;
+  estimatedCost: number;
+  ingredients: string[];
+  instructions: string[];
+  tips: string[];
+  image: string;
 }

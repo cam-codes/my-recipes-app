@@ -1,6 +1,6 @@
 import { assert, assertEquals } from "std/testing/asserts.ts";
 import { createApp } from "../main.ts";
-import { normalizeRecipe } from "../utils/recipe.ts";
+import { normalizeRecipe } from "../utils/utils.ts";
 
 const fixturesDir = new URL("./fixtures/recipes/", import.meta.url);
 const app = createApp(fixturesDir);

@@ -1,7 +1,7 @@
-import type { Recipe, RecipeListItem } from './types';
+import type { Recipe } from '../components/Recipe.tsx';
 import { API_BASE } from './config.ts';
 
-export async function getRecipes(): Promise<RecipeListItem[]> {
+export async function getRecipes(): Promise<Recipe[]> {
   const res = await fetch(`${API_BASE}/recipes`);
   if (!res.ok) throw new Error('Failed to fetch recipes');
   return res.json();

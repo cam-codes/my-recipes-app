@@ -2,7 +2,7 @@ import { Application, Context, Router, RouterContext, send } from "oak";
 import { oakCors } from "oakCors";
 import { extractYaml } from "@std/front-matter";
 import { RecipeFrontMatter } from "./types.ts";
-import { normalizeRecipe } from "./utils/recipe.ts";
+import { normalizeRecipe } from "./utils/utils.ts";
 
 export function createApp(recipesDir: URL): Application {
   const app = new Application();

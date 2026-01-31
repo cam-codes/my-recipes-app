@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 
-import type { Recipe } from '../lib/types.ts';
+import type { Recipe } from '../components/Recipe.tsx';
 
 export default function makeRecipe(overrides: Partial<Recipe> = {}): Recipe {
   return {

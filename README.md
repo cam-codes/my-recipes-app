@@ -29,7 +29,7 @@ my-recipes-app/
 │   ├── main.ts               # Core app logic (createApp, routes)
 │   ├── server.ts             # Entry point (listens on port 3000)
 │   ├── utils/
-│   │   ├── recipe.ts         # normalizeRecipe (title from slug, defaults, etc.)
+│   │   ├── utils.ts         # normalizeRecipe (title from slug, defaults, etc.)
 │   │   └── logger.ts         # Structured JSON logger with colors
 │   ├── types.ts              # Recipe front-matter types
 │   ├── lib/

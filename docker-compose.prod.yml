@@ -8,7 +8,7 @@ services:
       RECIPES_DIRECTORY: /recipes
       BACKEND_PORT: 3000
     volumes:
-      - ./recipes:recipes:rw
+      - /data/recipes/prod:/recipes:rw
     healthcheck:
       test: [
         "CMD",
@@ -21,7 +21,7 @@ services:
       retries: 5
 
   frontend:
-    image: ghcr.io/cam-codes/my-recipes-frontend::${RELEASE_TAG}
+    image: ghcr.io/cam-codes/my-recipes-frontend:${RELEASE_TAG}
     container_name: my-recipes-frontend-prod
     ports:
       - "80:80"

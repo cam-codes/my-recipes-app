@@ -8,21 +8,66 @@ on:
 jobs:
   deploy-prod:
     runs-on: ubuntu-latest
-
     steps:
-      - name: SSH Deploy (prod)
+      # ---------------------------
+      ##️Checkout code
+      # ---------------------------
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ---------------------------
+      #  Sync files and env
+      # ---------------------------
+      - name: Sync Files and Env
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.PROD_HOST }}
           username: ${{ secrets.PROD_USER }}
           key: ${{ secrets.PROD_SSH_KEY }}
           script: |
-            set -e
-            export RELEASE_TAG=${GITHUB_REF_NAME}
-            echo "Deploying to prod @ $RELEASE_TAG"
+            set -euxo pipefail
 
-            cd /opt/my-recipes/prod
-            docker-compose -f docker-compose.prod.yml pull \
-              ghcr.io/${{ github.repository_owner }}/my-recipes-backend:$RELEASE_TAG \
-              ghcr.io/${{ github.repository_owner }}/my-recipes-frontend:$RELEASE_TAG
-            docker-compose -f docker-compose.prod.yml up -d
+            VM_DIR=/opt/my-recipes/prod
+            mkdir -p $VM_DIR
+
+            # Copy env vars
+            echo "${{ secrets.ENV_PROD }}" > $VM_DIR/env.prod
+
+            # Copy docker-compose
+            scp ./docker-compose.prod.yml ${{ secrets.PROD_USER }}@${{ secrets.PROD_HOST }}:$VM_DIR/
+
+      # ---------------------------
+      # Reload Caddy
+      # ---------------------------
+      - name: Reload Caddy
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          script: |
+            set -euxo pipefail
+            VM_DIR=/opt/my-recipes/prod
+            sudo systemctl reload caddy
+
+      # ---------------------------
+      #  Deploy Docker containers
+      # ---------------------------
+      - name: Deploy Docker containers
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          script: |
+            set -euxo pipefail
+            VM_DIR=/opt/my-recipes/prod
+            RELEASE_TAG=${{ github.sha }}
+
+            cd $VM_DIR
+
+            # Pull backend + frontend images for this release
+            docker compose -f docker-compose.prod.yml pull
+
+            # Start containers
+            docker compose -f docker-compose.prod.yml up -d --remove-orphans

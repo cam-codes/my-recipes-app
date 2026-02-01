@@ -8,7 +8,7 @@ services:
       RECIPES_DIRECTORY: /recipes
       BACKEND_PORT: 3000
     volumes:
-      - ./recipes:/recipes:rw
+      - /data/recipes/staging:/recipes:rw
     healthcheck:
       test: [
         "CMD",

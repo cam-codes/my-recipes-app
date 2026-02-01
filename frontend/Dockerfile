@@ -30,7 +30,7 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY --from=builder /app/frontend/dist /usr/share/nginx/html
 
 # Expose port
-EXPOSE 5173
+EXPOSE 80
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]

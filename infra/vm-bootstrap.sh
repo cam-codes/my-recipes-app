@@ -59,11 +59,30 @@ sudo systemctl start docker
 # ---------------------------
 # Users
 # ---------------------------
-sudo adduser --disabled-password --gecos "" staging
-sudo usermod -aG sudo,docker staging
+for USER in staging prod; do
+  PUB_KEY_VAR="${USER^^}_SSH_PUB" # STAGING_SSH_PUB / PROD_SSH_PUB
+  PUB_KEY="${!PUB_KEY_VAR}"
 
-sudo adduser --disabled-password --gecos "" prod
-sudo usermod -aG sudo,docker prod
+  # create user (if it doesnt already exist)
+  if ! id "$USER" &>/dev/null; then
+    sudo adduser --disabled-password --gecos "" "$USER"
+    sudo usermod -aG sudo,docker "$USER"
+  fi
+
+  # create .ssh directory
+  SSH_DIR="/home/$USER/.ssh"
+  sudo mkdir -p "$SSH_DIR"
+  sudo chown "$USER:$USER" "$SSH_DIR"
+  sudo chmod 700 "$SSH_DIR"
+
+  # add public key if not already present
+  AUTH_KEYS="SSH_DIR/authorized_keys"
+  if ! echo "$PUB_KEY" | sudo grep -q -F -x -f - "$AUTH_KEYS" 2>/dev/null; then
+    echo "$PUB_KEY" | sudo tee -a "$AUTH_KEYS" >/dev/null
+    sudo chown "$USER:$USER" "$AUTH_KEYS"
+    sudo chmod 600 "$AUTH_KEYS"
+  fi
+done
 
 # ---------------------------
 # Persistent data disk mount

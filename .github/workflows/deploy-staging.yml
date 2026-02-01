@@ -9,13 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # ---------------------------
-      ##️Checkout code
+      #  Checkout code
       # ---------------------------
       - name: Checkout code
         uses: actions/checkout@v4
 
       # ---------------------------
-      # Ensure VM directory exists
+      #  Ensure VM directory exists
       # ---------------------------
       - name: Prepare VM directory
         uses: appleboy/ssh-action@v0.1.6

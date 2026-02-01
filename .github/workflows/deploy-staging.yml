@@ -54,8 +54,10 @@ jobs:
             cd $VM_DIR
 
             # Write env vars
-            echo "${{ secrets.ENV_STAGING }}" > $VM_DIR/staging.env
-            echo "RELEASE_TAG=${{ github.sha }}" >> $VM_DIR/staging.env
+            cat <<EOF > $VM_DIR/staging.env
+            ${{ secrets.ENV_STAGING }}
+            RELEASE_TAG=${{ github.sha }}
+            EOF
 
             # Pull backend + frontend images for this release
             docker compose \

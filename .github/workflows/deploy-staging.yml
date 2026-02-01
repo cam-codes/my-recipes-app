@@ -62,11 +62,13 @@ jobs:
             # Pull backend + frontend images for this release
             docker compose \
               -f docker-compose.staging.yml \
+              --env-file $VM_DIR/staging.env \
               pull
 
             # Start containers
             docker compose \
               -f docker-compose.staging.yml \
+              --env-file $VM_DIR/staging.env \
               up -d --remove-orphans
 
             # Reload Caddy

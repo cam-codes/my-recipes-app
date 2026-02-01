@@ -41,7 +41,9 @@ jobs:
         env:
           EMAIL: ${{ secrets.EMAIL }}
           STAGING_DOMAIN: ${{ secrets.STAGING_DOMAIN }}
+          STAGING_SSH_PUB: "${{ secrets.STAGING_SSH_PUB }}"
           PROD_DOMAIN: ${{ secrets.PROD_DOMAIN }}
+          PROD_SSH_PUB: "${{ secrets.PROD_SSH_PUB }}"
         run: |
           set -euxo pipefail
           ACTION=${{ github.event.inputs.action }}

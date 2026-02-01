@@ -1,0 +1,64 @@
+name: CRUD VM
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'create / delete / recreate'
+        required: true
+        default: 'create'
+
+jobs:
+  manage-vm:
+    runs-on: ubuntu-latest
+    steps:
+      # ---------------------------
+      # Checkout repo
+      # ---------------------------
+      - name: Checkout infra
+        uses: actions/checkout@v4
+
+      # ---------------------------
+      # Auth to GCP
+      # ---------------------------
+      # note: this key expires after 1hr. to generate a new key run:
+      # gcloud auth print-access-token
+      # and insert that value as GH secret under key: GCP_TOKEN
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_TOKEN }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      # ---------------------------
+      # Manage VM
+      # ---------------------------
+      - name: Manage VM
+        env:
+          EMAIL: ${{ secrets.EMAIL }}
+          STAGING_DOMAIN: ${{ secrets.STAGING_DOMAIN }}
+          PROD_DOMAIN: ${{ secrets.PROD_DOMAIN }}
+        run: |
+          set -euxo pipefail
+          ACTION=${{ github.event.inputs.action }}
+
+          if [ "$ACTION" = "delete" ]; then
+            gcloud compute instances delete cam-cooks-vm \
+              --zone us-central1-a \
+              --quiet
+
+          elif [ "$ACTION" = "create" ]; then
+            ./infra/create-vm.sh ./infra/vm.env
+
+          elif [ "$ACTION" = "recreate" ]; then
+            gcloud compute instances delete cam-cooks-vm \
+              --zone us-central1-a \
+              --quiet
+            ./infra/create-vm.sh ./infra/vm.env
+
+          else
+            echo "Unknown action: $ACTION"
+            exit 1
+          fi

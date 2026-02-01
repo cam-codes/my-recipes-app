@@ -8,19 +8,64 @@ jobs:
   deploy-staging:
     runs-on: ubuntu-latest
     steps:
-      - name: SSH Deploy (staging)
+      # ---------------------------
+      ##️Checkout code
+      # ---------------------------
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ---------------------------
+      # Ensure VM directory exists
+      # ---------------------------
+      - name: Prepare VM directory
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.STAGING_HOST }}
           username: ${{ secrets.STAGING_USER }}
           key: ${{ secrets.STAGING_SSH_KEY }}
           script: |
-            set -e
-            export RELEASE_TAG=${{ github.sha }}
-            echo "Deploying to staging with release $RELEASE_TAG"
+            sudo mkdir -p /opt/my-recipes/staging
+            sudo chown staging:staging /opt/my-recipes/staging
 
-            cd /opt/my-recipes/staging
-            docker-compose -f docker-compose.staging.yml pull \
-              ghcr.io/${{ github.repository_owner }}/my-recipes-backend:$RELEASE_TAG \
-              ghcr.io/${{ github.repository_owner }}/my-recipes-frontend:$RELEASE_TAG
-            docker-compose -f docker-compose.staging.yml up -d
+      # ---------------------------
+      #  Copy docker-compose
+      # ---------------------------
+      - name: Copy docker-compose
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          source: docker-compose.staging.yml
+          target: /opt/my-recipes/staging/
+
+      # ---------------------------
+      #  Deploy Docker containers
+      # ---------------------------
+      - name: Deploy Docker containers
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          script: |
+            set -euxo pipefail
+            VM_DIR=/opt/my-recipes/staging
+            cd $VM_DIR
+
+            # Write env vars
+            echo "${{ secrets.ENV_STAGING }}" > $VM_DIR/staging.env
+            echo "RELEASE_TAG=${{ github.sha }}" >> $VM_DIR/staging.env
+
+            # Pull backend + frontend images for this release
+            docker compose \
+              -f docker-compose.staging.yml \
+              pull
+
+            # Start containers
+            docker compose \
+              -f docker-compose.staging.yml \
+              up -d --remove-orphans
+
+            # Reload Caddy
+            sudo systemctl reload caddy

@@ -5,6 +5,8 @@ set -uxo pipefail
 # Environment variables
 # ---------------------------
 EMAIL="${EMAIL:?EMAIL environment variable required}"
+STAGING_DOMAIN="${STAGING_DOMAIN:?Missing STAGING_DOMAIN}"
+PROD_DOMAIN="${PROD_DOMAIN:?Missing PROD_DOMAIN}"
 
 # ---------------------------
 # Base system
@@ -129,10 +131,34 @@ sudo systemctl restart fail2ban
 # ---------------------------
 # Caddy setup
 # ---------------------------
-sudo EMAIL="${EMAIL}" \
-     STAGING_DOMAIN="${STAGING_DOMAIN}" \
-     PROD_DOMAIN="${PROD_DOMAIN}" \
-     /opt/my-recipes/infra/setup-caddy.sh
+sudo mkdir -p /var/log/caddy
+sudo chown caddy:caddy /var/log/caddy
+
+sudo tee /etc/caddy/Caddyfile > /dev/null <<EOF
+{
+    email $EMAIL
+}
+
+$STAGING_DOMAIN {
+    reverse_proxy 127.0.0.1:3001
+    encode gzip
+    log {
+        output file /var/log/caddy/staging-access.log
+        format json
+    }
+}
+
+$PROD_DOMAIN {
+    reverse_proxy 127.0.0.1:3000
+    encode gzip
+    log {
+        output file /var/log/caddy/prod-access.log
+        format json
+    }
+}
+EOF
+
+sudo systemctl reload caddy
 
 # ---------------------------
 # Validation

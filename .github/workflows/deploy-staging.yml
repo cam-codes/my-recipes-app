@@ -40,23 +40,18 @@ jobs:
             VM_DIR=/opt/my-recipes/staging
             cd $VM_DIR
 
-            # Write env vars
-            cat <<EOF > $VM_DIR/staging.env
+            # Write env vars to .env
+            cat <<EOF > $VM_DIR/.env
             ${{ secrets.ENV_STAGING }}
             RELEASE_TAG=${{ github.sha }}
             EOF
+            chmod 600 .env
 
             # Pull backend + frontend images for this release
-            docker compose \
-              -f docker-compose.staging.yml \
-              --env-file $VM_DIR/staging.env \
-              pull
+            docker compose -f docker-compose.staging.yml pull
 
             # Start containers
-            docker compose \
-              -f docker-compose.staging.yml \
-              --env-file $VM_DIR/staging.env \
-              up -d --remove-orphans
+            docker compose -f docker-compose.staging.yml up -d --remove-orphans
 
             # Reload Caddy
             sudo systemctl reload caddy

@@ -7,6 +7,8 @@ set -uxo pipefail
 EMAIL="${EMAIL:?EMAIL environment variable required}"
 STAGING_DOMAIN="${STAGING_DOMAIN:?Missing STAGING_DOMAIN}"
 PROD_DOMAIN="${PROD_DOMAIN:?Missing PROD_DOMAIN}"
+STAGING_SSH_PUB="${STAGING_SSH_PUB:?Missing STAGING_SSH_PUB}"
+PROD_SSH_PUB="${PROD_SSH_PUB:?Missing PROD_SSH_PUB}"
 
 # ---------------------------
 # Base system
@@ -62,8 +64,8 @@ sudo systemctl start docker
 # Users
 # ---------------------------
 for USER in staging prod; do
-  PUB_KEY_VAR="${USER^^}_SSH_PUB" # STAGING_SSH_PUB / PROD_SSH_PUB
-  PUB_KEY="${!PUB_KEY_VAR}"
+  PUB_KEY_VAR="${USER^^}_SSH_PUB"   # STAGING_SSH_PUB / PROD_SSH_PUB
+  PUB_KEY="${!PUB_KEY_VAR:-}"       # value of STAGING_SSH_PUB / PROD_SSH_PUB
 
   # create user (if it doesnt already exist)
   if ! id "$USER" &>/dev/null; then
@@ -78,7 +80,7 @@ for USER in staging prod; do
   sudo chmod 700 "$SSH_DIR"
 
   # add public key if not already present
-  AUTH_KEYS="SSH_DIR/authorized_keys"
+  AUTH_KEYS="$SSH_DIR/authorized_keys"
   if ! echo "$PUB_KEY" | sudo grep -q -F -x -f - "$AUTH_KEYS" 2>/dev/null; then
     echo "$PUB_KEY" | sudo tee -a "$AUTH_KEYS" >/dev/null
     sudo chown "$USER:$USER" "$AUTH_KEYS"

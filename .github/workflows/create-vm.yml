@@ -21,16 +21,18 @@ jobs:
       # ---------------------------
       # Auth to GCP
       # ---------------------------
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
       # note: this key expires after 1hr. to generate a new key run:
       # gcloud auth print-access-token
       # and insert that value as GH secret under key: GCP_TOKEN
-      - name: Authenticate to GCP
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_TOKEN }}
-
-      - name: Set up gcloud
-        uses: google-github-actions/setup-gcloud@v2
+      - name: Authenticate to GCP (personal token)
+        run: |
+          echo "Authenticating with access token"
+          gcloud config set project YOUR_PROJECT_ID
+        env:
+          CLOUDSDK_AUTH_ACCESS_TOKEN: ${{ secrets.GCP_TOKEN }}
 
       # ---------------------------
       # Manage VM

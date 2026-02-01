@@ -12,6 +12,8 @@ set -euxo pipefail
 EMAIL="${EMAIL:?EMAIL env required}"
 STAGING_DOMAIN="${STAGING_DOMAIN:?STAGING_DOMAIN env required}"
 PROD_DOMAIN="${PROD_DOMAIN:?PROD_DOMAIN env required}"
+STAGING_SSH_PUB="${STAGING_SSH_PUB:?Missing STAGING_SSH_PUB}"
+PROD_SSH_PUB="${PROD_SSH_PUB:?Missing PROD_SSH_PUB}"
 ENV="${ENV:-staging}"
 EOF
 

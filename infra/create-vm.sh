@@ -18,8 +18,6 @@ EOF
 # Append the actual bootstrap script contents
 cat infra/vm-bootstrap.sh >> "$TMP_SCRIPT"
 
-gcloud config set project "$PROJECT_ID"
-
 # Enable required APIs (idempotent)
 gcloud services enable compute.googleapis.com
 

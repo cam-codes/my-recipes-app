@@ -86,6 +86,12 @@ for USER in staging prod; do
     sudo chown "$USER:$USER" "$AUTH_KEYS"
     sudo chmod 600 "$AUTH_KEYS"
   fi
+
+  # add password-less sudo for deploy users
+  sudo tee /etc/sudoers.d/$USER > /dev/null <<EOF
+  $USER ALL=(ALL) NOPASSWD:ALL
+  EOF
+  sudo chmod 440 /etc/sudoers.d/$USER
 done
 
 # ---------------------------

@@ -16,13 +16,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # ---------------------------
-      ##️Checkout code
+      #  Checkout code
       # ---------------------------
       - name: Checkout code
-        uses: actions/checkout@4
+        uses: actions/checkout@v4
 
       # ---------------------------
-      ##️Rollback
+      #  Rollback
       # ---------------------------
       - name: Rollback Docker containers
         uses: appleboy/ssh-action@v0.1.6

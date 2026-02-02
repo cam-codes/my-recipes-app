@@ -147,6 +147,7 @@ sudo chown caddy:caddy /var/log/caddy
 sudo tee /etc/caddy/Caddyfile > /dev/null <<EOF
 {
     email $EMAIL
+    auto_https disable_redirects # prevents HTTPS redirect loops behind Cloudflare
 }
 
 $STAGING_DOMAIN {
@@ -155,8 +156,12 @@ $STAGING_DOMAIN {
         reverse_proxy http://127.0.0.1:3001
     }
 
+    header {
+        X-Forwarded-Proto https   # tell backend the original scheme
+    }
+
     # Send everything else → frontend container
-    reverse_proxy 127.0.0.1:3001
+    reverse_proxy 127.0.0.1:5173
 
     encode gzip
 
@@ -171,7 +176,11 @@ $PROD_DOMAIN {
         reverse_proxy http://127.0.0.1:3000  # prod backend port
     }
 
-    reverse_proxy 127.0.0.1:3000
+      header {
+          X-Forwarded-Proto https   # tell backend the original scheme
+      }
+
+    reverse_proxy 127.0.0.1:5173
 
     encode gzip
 
@@ -190,7 +199,7 @@ sudo systemctl reload caddy
 echo "Bootstrap complete. Validating..."
 docker --version
 docker compose version
-caddy version
+systemctl status caddy
 sudo ufw status
 systemctl status fail2ban --no-pager
 id prod

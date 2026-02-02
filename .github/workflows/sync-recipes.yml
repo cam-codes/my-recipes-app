@@ -40,7 +40,7 @@ jobs:
           host: ${{ secrets.VM_HOST }}
           username: ${{ github.event.inputs.env == 'staging' && secrets.STAGING_USER || secrets.PROD_USER }}
           key: ${{ github.event.inputs.env == 'staging' && secrets.STAGING_SSH_KEY || secrets.PROD_SSH_KEY }}
-          source: recipes/
+          source: "recipes/*"
           target: /opt/my-recipes/${{ github.event.inputs.env }}/recipes-sync/
 
       - name: Activate recipes

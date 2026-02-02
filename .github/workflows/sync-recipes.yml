@@ -42,6 +42,7 @@ jobs:
           key: ${{ github.event.inputs.env == 'staging' && secrets.STAGING_SSH_KEY || secrets.PROD_SSH_KEY }}
           source: "recipes/*"
           target: /opt/my-recipes/${{ github.event.inputs.env }}/recipes-sync/
+          strip_components: 1
 
       - name: Activate recipes
         uses: appleboy/ssh-action@v0.1.6

@@ -150,8 +150,16 @@ sudo tee /etc/caddy/Caddyfile > /dev/null <<EOF
 }
 
 $STAGING_DOMAIN {
+    # Proxy API requests to backend (strips /api prefix)
+    handle_path /api/* {
+        reverse_proxy http://127.0.0.1:3001
+    }
+
+    # Send everything else → frontend container
     reverse_proxy 127.0.0.1:3001
+
     encode gzip
+
     log {
         output file /var/log/caddy/staging-access.log
         format json
@@ -159,8 +167,14 @@ $STAGING_DOMAIN {
 }
 
 $PROD_DOMAIN {
+    handle_path /api/* {
+        reverse_proxy http://127.0.0.1:3000  # prod backend port
+    }
+
     reverse_proxy 127.0.0.1:3000
+
     encode gzip
+
     log {
         output file /var/log/caddy/prod-access.log
         format json

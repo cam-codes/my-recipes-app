@@ -57,7 +57,7 @@ jobs:
             SRC_DIR="/opt/my-recipes/$ENV/recipes-sync"
             DEST_DIR="/data/recipes/$ENV"
 
-            rm -rf "$DEST_DIR"/*
-            mv "$SRC_DIR"/* "$DEST_DIR"
+            sudo rm -rf "$DEST_DIR"/*
+            sudo mv "$SRC_DIR"/* "$DEST_DIR"
 
             echo "Recipes synced for $ENV"

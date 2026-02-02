@@ -23,6 +23,13 @@ RUN --mount=type=cache,target=/root/.yarn \
 
 # Stage 2: Serve built frontend
 FROM nginx:alpine
+
+# Install curl (no cache to keep image small)
+RUN apk add --no-cache curl
+
+# Replace default nginx config
+COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
+
 # Remove default nginx html
 RUN rm -rf /usr/share/nginx/html/*
 

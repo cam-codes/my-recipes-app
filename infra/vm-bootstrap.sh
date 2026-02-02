@@ -59,6 +59,7 @@ sudo apt install -y \
 # Enable/start caddy/docker
 sudo systemctl enable caddy docker
 sudo systemctl start docker
+sudo systemctl start caddy
 
 # ---------------------------
 # Users
@@ -89,8 +90,9 @@ for USER in staging prod; do
 
   # add password-less sudo for deploy users
   sudo tee /etc/sudoers.d/$USER > /dev/null <<EOF
-  $USER ALL=(ALL) NOPASSWD:ALL
-  EOF
+$USER ALL=(ALL) NOPASSWD:ALL
+EOF
+
   sudo chmod 440 /etc/sudoers.d/$USER
 done
 

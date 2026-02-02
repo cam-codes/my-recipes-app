@@ -4,9 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       env:
-        description: 'Environment to rollback (staging|prod)'
+        description: 'Target environment (staging or prod)'
         required: true
         default: 'staging'
+        type: choice
+        options:
+          - staging
+          - prod
       release_tag:
         description: 'Release tag to rollback to'
         required: true
@@ -27,7 +31,7 @@ jobs:
       - name: Rollback Docker containers
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ github.event.inputs.env == 'staging' && secrets.STAGING_HOST || secrets.PROD_HOST }}
+          host: ${{ secrets.VM_HOST }}
           username: ${{ github.event.inputs.env == 'staging' && secrets.STAGING_USER || secrets.PROD_USER }}
           key: ${{ github.event.inputs.env == 'staging' && secrets.STAGING_SSH_KEY || secrets.PROD_SSH_KEY }}
           script: |
@@ -37,16 +41,25 @@ jobs:
             RELEASE_TAG=${{ github.event.inputs.release_tag }}
 
             VM_DIR=/opt/my-recipes/$ENV
-            DOCKER_COMPOSE_FILE=docker-compose.$ENV.yml
+            COMPOSE_FILE=docker-compose.$ENV.yml
 
             cd $VM_DIR
 
             echo "Rolling back $ENV to release $RELEASE_TAG"
 
-            docker compose -f $DOCKER_COMPOSE_FILE pull \
-              ghcr.io/${{ github.repository_owner }}/my-recipes-backend:$RELEASE_TAG \
-              ghcr.io/${{ github.repository_owner }}/my-recipes-frontend:$RELEASE_TAG
+            # Rewrite env file to point to target release
+            cat <<EOF > "$VM_DIR/.env"
+            RELEASE_TAG=$RELEASE_TAG
+            EOF
+            chmod 600 .env
 
-            docker compose -f $DOCKER_COMPOSE_FILE up -d --remove-orphans
+            # Pull backend + frontend images for this release
+            docker compose -f "$COMPOSE_FILE" pull
+
+            # Start containers
+            docker compose -f "$COMPOSE_FILE" up -d --remove-orphans
+
+            # Reload Caddy
+            sudo systemctl reload caddy
 
             echo "Rollback complete for $ENV"

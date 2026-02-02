@@ -1,19 +1,10 @@
 import { Application, Context, Router, RouterContext, send } from "oak";
-import { oakCors } from "oakCors";
 import { extractYaml } from "@std/front-matter";
 import { RecipeFrontMatter } from "./types.ts";
 import { normalizeRecipe } from "./utils/recipe.ts";
 
 export function createApp(recipesDir: URL): Application {
   const app = new Application();
-  app.use(
-    oakCors({
-      origin: "http://localhost:5173",
-      methods: ["GET", "POST", "OPTIONS"],
-      allowedHeaders: ["Content-Type"],
-    }),
-  );
-
   const router = new Router();
 
   // CORS and static images

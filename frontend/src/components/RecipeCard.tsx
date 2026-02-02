@@ -1,6 +1,5 @@
 import { A } from '@solidjs/router';
 import type { RecipeListItem } from '../lib/types';
-import { API_BASE } from '../lib/config.ts';
 
 interface Props {
   recipe: RecipeListItem;
@@ -15,9 +14,9 @@ export default function RecipeCard(props: Props) {
       {/* Recipe Image */}
       {props.recipe.image && (
         <img
-          src={`${API_BASE}${props.recipe.image}`}
+          src={`api${props.recipe.image}`}
           alt={props.recipe.title}
-          class="w-full aspect-[3/2] object-cover"
+          class="w-full aspect-3/2 object-cover"
         />
       )}
 

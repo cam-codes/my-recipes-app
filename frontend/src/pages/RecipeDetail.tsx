@@ -3,7 +3,6 @@ import { useParams, A } from '@solidjs/router';
 import { getRecipe } from '../lib/api';
 import { SolidMarkdown } from 'solid-markdown';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { API_BASE } from '../lib/config.ts';
 
 export default function RecipeDetail() {
   const params = useParams();
@@ -31,9 +30,9 @@ export default function RecipeDetail() {
             {/* Hero Image */}
             {recipe()!.image && (
               <img
-                src={`${API_BASE}${recipe()!.image}`}
+                src={`/api${recipe()!.image}`}
                 alt={recipe()!.title}
-                class="w-full aspect-[3/2] object-cover rounded-xl mb-6 shadow-md"
+                class="w-full aspect-3/2 object-cover rounded-xl mb-6 shadow-md"
               />
             )}
             <h1 class="text-4xl font-bold mb-4">{recipe()!.title}</h1>
@@ -77,6 +76,7 @@ export default function RecipeDetail() {
           </article>
         </Show>
       </Show>
+
       <A href="/" class="text-blue-600 hover:underline mb-6 inline-block">
         ← Back to recipes
       </A>

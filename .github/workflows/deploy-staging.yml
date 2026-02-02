@@ -1,11 +1,16 @@
 name: Deploy to Staging
 
 on:
-  push:
-    branches: [main]
+  workflow_run:
+    workflows: ["Build & Push Images"]
+    types:
+      - completed
 
 jobs:
   deploy-staging:
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main'
     runs-on: ubuntu-latest
     steps:
       # ---------------------------
@@ -20,7 +25,7 @@ jobs:
       - name: Copy docker-compose
         uses: appleboy/scp-action@v0.1.4
         with:
-          host: ${{ secrets.STAGING_HOST }}
+          host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.STAGING_USER }}
           key: ${{ secrets.STAGING_SSH_KEY }}
           source: docker-compose.staging.yml
@@ -32,7 +37,7 @@ jobs:
       - name: Deploy Docker containers
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.STAGING_HOST }}
+          host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.STAGING_USER }}
           key: ${{ secrets.STAGING_SSH_KEY }}
           script: |
@@ -43,7 +48,7 @@ jobs:
             # Write env vars to .env
             cat <<EOF > $VM_DIR/.env
             ${{ secrets.ENV_STAGING }}
-            RELEASE_TAG=${{ github.sha }}
+            RELEASE_TAG=${{ github.event.workflow_run.head_sha }}
             EOF
             chmod 600 .env
 
@@ -55,3 +60,5 @@ jobs:
 
             # Reload Caddy
             sudo systemctl reload caddy
+
+            echo "Staging deploy complete"

@@ -1,4 +1,4 @@
-name: CRUD VM
+name: Manage VM
 
 permissions:
   id-token: write
@@ -11,6 +11,11 @@ on:
         description: 'create / delete / recreate'
         required: true
         default: 'create'
+        type: choice
+        options:
+          - create
+          - recreate
+          - delete
 
 jobs:
   manage-vm:

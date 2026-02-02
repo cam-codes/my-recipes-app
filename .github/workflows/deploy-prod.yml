@@ -16,39 +16,16 @@ jobs:
         uses: actions/checkout@v4
 
       # ---------------------------
-      #  Sync files and env
+      #  Copy docker-compose
       # ---------------------------
-      - name: Sync Files and Env
-        uses: appleboy/ssh-action@v0.1.6
+      - name: Copy docker-compose
+        uses: appleboy/scp-action@v0.1.4
         with:
-          host: ${{ secrets.PROD_HOST }}
+          host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.PROD_USER }}
           key: ${{ secrets.PROD_SSH_KEY }}
-          script: |
-            set -euxo pipefail
-
-            VM_DIR=/opt/my-recipes/prod
-            mkdir -p $VM_DIR
-
-            # Copy env vars
-            echo "${{ secrets.ENV_PROD }}" > $VM_DIR/env.prod
-
-            # Copy docker-compose
-            scp ./docker-compose.prod.yml ${{ secrets.PROD_USER }}@${{ secrets.PROD_HOST }}:$VM_DIR/
-
-      # ---------------------------
-      #  Reload Caddy
-      # ---------------------------
-      - name: Reload Caddy
-        uses: appleboy/ssh-action@v0.1.6
-        with:
-          host: ${{ secrets.PROD_HOST }}
-          username: ${{ secrets.PROD_USER }}
-          key: ${{ secrets.PROD_SSH_KEY }}
-          script: |
-            set -euxo pipefail
-            VM_DIR=/opt/my-recipes/prod
-            sudo systemctl reload caddy
+          source: docker-compose.prod.yml
+          target: /opt/my-recipes/prod/
 
       # ---------------------------
       #  Deploy Docker containers
@@ -56,18 +33,28 @@ jobs:
       - name: Deploy Docker containers
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.PROD_HOST }}
+          host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.PROD_USER }}
           key: ${{ secrets.PROD_SSH_KEY }}
           script: |
             set -euxo pipefail
             VM_DIR=/opt/my-recipes/prod
-            RELEASE_TAG=${{ github.sha }}
-
             cd $VM_DIR
+
+            # Write env vars to .env
+            cat <<EOF > $VM_DIR/.env
+            ${{ secrets.ENV_PROD }}
+            RELEASE_TAG=${{ github.sha }}
+            EOF
+            chmod 600 .env
 
             # Pull backend + frontend images for this release
             docker compose -f docker-compose.prod.yml pull
 
             # Start containers
             docker compose -f docker-compose.prod.yml up -d --remove-orphans
+
+            # Reload Caddy
+            sudo systemctl reload caddy
+
+            echo "Prod deploy complete"

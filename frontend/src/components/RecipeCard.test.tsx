@@ -19,9 +19,6 @@ it('renders recipe card data', () => {
   render(() => <RecipeCard recipe={recipe} />);
 
   expect(screen.getByText('Miso Salmon')).toBeInTheDocument();
-  expect(screen.getByRole('img')).toHaveAttribute(
-    'src',
-    'api/recipes/miso-salmon/image.jpg',
-  );
+  expect(screen.getByRole('img')).toHaveAttribute('src', 'api/recipes/miso-salmon/image.jpg');
   expect(screen.getByText('Great Recipe')).toBeInTheDocument();
 });

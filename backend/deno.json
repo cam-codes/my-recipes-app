@@ -1,5 +1,6 @@
 {
   "imports": {
+    "@std/assert": "jsr:@std/assert",
     "@std/front-matter": "jsr:@std/front-matter@^1.0.9",
     "oak": "https://deno.land/x/oak@v12.6.1/mod.ts",
     "std/": "https://deno.land/std@0.203.0/"

@@ -156,10 +156,6 @@ $STAGING_DOMAIN {
         reverse_proxy http://127.0.0.1:3001
     }
 
-    header {
-        X-Forwarded-Proto https   # tell backend the original scheme
-    }
-
     # Send everything else → frontend container
     reverse_proxy 127.0.0.1:5173
 
@@ -172,15 +168,13 @@ $STAGING_DOMAIN {
 }
 
 $PROD_DOMAIN {
+    # Proxy API requests to backend (strips /api prefix)
     handle_path /api/* {
         reverse_proxy http://127.0.0.1:3000  # prod backend port
     }
 
-      header {
-          X-Forwarded-Proto https   # tell backend the original scheme
-      }
-
-    reverse_proxy 127.0.0.1:5173
+    # Send everything else → frontend container
+    reverse_proxy 127.0.0.1:80 # prod frontend port
 
     encode gzip
 

@@ -10,6 +10,15 @@ COPY backend/utils ./utils
 # Cache deps -- Cant cache mount here because we want to write the cache into the image
 RUN deno cache server.ts
 
+# Inject build info into the site
+ARG GIT_COMMIT=unknown
+ARG APP_VERSION=dev
+ARG BUILD_DATE=unknown
+
+ENV GIT_COMMIT=$GIT_COMMIT
+ENV APP_VERSION=$APP_VERSION
+ENV BUILD_DATE=$BUILD_DATE
+
 EXPOSE 3000
 
 CMD ["deno", "task", "start"]

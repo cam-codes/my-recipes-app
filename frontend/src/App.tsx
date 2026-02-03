@@ -2,6 +2,7 @@ import { Router, Route } from '@solidjs/router';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import RecipeDetail from './pages/RecipeDetail';
+import ResumePage from "./pages/ResumePage.tsx";
 
 export default function App() {
   return (
@@ -9,6 +10,7 @@ export default function App() {
       <Router>
         <Route path="/" component={Home} />
         <Route path="/recipe/:slug" component={RecipeDetail} />
+        <Route path="/resume" component={ResumePage} />
       </Router>
     </Layout>
   );

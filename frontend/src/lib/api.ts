@@ -14,3 +14,19 @@ export async function getRecipe(slug: string): Promise<Recipe> {
   }
   return res.json();
 }
+
+export async function getResume(): Promise<ResumeData> {
+  const res = await fetch('/api/resume');
+  if (!res.ok) throw new Error('Failed to fetch resume');
+  return res.json();
+}
+
+export async function getBuildInfo(): Promise<{
+  commit: string;
+  version: string;
+  buildDate: string;
+}> {
+  const res = await fetch("/api/build-info");
+  if (!res.ok) throw new Error("Failed to load build info");
+  return res.json();
+}

@@ -1,4 +1,4 @@
-import type { Recipe, RecipeListItem } from './types';
+import type { Recipe, RecipeListItem, ResumeData } from './types';
 
 export async function getRecipes(): Promise<RecipeListItem[]> {
   const res = await fetch('/api/recipes');

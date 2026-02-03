@@ -8,7 +8,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     deps: {
-      inline: ['solid-js', '@solidjs/testing-library'],
+      inline: ['solid-js', '@solidjs/router', '@solidjs/testing-library'],
     },
     // css: true,                // for future testing styled components / tailwind etc.
   },

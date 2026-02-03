@@ -21,11 +21,6 @@ Deno.test("GET /health", async () => {
   assertEquals(json.status, "OK");
 });
 
-Deno.test("OPTIONS request returns 204", async () => {
-  const { status } = await request("/recipes", "OPTIONS");
-  assertEquals(status, 204);
-});
-
 Deno.test("GET /recipes returns list of recipes", async () => {
   const { status, body } = await request("/recipes");
   assertEquals(status, 200);

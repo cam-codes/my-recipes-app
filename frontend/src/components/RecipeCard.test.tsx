@@ -1,6 +1,5 @@
 import { render, screen } from '@solidjs/testing-library';
 import RecipeCard from './RecipeCard';
-import { API_BASE } from '../lib/config.ts';
 import makeRecipe from '../test/setup.ts';
 
 // mock the router before importing the component
@@ -20,9 +19,6 @@ it('renders recipe card data', () => {
   render(() => <RecipeCard recipe={recipe} />);
 
   expect(screen.getByText('Miso Salmon')).toBeInTheDocument();
-  expect(screen.getByRole('img')).toHaveAttribute(
-    'src',
-    `${API_BASE}/recipes/miso-salmon/image.jpg`,
-  );
+  expect(screen.getByRole('img')).toHaveAttribute('src', 'api/recipes/miso-salmon/image.jpg');
   expect(screen.getByText('Great Recipe')).toBeInTheDocument();
 });

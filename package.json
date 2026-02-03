@@ -6,6 +6,9 @@
     "frontend"
   ],
   "scripts": {
+    "build": "docker compose -f docker-compose.local.yml build --no-cache && docker compose -f docker-compose.local.yml up",
+    "clean": "docker compose -f docker-compose.local.yml down && rm -rf node_modules yarn.lock frontend/node_modules frontend/dist .yarn/install-state.gz && yarn install && cd frontend && yarn build && cd ..",
+    "clean:build": "yarn clean && yarn build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier . --write",

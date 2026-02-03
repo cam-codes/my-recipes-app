@@ -1,38 +1,65 @@
-name: Rollback
+name: Rollback Deployment
 
 on:
   workflow_dispatch:
     inputs:
-      environment:
+      env:
         description: 'Target environment (staging or prod)'
         required: true
         default: 'staging'
-        type: string
+        type: choice
+        options:
+          - staging
+          - prod
       release_tag:
-        description: 'GitHub release tag to rollback to'
+        description: 'Release tag to rollback to'
         required: true
-        default: v1.0.0
-        type: string
 
 jobs:
   rollback:
     runs-on: ubuntu-latest
     steps:
-      - name: SSH Rollback
+      # ---------------------------
+      #  Checkout code
+      # ---------------------------
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ---------------------------
+      #  Rollback
+      # ---------------------------
+      - name: Rollback Docker containers
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ github.event.inputs.environment == 'prod' && secrets.PROD_HOST || secrets.STAGING_HOST }}
-          username: ${{ github.event.inputs.environment == 'prod' && secrets.PROD_USER || secrets.STAGING_USER }}
-          key: ${{ github.event.inputs.environment == 'prod' && secrets.PROD_SSH_KEY || secrets.STAGING_SSH_KEY }}
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ github.event.inputs.env == 'staging' && secrets.STAGING_USER || secrets.PROD_USER }}
+          key: ${{ github.event.inputs.env == 'staging' && secrets.STAGING_SSH_KEY || secrets.PROD_SSH_KEY }}
           script: |
-            set -e
+            set -euxo pipefail
+
+            ENV=${{ github.event.inputs.env }}
             RELEASE_TAG=${{ github.event.inputs.release_tag }}
-            ENVIRONMENT=${{ github.event.inputs.environment }}
 
-            echo "Rolling back $ENVIRONMENT to release $RELEASE_TAG"
+            VM_DIR=/opt/my-recipes/$ENV
+            COMPOSE_FILE=docker-compose.$ENV.yml
 
-            cd /opt/my-recipes/$ENVIRONMENT
-            docker-compose -f docker-compose.$ENVIRONMENT.yml pull \
-              ghcr.io/${{ github.repository_owner }}/my-recipes-backend:$RELEASE_TAG \
-              ghcr.io/${{ github.repository_owner }}/my-recipes-frontend:$RELEASE_TAG
-            docker-compose -f docker-compose.$ENVIRONMENT.yml up -d
+            cd $VM_DIR
+
+            echo "Rolling back $ENV to release $RELEASE_TAG"
+
+            # Rewrite env file to point to target release
+            cat <<EOF > "$VM_DIR/.env"
+            RELEASE_TAG=$RELEASE_TAG
+            EOF
+            chmod 600 .env
+
+            # Pull backend + frontend images for this release
+            docker compose -f "$COMPOSE_FILE" pull
+
+            # Start containers
+            docker compose -f "$COMPOSE_FILE" up -d --remove-orphans
+
+            # Reload Caddy
+            sudo systemctl reload caddy
+
+            echo "Rollback complete for $ENV"

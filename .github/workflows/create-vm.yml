@@ -1,0 +1,73 @@
+name: Manage VM
+
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'create / delete / recreate'
+        required: true
+        default: 'create'
+        type: choice
+        options:
+          - create
+          - recreate
+          - delete
+
+jobs:
+  manage-vm:
+    runs-on: ubuntu-latest
+    steps:
+      # ---------------------------
+      # Checkout repo
+      # ---------------------------
+      - name: Checkout infra
+        uses: actions/checkout@v4
+
+      # ---------------------------
+      # Auth to GCP
+      # ---------------------------
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/${{ secrets.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+          service_account: ${{ secrets.GCP_SRV }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      # ---------------------------
+      # Manage VM
+      # ---------------------------
+      - name: Manage VM
+        env:
+          EMAIL: ${{ secrets.EMAIL }}
+          STAGING_DOMAIN: ${{ secrets.STAGING_DOMAIN }}
+          STAGING_SSH_PUB: ${{ secrets.STAGING_SSH_PUB }}
+          PROD_DOMAIN: ${{ secrets.PROD_DOMAIN }}
+          PROD_SSH_PUB: ${{ secrets.PROD_SSH_PUB }}
+        run: |
+          set -euxo pipefail
+          ACTION=${{ github.event.inputs.action }}
+
+          if [ "$ACTION" = "delete" ]; then
+            gcloud compute instances delete cam-cooks-vm \
+              --zone us-central1-a \
+              --quiet
+
+          elif [ "$ACTION" = "create" ]; then
+            ./infra/create-vm.sh ./infra/vm.env
+
+          elif [ "$ACTION" = "recreate" ]; then
+            gcloud compute instances delete cam-cooks-vm \
+              --zone us-central1-a \
+              --quiet
+            ./infra/create-vm.sh ./infra/vm.env
+
+          else
+            echo "Unknown action: $ACTION"
+            exit 1
+          fi

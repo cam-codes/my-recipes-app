@@ -1,6 +1,6 @@
 import { render, screen } from '@solidjs/testing-library';
-import RecipeCard from './RecipeCard';
-import makeRecipe from '../test/setup.ts';
+import RecipeCard from '../RecipeCard.tsx';
+import makeRecipe from '../../test/setup.ts';
 
 // mock the router before importing the component
 vi.mock('@solidjs/router', () => ({

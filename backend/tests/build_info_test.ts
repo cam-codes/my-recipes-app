@@ -1,6 +1,5 @@
 import { assertEquals } from "@std/assert";
 import { createApp } from "../main.ts";
-import { superoak } from "superoak";
 import { request } from "./fixtures/utils/utils.ts";
 
 const fixturesDir = new URL("./fixtures/recipes/", import.meta.url);

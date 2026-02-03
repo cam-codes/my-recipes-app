@@ -9,10 +9,12 @@ export default function Home() {
   return (
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Page Heading */}
-      <h1 class="text-4xl font-extrabold text-center mb-8 text-gray-900">Delicious Recipes</h1>
-      <p class="text-center text-gray-500 mb-12">
-        Browse our collection of tasty recipes and find your next favorite meal!
-      </p>
+      <div class="text-center mb-12">
+        <h1 class="text-4xl font-extrabold text-center mb-8 text-gray-900">Delicious Recipes</h1>
+        <p class="text-center text-gray-500 mb-12">
+          Browse our collection of tasty recipes and find your next favorite meal!
+        </p>
+      </div>
 
       {/* Recipes Grid */}
       <Show

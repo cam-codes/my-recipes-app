@@ -6,9 +6,11 @@ services:
       - "127.0.0.1:3001:3000"
     environment:
       RECIPES_DIRECTORY: /recipes
+      RESUME_FILE: /resume/resume.md
       BACKEND_PORT: 3000
     volumes:
       - /data/recipes/staging:/recipes:rw
+      - ./resume:/resume      # mount resume as a volume
     healthcheck:
       test: [
         "CMD",

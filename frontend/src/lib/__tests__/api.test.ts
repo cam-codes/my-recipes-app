@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { getRecipes, getRecipe } from './api';
-import { mockRecipes, mockRecipe } from '../test/mocks/api';
+import { getRecipes, getRecipe } from '../api.ts';
+import { mockRecipes, mockRecipe } from '../../test/mocks/api.ts';
 
 globalThis.fetch = vi.fn(async (input: RequestInfo) => {
   const url = input.toString();

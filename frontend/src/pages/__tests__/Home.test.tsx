@@ -1,11 +1,11 @@
 import { render, screen, waitFor } from '@solidjs/testing-library';
-import Home from './Home';
+import Home from '../Home.tsx';
 import { expect, vi } from 'vitest';
-import type { Recipe } from '../lib/types.ts';
-import makeRecipe from '../test/setup.ts';
+import type { Recipe } from '../../lib/types.ts';
+import makeRecipe from '../../test/setup.ts';
 
 // mock the api module
-import * as api from '../lib/api';
+import * as api from '../../lib/api.ts';
 
 vi.mock('../lib/api', () => ({
   getRecipes: vi.fn(),

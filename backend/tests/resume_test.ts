@@ -1,7 +1,8 @@
-import { assert,
+import {
+  assert,
+  assertArrayIncludes,
   assertEquals,
   assertExists,
-  assertArrayIncludes,
 } from "@std/assert";
 import { createApp } from "../main.ts";
 import { request } from "./fixtures/utils/utils.ts";
@@ -11,10 +12,10 @@ const fixturesDir = new URL("./fixtures/recipes/", import.meta.url);
 const resumeFile = new URL("./fixtures/resume/resume.md", import.meta.url);
 const app = createApp({
   recipesDir: fixturesDir,
-  resumeFile: resumeFile
+  resumeFile: resumeFile,
 });
 
-Deno.test('GET /resume returns resume data', async () => {
+Deno.test("GET /resume returns resume data", async () => {
   const { status, body } = await request(app, "/resume");
 
   assertEquals(status, 200);

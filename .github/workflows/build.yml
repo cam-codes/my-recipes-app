@@ -37,12 +37,20 @@ jobs:
         run: |
           cd ..
           docker build -f backend/Dockerfile \
-            --build-arg GIT_COMMIT=$(git rev-parse HEAD) \
-            --build-arg APP_VERSION=$(git describe --tags --always) \
-            --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
+            --build-arg GIT_COMMIT=${{ github.sha }} \
+            --build-arg GIT_TAG=$(git describe --tags --exact-match) \
             -t ghcr.io/${{ github.repository_owner }}/my-recipes-backend:${{ github.sha }} \
             .
           docker push ghcr.io/${{ github.repository_owner }}/my-recipes-backend:${{ github.sha }}
+
+          # If this is a tagged release, also push the tag (for prod)
+          if git describe --tags --exact-match >/dev/null 2>&1; then
+            TAG=$(git describe --tags --exact-match)
+            docker tag $IMAGE:${{ github.sha }} $IMAGE:$TAG
+            docker push $IMAGE:$TAG
+            docker tag $IMAGE:${{ github.sha }} $IMAGE:latest
+            docker push $IMAGE:latest
+          fi
 
   build-frontend:
     runs-on: ubuntu-latest

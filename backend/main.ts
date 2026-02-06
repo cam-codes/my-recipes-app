@@ -111,11 +111,11 @@ export function createApp(options: CreateAppOptions): Application {
     }
   });
 
-  router.get("/api/build-info", (ctx) => {
+  router.get("/build-info", (ctx) => {
+
     ctx.response.body = {
       commit: Deno.env.get("GIT_COMMIT") || "unknown",
-      version: Deno.env.get("APP_VERSION") || "dev",
-      buildDate: Deno.env.get("BUILD_DATE") || new Date().toISOString(),
+      tag: Deno.env.get("GIT_TAG") || ""
     };
   });
 

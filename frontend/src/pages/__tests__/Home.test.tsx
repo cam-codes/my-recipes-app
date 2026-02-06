@@ -1,14 +1,19 @@
 import { render, screen, waitFor } from '@solidjs/testing-library';
 import Home from '../Home.tsx';
-import { expect, vi } from 'vitest';
 import type { Recipe } from '../../lib/types.ts';
-import makeRecipe from '../../test/setup.ts';
 
 // mock the api module
 import * as api from '../../lib/api.ts';
 
-vi.mock('../lib/api', () => ({
+vi.mock('../../lib/api', () => ({
   getRecipes: vi.fn(),
+}));
+
+import makeRecipe from '../../test/setup.ts';
+
+// mock the router before importing the component
+vi.mock('@solidjs/router', () => ({
+  A: (props: any) => <a {...props} />,
 }));
 
 // mock RecipeCard to only focus on Home's rendering (not links)
@@ -41,6 +46,6 @@ it('renders recipe list', async () => {
 
     const images = screen.getAllByRole('img');
     expect(images).toHaveLength(2);
-    expect(images[0]).toHaveAttribute('src', '/recipes/miso-salmon/salmon.jpg');
+    expect(images[0]).toHaveAttribute('src', 'api/recipes/miso-salmon/salmon.jpg');
   });
 });

@@ -43,6 +43,50 @@ describe("Layout build info", () => {
     expect(screen.getByText("abc1234")).toBeInTheDocument();
   });
 
+  it("shows release tag when build is a release", async () => {
+    (getBuildInfo as vi.Mock).mockResolvedValue({
+      commit: "abc1234567890",
+      tag: "v1.2.3",
+    });
+
+    render(() => <Layout><div>Content</div></Layout>);
+
+    const button = await screen.findByRole("button", { name: /Build Info/i });
+    button.click();
+
+    expect(screen.getByText("Release:")).toBeInTheDocument();
+    expect(screen.getByText("v1.2.3")).toBeInTheDocument();
+  });
+
+  it("closes build info dropdown on outside click", async () => {
+    (getBuildInfo as vi.Mock).mockResolvedValue({
+      commit: "abc1234567890",
+      tag: "",
+    });
+
+    const { container } = render(() => (
+      <Layout>
+        <div data-testid="outside">Outside</div>
+      </Layout>
+    ));
+
+    const button = await screen.findByRole("button", { name: /Build Info/i });
+
+    // Open dropdown
+    button.click();
+
+    const dropdown = container.querySelector(".ring-1")!;
+    expect(dropdown.classList.contains("hidden")).toBe(false);
+
+    // Wait for the document click handler to be registered
+    await new Promise((r) => setTimeout(r, 0));
+
+    // Dispatch a real document click
+    document.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+
+    expect(dropdown.classList.contains("hidden")).toBe(true);
+  });
+
   it("shows loading state initially", async () => {
     (getBuildInfo as vi.Mock).mockImplementationOnce(() => new Promise(() => {})); // never resolves
     render(() => <Layout><div>Content</div></Layout>);

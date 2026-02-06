@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
-import { getRecipes, getRecipe } from '../api.ts';
+import { getRecipes, getRecipe, getResume, getBuildInfo } from '../api.ts';
 import { mockRecipes, mockRecipe } from '../../test/mocks/api.ts';
 
-globalThis.fetch = vi.fn(async (input: RequestInfo) => {
+const mockFetch = vi.fn(async (input: RequestInfo) => {
   const url = input.toString();
 
   if (url.endsWith('/recipes')) {
@@ -13,8 +13,33 @@ globalThis.fetch = vi.fn(async (input: RequestInfo) => {
     return new Response(JSON.stringify(mockRecipe), { status: 200 });
   }
 
+  if (url.endsWith('/resume')) {
+    return new Response(JSON.stringify({
+      name: 'Cam',
+      email: 'cam@example.com',
+      phone: '555-5555',
+      linkedin: 'linkedin.com/in/cam',
+      summary: 'Summary',
+      skills: {},
+      experience: [],
+      education: [],
+      volunteering: [],
+    }), { status: 200 });
+  }
+
+  if (url.endsWith('/build-info')) {
+    return new Response(JSON.stringify({
+      commit: 'abc123',
+      tag: 'v1.0.0',
+    }), { status: 200 });
+  }
+
   return new Response(null, { status: 404 });
 }) as unknown as typeof fetch;
+
+beforeEach(() => {
+  globalThis.fetch = mockFetch;
+});
 
 describe('api', () => {
   it('fetches recipe list', async () => {
@@ -43,5 +68,33 @@ describe('api', () => {
     globalThis.fetch = vi.fn().mockResolvedValue(new Response(null, { status: 500 })) as any;
 
     await expect(getRecipe('miso-salmon')).rejects.toThrow('Failed to fetch recipe');
+  });
+
+  it('fetches resume data', async () => {
+    const resume = await getResume();
+    expect(resume.name).toBe('Cam');
+    expect(resume.email).toBe('cam@example.com');
+  });
+
+  it("throws 'Failed to fetch resume' on error", async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue(
+      new Response(null, { status: 500 })
+    ) as any;
+
+    await expect(getResume()).rejects.toThrow('Failed to fetch resume');
+  });
+
+  it('fetches build info', async () => {
+    const info = await getBuildInfo();
+    expect(info.commit).toBe('abc123');
+    expect(info.tag).toBe('v1.0.0');
+  });
+
+  it("throws 'Failed to load build info' on error", async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue(
+      new Response(null, { status: 500 })
+    ) as any;
+
+    await expect(getBuildInfo()).rejects.toThrow('Failed to load build info');
   });
 });

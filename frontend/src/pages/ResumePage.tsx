@@ -1,16 +1,16 @@
-import { Show } from "solid-js";
-import { createResource } from "solid-js";
-import ResumeDisplay from "../components/ResumeDisplay.tsx";
-import { getResume } from "../lib/api.ts";
-import LoadingSpinner from "../components/LoadingSpinner.tsx";
-import { A } from "@solidjs/router";
-import type { ResumeData } from "../lib/types.ts";
-import { onMount } from "solid-js";
+import { Show } from 'solid-js';
+import { createResource } from 'solid-js';
+import ResumeDisplay from '../components/ResumeDisplay.tsx';
+import { getResume } from '../lib/api.ts';
+import LoadingSpinner from '../components/LoadingSpinner.tsx';
+import { A } from '@solidjs/router';
+import type { ResumeData } from '../lib/types.ts';
+import { onMount } from 'solid-js';
 
 export default function ResumePage() {
   const [resume] = createResource<ResumeData>(getResume);
   onMount(() => {
-    document.title = "Cameron Fournier - Hire Me!";
+    document.title = 'Cameron Fournier - Hire Me!';
   });
 
   return (
@@ -30,4 +30,4 @@ export default function ResumePage() {
       </Show>
     </div>
   );
-};
+}

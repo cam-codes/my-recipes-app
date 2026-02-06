@@ -39,7 +39,7 @@ export interface ResumeData {
     school: string;
     location: string;
     dates: string;
-    details: Array<String | Record<string, string>>;
+    details: Array<string | Record<string, string>>;
   }>;
   volunteering: string[];
 }

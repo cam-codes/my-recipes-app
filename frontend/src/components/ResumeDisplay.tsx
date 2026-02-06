@@ -1,22 +1,21 @@
-import { For } from "solid-js";
-import type { ResumeData } from "../lib/types.ts";
+import { For } from 'solid-js';
+import type { ResumeData } from '../lib/types.ts';
 
-export default function ResumeDisplay (props: ResumeData)  {
-  const { name, email, phone, linkedin, summary, skills, experience, education, volunteering } = props;
+export default function ResumeDisplay(props: ResumeData) {
+  const { name, email, phone, linkedin, summary, skills, experience, education, volunteering } =
+    props;
 
   return (
     <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-8 print:shadow-none print:p-0">
       {/* Hidden page disclaimer */}
       <div class="mb-10 p-6 bg-amber-50 border border-amber-200 rounded-lg text-center print:hidden">
-        <p class="text-lg font-medium text-amber-900">
-          You've reached a hidden page! 🔍
-        </p>
+        <p class="text-lg font-medium text-amber-900">You've reached a hidden page! 🔍</p>
 
         <p class="mt-2 text-gray-700">
-          There are no links to this resume from the main recipe site (it's mostly for family).
-          If you're here, you are probably doing some detective work for an interview — nice!
+          There are no links to this resume from the main recipe site (it's mostly for family). If
+          you're here, you are probably doing some detective work for an interview — nice!
         </p>
-        </div>
+      </div>
 
       {/* PDF Download Button (hidden on print) */}
       <div class="mb-8 text-center print:hidden">
@@ -25,7 +24,12 @@ export default function ResumeDisplay (props: ResumeData)  {
           class="inline-flex items-center px-6 py-3 bg-blue-700 text-white font-medium rounded-lg hover:bg-blue-800 transition shadow-md"
         >
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
           </svg>
           Download resume as PDF
         </button>
@@ -35,7 +39,9 @@ export default function ResumeDisplay (props: ResumeData)  {
       <header class="text-center">
         <h1 class="text-5xl font-bold text-gray-900">{name}</h1>
         <div class="mt-3 text-lg">
-          <a href={`mailto:${email}`} class="text-blue-600 hover:underline">{email}</a>
+          <a href={`mailto:${email}`} class="text-blue-600 hover:underline">
+            {email}
+          </a>
           <span class="mx-4 text-gray-600">|</span>
           <span class="text-gray-800">{phone}</span>
           <span class="mx-4 text-gray-600">|</span>
@@ -47,18 +53,22 @@ export default function ResumeDisplay (props: ResumeData)  {
 
       {/* Summary */}
       <section class="mb-12">
-        <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-gray-300 pb-2">Summary</h2>
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-gray-300 pb-2">
+          Summary
+        </h2>
         <p class="text-gray-700 leading-relaxed">{summary}</p>
       </section>
 
       {/* Skills */}
       <section class="mb-12">
-        <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-gray-300 pb-2">Technical Skills</h2>
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-gray-300 pb-2">
+          Technical Skills
+        </h2>
         <ul class="list-disc list-inside text-gray-700 space-y-3 columns-1 md:columns-2 lg:columns-3 gap-8">
           <For each={Object.entries(skills)}>
             {([category, items]) => (
               <li class="break-inside-avoid">
-                <strong>{category}:</strong> {items.join(", ")}
+                <strong>{category}:</strong> {items.join(', ')}
               </li>
             )}
           </For>
@@ -67,7 +77,9 @@ export default function ResumeDisplay (props: ResumeData)  {
 
       {/* Experience */}
       <section class="mb-12">
-        <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-gray-300 pb-2">Experience</h2>
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-gray-300 pb-2">
+          Experience
+        </h2>
         <For each={experience}>
           {(job) => (
             <div class="mb-10 last:mb-0">
@@ -91,7 +103,9 @@ export default function ResumeDisplay (props: ResumeData)  {
 
       {/* Education */}
       <section class="mb-12">
-        <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-gray-300 pb-2">Education</h2>
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-gray-300 pb-2">
+          Education
+        </h2>
         <For each={education}>
           {(edu) => (
             <div class="mb-8 last:mb-0">
@@ -109,7 +123,7 @@ export default function ResumeDisplay (props: ResumeData)  {
                 <For each={edu.details}>
                   {(detail) => {
                     // case 1: plain string
-                    if (typeof detail === "string") {
+                    if (typeof detail === 'string') {
                       return <li>{detail}</li>;
                     }
 
@@ -123,7 +137,6 @@ export default function ResumeDisplay (props: ResumeData)  {
                   }}
                 </For>
               </ul>
-
             </div>
           )}
         </For>
@@ -131,11 +144,13 @@ export default function ResumeDisplay (props: ResumeData)  {
 
       {/* Volunteering */}
       <section>
-        <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-gray-300 pb-2">Volunteering</h2>
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-gray-300 pb-2">
+          Volunteering
+        </h2>
         <ul class="list-disc list-inside text-gray-700 space-y-2 ml-5">
           <For each={volunteering}>{(item) => <li>{item}</li>}</For>
         </ul>
       </section>
     </div>
   );
-};
+}

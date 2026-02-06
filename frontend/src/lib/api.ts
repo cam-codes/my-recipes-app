@@ -25,7 +25,7 @@ export async function getBuildInfo(): Promise<{
   commit: string;
   tag: string;
 }> {
-  const res = await fetch("/api/build-info");
-  if (!res.ok) throw new Error("Failed to load build info");
+  const res = await fetch('/api/build-info');
+  if (!res.ok) throw new Error('Failed to load build info');
   return res.json();
 }

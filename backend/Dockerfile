@@ -12,13 +12,12 @@ RUN deno cache server.ts
 
 # Inject build info into the site
 ARG GIT_COMMIT=unknown
-ARG APP_VERSION=dev
-ARG BUILD_DATE=unknown
+
+# empty git tag by default, only set on tagged releases
+ARG GIT_TAG=""
 
 ENV GIT_COMMIT=$GIT_COMMIT
-ENV APP_VERSION=$APP_VERSION
-ENV BUILD_DATE=$BUILD_DATE
-
+ENV GIT_TAG=$GIT_TAG
 EXPOSE 3000
 
 CMD ["deno", "task", "start"]

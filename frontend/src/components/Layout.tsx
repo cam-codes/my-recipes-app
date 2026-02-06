@@ -21,8 +21,7 @@ export default function Layout(props: LayoutProps) {
               </a>
             </h1>
 
-
-            {/* Right: GitHub + Build Info */}
+            {/* Right Side Header: GitHub */}
             <div class="flex items-center space-x-8">
               <a
                 href="https://github.com/cam-codes/my-recipes-app"
@@ -37,17 +36,67 @@ export default function Layout(props: LayoutProps) {
                 Source on GitHub
               </a>
 
-              <Show when={buildInfo()}>
-                {(info) => (
-                  <p class="text-sm text-gray-500 font-mono hidden sm:block">
-                    v{info().version} ({info().commit.slice(0, 7)}) •{" "}
-                    {new Date(info().buildDate).toLocaleDateString()}
-                  </p>
-                )}
-              </Show>
-              <Show when={buildInfo.loading}>
-                <p class="text-sm text-gray-400 font-mono">loading...</p>
-              </Show>
+              {/* Right Side Header: Build Info */}
+              <div class="relative inline-block text-left">
+                <button
+                  type="button"
+                  class="hidden sm:block text-xs text-gray-500 hover:text-gray-700 font-mono transition"
+                  onClick={(e) => {
+                    const btn = e.currentTarget;
+                    const dropdown = btn.nextElementSibling as HTMLButtonElement;
+                    dropdown.classList.toggle("hidden");
+
+                    // close on outside click
+                    const close = (ev: MouseEvent) => {
+                      if (!btn.contains(ev.target as Node) && !dropdown.contains(ev.target as Node)) {
+                        dropdown.classList.toggle("hidden");
+                        document.removeEventListener("click", close);
+                      }
+                    };
+                    if (!dropdown.classList.contains("hidden")) {
+                      setTimeout(() => document.addEventListener("click", close), 0);
+                    }
+                  }}
+                >
+                  Build Info ▼
+                </button>
+                <Show when={buildInfo()}>
+                  {(info) => {
+                    const commit = info().commit;
+                    const tag = info().tag;
+                    const shortCommit = commit.slice(0, 7);
+                    const isRelease = tag !== "";
+
+                    const githubUrl = isRelease
+                      ? `https://github.com/cam-codes/my-recipes-app/releases/tag/${tag}`
+                      : commit !== "unknown"
+                        ? `https://github.com/cam-codes/my-recipes-app/commit/${commit}`
+                        : "https://github.com/cam-codes/my-recipes-app";
+
+                    return (
+                      <div
+                        class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-50 hidden ring-1 ring-black ring-opacity-5">
+                        <a
+                          href={githubUrl}
+                          target="_blank"
+                          rel="noopener"
+                          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          onClick={(e) => e.stopPropagation()} // prevent closing on click
+                        >
+                          {isRelease ? (
+                            <>Release: <span class="font-mono">{tag}</span></>
+                          ) : (
+                            <>Commit: <span class="font-mono">{shortCommit}</span></>
+                          )}
+                        </a>
+                      </div>
+                    );
+                  }}
+                </Show>
+                <Show when={buildInfo.loading}>
+                  <p class="text-sm text-gray-400 font-mono">loading...</p>
+                </Show>
+              </div>
             </div>
           </div>
         </div>

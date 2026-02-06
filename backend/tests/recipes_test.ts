@@ -1,6 +1,4 @@
-import { assert,
-  assertEquals
-} from "@std/assert";
+import { assert, assertEquals } from "@std/assert";
 import { createApp } from "../main.ts";
 import { request } from "./fixtures/utils/utils.ts";
 import { normalizeRecipe } from "../utils/recipe.ts";
@@ -9,7 +7,7 @@ const fixturesDir = new URL("./fixtures/recipes/", import.meta.url);
 const resumeFile = new URL("./fixtures/resume/resume.md", import.meta.url);
 const app = createApp({
   recipesDir: fixturesDir,
-  resumeFile: resumeFile
+  resumeFile: resumeFile,
 });
 
 Deno.test("GET /recipes returns list of recipes", async () => {

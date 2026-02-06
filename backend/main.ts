@@ -1,6 +1,10 @@
 import { Application, Context, Router, RouterContext, send } from "oak";
 import { extractYaml } from "@std/front-matter";
-import { CreateAppOptions, RecipeFrontMatter, ResumeFrontMatter } from "./types.ts";
+import {
+  CreateAppOptions,
+  RecipeFrontMatter,
+  ResumeFrontMatter,
+} from "./types.ts";
 import { normalizeRecipe } from "./utils/recipe.ts";
 
 export function createApp(options: CreateAppOptions): Application {
@@ -65,7 +69,9 @@ export function createApp(options: CreateAppOptions): Application {
         console.error(`Failed to load recipe: ${slug} -- `, err);
         ctx.throw(
           err instanceof Deno.errors.NotFound ? 404 : 500,
-          err instanceof Deno.errors.NotFound ? "Recipe not found" : "Internal Server Error"
+          err instanceof Deno.errors.NotFound
+            ? "Recipe not found"
+            : "Internal Server Error",
         );
       }
     },
@@ -102,20 +108,20 @@ export function createApp(options: CreateAppOptions): Application {
       ctx.response.body = attrs;
     } catch (err) {
       console.error(
-        'could not read resume file:',err instanceof Error ? err.message : String(err),
+        "could not read resume file:",
+        err instanceof Error ? err.message : String(err),
       );
       ctx.throw(
-        err instanceof Deno.errors.NotFound ? 404: 500,
-        "Internal Server Error"
+        err instanceof Deno.errors.NotFound ? 404 : 500,
+        "Internal Server Error",
       );
     }
   });
 
   router.get("/build-info", (ctx) => {
-
     ctx.response.body = {
       commit: Deno.env.get("GIT_COMMIT") || "unknown",
-      tag: Deno.env.get("GIT_TAG") || ""
+      tag: Deno.env.get("GIT_TAG") || "",
     };
   });
 

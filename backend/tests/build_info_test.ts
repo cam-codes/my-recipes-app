@@ -6,8 +6,8 @@ const fixturesDir = new URL("./fixtures/recipes/", import.meta.url);
 const resumeFile = new URL("./fixtures/resume/resume.md", import.meta.url);
 const options = {
   recipesDir: fixturesDir,
-  resumeFile: resumeFile
-}
+  resumeFile: resumeFile,
+};
 
 Deno.test("GET /build-info returns env vars or defaults", async () => {
   // Mock env vars

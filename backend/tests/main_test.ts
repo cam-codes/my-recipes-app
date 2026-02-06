@@ -6,7 +6,7 @@ const fixturesDir = new URL("./fixtures/recipes/", import.meta.url);
 const resumeFile = new URL("./fixtures/resume/resume.md", import.meta.url);
 const app = createApp({
   recipesDir: fixturesDir,
-  resumeFile: resumeFile
+  resumeFile: resumeFile,
 });
 
 Deno.test("GET /health", async () => {
@@ -16,4 +16,3 @@ Deno.test("GET /health", async () => {
   const json = JSON.parse(body as string);
   assertEquals(json.status, "OK");
 });
-

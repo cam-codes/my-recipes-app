@@ -5,9 +5,13 @@ import { getResume } from "../lib/api.ts";
 import LoadingSpinner from "../components/LoadingSpinner.tsx";
 import { A } from "@solidjs/router";
 import type { ResumeData } from "../lib/types.ts";
+import { onMount } from "solid-js";
 
 export default function ResumePage() {
   const [resume] = createResource<ResumeData>(getResume);
+  onMount(() => {
+    document.title = "Cameron Fournier - Hire Me!";
+  });
 
   return (
     <div class="min-h-screen bg-gray-50 py-12 px-4">

@@ -1,42 +1,15 @@
 services:
   backend:
-    image: ghcr.io/cam-codes/my-recipes-backend:${RELEASE_TAG}
+    image: ghcr.io/cam-codes/my-recipes-backend:${RELEASE_TAG:-latest}  # fallback to latest if no var
     container_name: my-recipes-backend-staging
     ports:
       - "127.0.0.1:3001:3000"
-    environment:
-      RECIPES_DIRECTORY: /recipes
-      RESUME_FILE: /resume/resume.md
-      BACKEND_PORT: 3000
     volumes:
       - /data/recipes/staging:/recipes:rw
-      - ./resume:/resume      # mount resume as a volume
-    healthcheck:
-      test: [
-        "CMD",
-        "deno",
-        "eval",
-        "fetch('http://localhost:3000/health').then(r=>{if(!r.ok)Deno.exit(1)})"
-      ]
-      interval: 10s
-      timeout: 3s
-      retries: 5
+      - ./resume:/resume  # keep if you want local resume override
 
   frontend:
-    image: ghcr.io/cam-codes/my-recipes-frontend:${RELEASE_TAG}
+    image: ghcr.io/cam-codes/my-recipes-frontend:${RELEASE_TAG:-latest}
     container_name: my-recipes-frontend-staging
     ports:
       - "127.0.0.1:5173:80"
-    depends_on:
-      backend:
-        condition: service_healthy
-    healthcheck:
-      test: [
-        "CMD",
-        "curl",
-        "-f",
-        "http://localhost"
-      ]
-      interval: 10s
-      timeout: 3s
-      retries: 5

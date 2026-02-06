@@ -1,0 +1,30 @@
+services:
+  backend:
+    # Image will be overridden in staging/prod; build in local
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      # Args handled dynamically in CI/local script — defaults in Dockerfile
+    environment:
+      RECIPES_DIRECTORY: /recipes
+      RESUME_FILE: /resume/resume.md
+      BACKEND_PORT: 3000
+    healthcheck:
+      test: ["CMD", "deno", "eval", "fetch('http://localhost:3000/health').then(r=>{if(!r.ok)Deno.exit(1)})"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  frontend:
+    # Image will be overridden in staging/prod; build in local
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 10s
+      timeout: 3s
+      retries: 5

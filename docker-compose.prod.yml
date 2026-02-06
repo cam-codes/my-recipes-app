@@ -4,40 +4,12 @@ services:
     container_name: my-recipes-backend-prod
     ports:
       - "127.0.0.1:3000:3000"
-    environment:
-      RECIPES_DIRECTORY: /recipes
-      RESUME_FILE: /resume/resume.md
-      BACKEND_PORT: 3000
     volumes:
       - /data/recipes/prod:/recipes:rw
-      - ./resume:/resume      # mount resume as a volume
-    healthcheck:
-      test: [
-        "CMD",
-        "deno",
-        "eval",
-        "fetch('http://localhost:3000/health').then(r=>{if(!r.ok)Deno.exit(1)})"
-      ]
-      interval: 10s
-      timeout: 3s
-      retries: 5
+      - ./resume:/resume  # optional — remove if resume is baked into image
 
   frontend:
     image: ghcr.io/cam-codes/my-recipes-frontend:${RELEASE_TAG}
     container_name: my-recipes-frontend-prod
     ports:
       - "127.0.0.1:80:80"
-    depends_on:
-      backend:
-        condition: service_healthy
-    healthcheck:
-      test: [
-        "CMD",
-        "curl",
-        "-f",
-        "http://localhost"
-      ]
-      interval: 10s
-      timeout: 3s
-      retries: 5
-

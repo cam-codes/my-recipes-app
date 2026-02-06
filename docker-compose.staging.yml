@@ -6,7 +6,7 @@ services:
       - "127.0.0.1:3001:3000"
     volumes:
       - /data/recipes/staging:/recipes:rw
-      - ./resume:/resume  # keep if you want local resume override
+      - /data/resume/prod:/resume:ro
 
   frontend:
     image: ghcr.io/cam-codes/my-recipes-frontend:${RELEASE_TAG:-latest}

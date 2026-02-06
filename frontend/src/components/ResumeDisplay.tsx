@@ -2,9 +2,6 @@ import { For } from 'solid-js';
 import type { ResumeData } from '../lib/types.ts';
 
 export default function ResumeDisplay(props: ResumeData) {
-  const { name, email, phone, linkedin, summary, skills, experience, education, volunteering } =
-    props;
-
   return (
     <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-8 print:shadow-none print:p-0">
       {/* Hidden page disclaimer */}
@@ -37,15 +34,15 @@ export default function ResumeDisplay(props: ResumeData) {
 
       {/* Header */}
       <header class="text-center">
-        <h1 class="text-5xl font-bold text-gray-900">{name}</h1>
+        <h1 class="text-5xl font-bold text-gray-900">{props.name}</h1>
         <div class="mt-3 text-lg">
-          <a href={`mailto:${email}`} class="text-blue-600 hover:underline">
-            {email}
+          <a href={`mailto:${props.email}`} class="text-blue-600 hover:underline">
+            {props.email}
           </a>
           <span class="mx-4 text-gray-600">|</span>
-          <span class="text-gray-800">{phone}</span>
+          <span class="text-gray-800">{props.phone}</span>
           <span class="mx-4 text-gray-600">|</span>
-          <a href={linkedin} target="_blank" rel="noopener" class="text-blue-600 hover:underline">
+          <a href={props.linkedin} target="_blank" rel="noopener" class="text-blue-600 hover:underline">
             LinkedIn
           </a>
         </div>
@@ -56,7 +53,7 @@ export default function ResumeDisplay(props: ResumeData) {
         <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-gray-300 pb-2">
           Summary
         </h2>
-        <p class="text-gray-700 leading-relaxed">{summary}</p>
+        <p class="text-gray-700 leading-relaxed">{props.summary}</p>
       </section>
 
       {/* Skills */}
@@ -65,7 +62,7 @@ export default function ResumeDisplay(props: ResumeData) {
           Technical Skills
         </h2>
         <ul class="list-disc list-inside text-gray-700 space-y-3 columns-1 md:columns-2 lg:columns-3 gap-8">
-          <For each={Object.entries(skills)}>
+          <For each={Object.entries(props.skills)}>
             {([category, items]) => (
               <li class="break-inside-avoid">
                 <strong>{category}:</strong> {items.join(', ')}
@@ -80,7 +77,7 @@ export default function ResumeDisplay(props: ResumeData) {
         <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-gray-300 pb-2">
           Experience
         </h2>
-        <For each={experience}>
+        <For each={props.experience}>
           {(job) => (
             <div class="mb-10 last:mb-0">
               <div class="flex flex-col md:flex-row justify-between items-start mb-3">
@@ -106,7 +103,7 @@ export default function ResumeDisplay(props: ResumeData) {
         <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-gray-300 pb-2">
           Education
         </h2>
-        <For each={education}>
+        <For each={props.education}>
           {(edu) => (
             <div class="mb-8 last:mb-0">
               <div class="flex flex-col md:flex-row justify-between items-start mb-3">
@@ -148,7 +145,7 @@ export default function ResumeDisplay(props: ResumeData) {
           Volunteering
         </h2>
         <ul class="list-disc list-inside text-gray-700 space-y-2 ml-5">
-          <For each={volunteering}>{(item) => <li>{item}</li>}</For>
+          <For each={props.volunteering}>{(item) => <li>{item}</li>}</For>
         </ul>
       </section>
     </div>

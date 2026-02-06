@@ -6,7 +6,7 @@ services:
       - "127.0.0.1:3000:3000"
     volumes:
       - /data/recipes/prod:/recipes:rw
-      - ./resume:/resume  # optional — remove if resume is baked into image
+      - /data/resume/prod:/resume:ro
 
   frontend:
     image: ghcr.io/cam-codes/my-recipes-frontend:${RELEASE_TAG}

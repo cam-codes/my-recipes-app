@@ -42,7 +42,12 @@ export default function ResumeDisplay(props: ResumeData) {
           <span class="mx-4 text-gray-600">|</span>
           <span class="text-gray-800">{props.phone}</span>
           <span class="mx-4 text-gray-600">|</span>
-          <a href={props.linkedin} target="_blank" rel="noopener" class="text-blue-600 hover:underline">
+          <a
+            href={props.linkedin}
+            target="_blank"
+            rel="noopener"
+            class="text-blue-600 hover:underline"
+          >
             LinkedIn
           </a>
         </div>

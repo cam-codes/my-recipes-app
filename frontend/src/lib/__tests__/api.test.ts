@@ -14,24 +14,30 @@ const mockFetch = vi.fn(async (input: RequestInfo) => {
   }
 
   if (url.endsWith('/resume')) {
-    return new Response(JSON.stringify({
-      name: 'Cam',
-      email: 'cam@example.com',
-      phone: '555-5555',
-      linkedin: 'linkedin.com/in/cam',
-      summary: 'Summary',
-      skills: {},
-      experience: [],
-      education: [],
-      volunteering: [],
-    }), { status: 200 });
+    return new Response(
+      JSON.stringify({
+        name: 'Cam',
+        email: 'cam@example.com',
+        phone: '555-5555',
+        linkedin: 'linkedin.com/in/cam',
+        summary: 'Summary',
+        skills: {},
+        experience: [],
+        education: [],
+        volunteering: [],
+      }),
+      { status: 200 },
+    );
   }
 
   if (url.endsWith('/build-info')) {
-    return new Response(JSON.stringify({
-      commit: 'abc123',
-      tag: 'v1.0.0',
-    }), { status: 200 });
+    return new Response(
+      JSON.stringify({
+        commit: 'abc123',
+        tag: 'v1.0.0',
+      }),
+      { status: 200 },
+    );
   }
 
   return new Response(null, { status: 404 });
@@ -77,9 +83,7 @@ describe('api', () => {
   });
 
   it("throws 'Failed to fetch resume' on error", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValue(
-      new Response(null, { status: 500 })
-    ) as any;
+    globalThis.fetch = vi.fn().mockResolvedValue(new Response(null, { status: 500 })) as any;
 
     await expect(getResume()).rejects.toThrow('Failed to fetch resume');
   });
@@ -91,9 +95,7 @@ describe('api', () => {
   });
 
   it("throws 'Failed to load build info' on error", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValue(
-      new Response(null, { status: 500 })
-    ) as any;
+    globalThis.fetch = vi.fn().mockResolvedValue(new Response(null, { status: 500 })) as any;
 
     await expect(getBuildInfo()).rejects.toThrow('Failed to load build info');
   });

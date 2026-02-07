@@ -7,7 +7,8 @@ import {
 } from "./types.ts";
 import { normalizeRecipe } from "./utils/recipe.ts";
 
-export const COMPARE_URL = 'https://github.com/cam-codes/my-recipes-app/compare';
+export const COMPARE_URL =
+  "https://github.com/cam-codes/my-recipes-app/compare";
 
 export function createApp(options: CreateAppOptions): Application {
   const { recipesDir, resumeFile } = options;

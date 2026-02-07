@@ -48,10 +48,7 @@ describe('Layout build info', () => {
     expect(screen.getByText('abc1234')).toBeInTheDocument();
 
     const compareUrl = await screen.findByRole('link', { name: /Commit:/i });
-    expect(compareUrl).toHaveAttribute(
-      'href',
-      'github.com/org/repo/compare'
-    );
+    expect(compareUrl).toHaveAttribute('href', 'github.com/org/repo/compare');
   });
 
   it('shows release tag when build is a release', async () => {

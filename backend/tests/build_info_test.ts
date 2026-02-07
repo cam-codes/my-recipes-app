@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import { createApp } from "../main.ts";
+import { createApp, COMPARE_URL } from "../main.ts";
 import { request } from "./fixtures/utils/utils.ts";
 
 const fixturesDir = new URL("./fixtures/recipes/", import.meta.url);
@@ -12,6 +12,7 @@ const options = {
 Deno.test("GET /build-info returns env vars or defaults", async () => {
   // Mock env vars
   Deno.env.set("GIT_COMMIT", "abc123456789");
+  Deno.env.set("LATEST_TAG", "v1.0.1");
   Deno.env.set("GIT_TAG", "v1.2.3");
 
   const app = createApp(options);
@@ -21,15 +22,18 @@ Deno.test("GET /build-info returns env vars or defaults", async () => {
 
   assertEquals(status, 200);
   assertEquals(json.commit, "abc123456789");
+  assertEquals(json.compareUrl, `${COMPARE_URL}/v1.0.1...abc123456789`)
   assertEquals(json.tag, "v1.2.3");
 
   // Cleanup
   Deno.env.delete("GIT_COMMIT");
+  Deno.env.delete("LATEST_TAG");
   Deno.env.delete("GIT_TAG");
 });
 
 Deno.test("GET /build-info falls back to defaults when env vars missing", async () => {
   Deno.env.delete("GIT_COMMIT");
+  Deno.env.delete("LATEST_TAG");
   Deno.env.delete("GIT_TAG");
 
   const app = createApp(options);
@@ -37,6 +41,7 @@ Deno.test("GET /build-info falls back to defaults when env vars missing", async 
   const json = JSON.parse(body as string);
 
   assertEquals(status, 200);
-  assertEquals(json.commit, "unknown");
+  assertEquals(json.commit, "HEAD");
+  assertEquals(json.compareUrl, `${COMPARE_URL}/v1.0.0...HEAD`);
   assertEquals(json.tag, "");
 });

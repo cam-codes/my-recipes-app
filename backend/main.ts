@@ -7,6 +7,8 @@ import {
 } from "./types.ts";
 import { normalizeRecipe } from "./utils/recipe.ts";
 
+export const COMPARE_URL = 'https://github.com/cam-codes/my-recipes-app/compare';
+
 export function createApp(options: CreateAppOptions): Application {
   const { recipesDir, resumeFile } = options;
   const app = new Application();
@@ -119,9 +121,13 @@ export function createApp(options: CreateAppOptions): Application {
   });
 
   router.get("/build-info", (ctx) => {
+    const commit = Deno.env.get("GIT_COMMIT") || "HEAD";
+    const latestTag = Deno.env.get("LATEST_TAG") || "v1.0.0";
+    const tag = Deno.env.get("GIT_TAG") || "";
     ctx.response.body = {
-      commit: Deno.env.get("GIT_COMMIT") || "unknown",
-      tag: Deno.env.get("GIT_TAG") || "",
+      commit: commit,
+      compareUrl: `${COMPARE_URL}/${latestTag}...${commit}`,
+      tag: tag,
     };
   });
 

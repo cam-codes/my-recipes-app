@@ -66,13 +66,17 @@ export default function Layout(props: LayoutProps) {
                   {(info) => {
                     const commit = info().commit;
                     const tag = info().tag;
+                    const compareUrl = info().compareUrl;
                     const shortCommit = commit.slice(0, 7);
                     const isRelease = tag !== '';
 
+                    // if it's a release, link to release notes
+                    // if it's not a release, link to compare url from last release to latest commit
+                    // default to repo home
                     const githubUrl = isRelease
                       ? `https://github.com/cam-codes/my-recipes-app/releases/tag/${tag}`
                       : commit !== 'unknown'
-                        ? `https://github.com/cam-codes/my-recipes-app/commit/${commit}`
+                        ? `${compareUrl}`
                         : 'https://github.com/cam-codes/my-recipes-app';
 
                     return (

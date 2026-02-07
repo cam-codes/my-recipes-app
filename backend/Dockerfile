@@ -13,10 +13,14 @@ RUN deno cache server.ts
 # Inject build info into the site
 ARG GIT_COMMIT=unknown
 
-# empty git tag by default, only set on tagged releases
+# Latest tag, for building compare URL
+ARG LATEST_TAG=unknown
+
+# Empty git tag by default, only set on tagged releases
 ARG GIT_TAG=""
 
 ENV GIT_COMMIT=$GIT_COMMIT
+ENV LATEST_TAG=$LATEST_TAG
 ENV GIT_TAG=$GIT_TAG
 EXPOSE 3000
 

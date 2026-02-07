@@ -23,6 +23,7 @@ export async function getResume(): Promise<ResumeData> {
 
 export async function getBuildInfo(): Promise<{
   commit: string;
+  compareUrl: string;
   tag: string;
 }> {
   const res = await fetch('/api/build-info');

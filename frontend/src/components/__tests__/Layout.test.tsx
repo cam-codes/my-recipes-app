@@ -27,6 +27,7 @@ describe('Layout build info', () => {
   it('displays build info when fetch succeeds', async () => {
     (getBuildInfo as vi.Mock).mockResolvedValue({
       commit: 'abc1234567890',
+      compareUrl: 'github.com/org/repo/compare',
       tag: '',
     });
 
@@ -45,11 +46,18 @@ describe('Layout build info', () => {
     // Use flexible matcher for split text (Commit: + span)
     expect(screen.getByText('Commit:')).toBeInTheDocument();
     expect(screen.getByText('abc1234')).toBeInTheDocument();
+
+    const compareUrl = await screen.findByRole('link', { name: /Commit:/i });
+    expect(compareUrl).toHaveAttribute(
+      'href',
+      'github.com/org/repo/compare'
+    );
   });
 
   it('shows release tag when build is a release', async () => {
     (getBuildInfo as vi.Mock).mockResolvedValue({
       commit: 'abc1234567890',
+      compareUrl: 'github.com/org/repo/compare',
       tag: 'v1.2.3',
     });
 
@@ -69,6 +77,7 @@ describe('Layout build info', () => {
   it('closes build info dropdown on outside click', async () => {
     (getBuildInfo as vi.Mock).mockResolvedValue({
       commit: 'abc1234567890',
+      compareUrl: 'github.com/org/repo/compare',
       tag: '',
     });
 

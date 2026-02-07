@@ -24,7 +24,7 @@ jobs:
       - name: Format and Lint
         run: |
           deno task fmt:check
-          deno task lint
+          deno task lint:check
 
       - name: Test Coverage
         run: deno task test:coverage

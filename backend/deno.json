@@ -9,9 +9,10 @@
   "tasks": {
     "cache": "deno cache server.ts",
     "cache:reload": "deno cache --reload server.ts",
-    "fmt": "deno fmt",
     "fmt:check": "deno fmt --check",
-    "lint": "deno lint",
+    "fmt:fix": "deno fmt",
+    "lint:check": "deno lint",
+    "lint:fix": "deno lint --fix",
     "start": "deno run --cached-only --allow-net --allow-read --allow-env server.ts",
     "test": "deno test --allow-read --allow-net --allow-import --allow-env",
     "test:coverage": "deno test --allow-read --allow-net --allow-import --allow-env --coverage=coverage && deno coverage coverage --lcov > coverage.lcov"

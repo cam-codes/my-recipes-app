@@ -61,7 +61,7 @@ jobs:
 
       - name: Lint and Format
         run: |
-          yarn lint
+          yarn lint:check
           yarn format:check
 
       - name: Build

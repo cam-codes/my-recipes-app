@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import { createApp, COMPARE_URL } from "../main.ts";
+import { COMPARE_URL, createApp } from "../main.ts";
 import { request } from "./fixtures/utils/utils.ts";
 
 const fixturesDir = new URL("./fixtures/recipes/", import.meta.url);
@@ -22,7 +22,7 @@ Deno.test("GET /build-info returns env vars or defaults", async () => {
 
   assertEquals(status, 200);
   assertEquals(json.commit, "abc123456789");
-  assertEquals(json.compareUrl, `${COMPARE_URL}/v1.0.1...abc123456789`)
+  assertEquals(json.compareUrl, `${COMPARE_URL}/v1.0.1...abc123456789`);
   assertEquals(json.tag, "v1.2.3");
 
   // Cleanup

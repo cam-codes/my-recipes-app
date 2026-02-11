@@ -5,6 +5,9 @@
   "workspaces": [
     "frontend"
   ],
+  "engines": {
+    "node": "24.13.0"
+  },
   "scripts": {
     "build": "docker-compose -f /Users/cam/stash/my-recipes-app/docker-compose.yml -f /Users/cam/stash/my-recipes-app/docker-compose.local.yml build --no-cache && docker-compose  -f /Users/cam/stash/my-recipes-app/docker-compose.yml  -f /Users/cam/stash/my-recipes-app/docker-compose.local.yml up",
     "clean": "docker-compose  -f /Users/cam/stash/my-recipes-app/docker-compose.yml  -f /Users/cam/stash/my-recipes-app/docker-compose.local.yml down && rm -rf node_modules yarn.lock frontend/node_modules frontend/dist .yarn/install-state.gz && yarn install && cd frontend && yarn build && cd ..",

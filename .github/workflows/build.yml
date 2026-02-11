@@ -39,6 +39,8 @@ jobs:
       - name: Compute Tags
         id: meta
         run: |
+          top_level=$(git rev-parse --show-toplevel)
+          cd $top_level
           COMMIT=${{ github.sha }}
           TAG=$(git describe --tags --exact-match 2>/dev/null || echo "")
           LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
@@ -100,6 +102,8 @@ jobs:
       - name: Compute Tags
         id: meta
         run: |
+          top_level=$(git rev-parse --show-toplevel)
+          cd $top_level
           COMMIT=${{ github.sha }}
           TAG=$(git describe --tags --exact-match 2>/dev/null || echo "")
 

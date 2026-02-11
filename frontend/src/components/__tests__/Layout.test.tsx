@@ -26,9 +26,9 @@ describe('Layout build info', () => {
 
   it('displays build info when fetch succeeds', async () => {
     (getBuildInfo as vi.Mock).mockResolvedValue({
-      commit: 'abc1234567890',
+      gitCommit: 'abc1234567890',
       compareUrl: 'github.com/org/repo/compare',
-      tag: '',
+      gitTag: '',
     });
 
     render(() => (
@@ -53,9 +53,9 @@ describe('Layout build info', () => {
 
   it('shows release tag when build is a release', async () => {
     (getBuildInfo as vi.Mock).mockResolvedValue({
-      commit: 'abc1234567890',
+      gitCommit: 'abc1234567890',
       compareUrl: 'github.com/org/repo/compare',
-      tag: 'v1.2.3',
+      gitTag: 'v1.2.3',
     });
 
     render(() => (
@@ -73,9 +73,9 @@ describe('Layout build info', () => {
 
   it('closes build info dropdown on outside click', async () => {
     (getBuildInfo as vi.Mock).mockResolvedValue({
-      commit: 'abc1234567890',
+      gitCommit: 'abc1234567890',
       compareUrl: 'github.com/org/repo/compare',
-      tag: '',
+      gitTag: '',
     });
 
     const { container } = render(() => (

@@ -1,15 +1,18 @@
 import { execSync } from 'child_process';
 import path from 'path';
 
+const isCI = !!process.env.CI;
 const __dirname = import.meta.dirname;
-const DEV_SCRIPT = path.join(__dirname, '..', '..', 'dev-up.sh'); // path to script
+const STARTUP_SCRIPT = isCI
+  ? path.join(__dirname, '..', '..', 'ci-up.sh')
+  : path.join(__dirname, '..', '..', 'dev-up.sh'); // path to script
 
 export default async function globalSetup() {
-  console.log('Starting app with dev-up.sh...');
+  console.log(`Starting app with ${STARTUP_SCRIPT}...`);
 
   try {
     // Build + up containers
-    execSync(`bash ${DEV_SCRIPT}`, { stdio: 'inherit' });
+    execSync(`bash ${STARTUP_SCRIPT}`, { stdio: 'inherit' });
 
     // This polls until /health returns 200
     const maxAttempts = 30;

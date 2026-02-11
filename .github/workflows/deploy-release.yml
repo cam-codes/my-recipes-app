@@ -82,7 +82,8 @@ jobs:
       - name: Run E2E Tests
         working-directory: frontend
         env:
-          PLAYWRIGHT_BASE_URL: ${{ secrets.STAGING_DOMAIN }}
+          E2E_ENV: staging
+          PLAYWRIGHT_BASE_URL: https://${{ secrets.STAGING_DOMAIN }}
         run: npx playwright test
 
   # Manual approval before prod

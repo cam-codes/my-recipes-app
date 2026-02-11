@@ -64,18 +64,18 @@ export default function Layout(props: LayoutProps) {
                 </button>
                 <Show when={buildInfo()}>
                   {(info) => {
-                    const commit = info().commit;
-                    const tag = info().tag;
+                    const gitCommit = info().gitCommit;
+                    const gitTag = info().gitTag;
                     const compareUrl = info().compareUrl;
-                    const shortCommit = commit.slice(0, 7);
-                    const isRelease = tag !== '';
+                    const shortCommit = gitCommit.slice(0, 7);
+                    const isRelease = gitTag !== '';
 
                     // if it's a release, link to release notes
                     // if it's not a release, link to compare url from last release to latest commit
                     // default to repo home
                     const githubUrl = isRelease
-                      ? `https://github.com/cam-codes/my-recipes-app/releases/tag/${tag}`
-                      : commit !== 'unknown'
+                      ? `https://github.com/cam-codes/my-recipes-app/releases/tag/${gitTag}`
+                      : gitCommit !== 'unknown'
                         ? `${compareUrl}`
                         : 'https://github.com/cam-codes/my-recipes-app';
 
@@ -90,7 +90,7 @@ export default function Layout(props: LayoutProps) {
                         >
                           {isRelease ? (
                             <>
-                              Release: <span class="font-mono">{tag}</span>
+                              Release: <span class="font-mono">{gitTag}</span>
                             </>
                           ) : (
                             <>

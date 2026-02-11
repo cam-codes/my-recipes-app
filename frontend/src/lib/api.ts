@@ -22,9 +22,9 @@ export async function getResume(): Promise<ResumeData> {
 }
 
 export async function getBuildInfo(): Promise<{
-  commit: string;
+  gitCommit: string;
+  gitTag: string;
   compareUrl: string;
-  tag: string;
 }> {
   const res = await fetch('/api/build-info');
   if (!res.ok) throw new Error('Failed to load build info');

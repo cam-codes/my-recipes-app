@@ -11,7 +11,7 @@ jobs:
   deploy-staging-release:
     if: >
       github.event.workflow_run.conclusion == 'success' &&
-      startsWith(github.event.workflow_run.head_branch, 'refs/tags/')
+      startsWith(github.event.workflow_run.head_branch, 'v')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -39,7 +39,7 @@ jobs:
 
             cat <<EOF > .env
             ${{ secrets.ENV_STAGING }}
-            RELEASE_TAG=${{ github.event.workflow_run.head_branch_name }}
+            RELEASE_TAG=${{ github.event.workflow_run.head_branch }}
             EOF
             chmod 600 .env
 
@@ -111,7 +111,7 @@ jobs:
 
             cat <<EOF > .env
             ${{ secrets.ENV_PROD }}
-            RELEASE_TAG=${{ github.event.workflow_run.head_branch_name }}
+            RELEASE_TAG=${{ github.event.workflow_run.head_branch }}
             EOF
             chmod 600 .env
 

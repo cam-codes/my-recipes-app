@@ -1,87 +1,238 @@
-name: Build & Push Images
+name: Build, Test, & Push
 
 on:
   pull_request:
     branches: [main]
   push:
     branches: [main]
+    tags:
+      - '*'
 
 permissions:
   contents: read
   packages: write
 
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-backend:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
+    outputs:
+      commit: ${{ steps.tags.outputs.commit }}
+      tag: ${{ steps.tags.outputs.tag }}
 
     steps:
-      - name: Checkout Backend
+      - name: Checkout Repo
         uses: actions/checkout@v4
-
-      - name: Setup Deno
-        uses: denoland/setup-deno@v1
         with:
-          deno-version: 2.6.6
+          fetch-depth: 0 # get tags
 
-      - name: Log in to GitHub Container Registry
+      # ---------------------------
+      # Get git info for build tags
+      # ---------------------------
+      - name: Compute Tags
+        id: meta
+        run: |
+          COMMIT=${{ github.sha }}
+          TAG=$(git describe --tags --exact-match 2>/dev/null || echo "")
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+          echo "commit=$COMMIT" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "latest=$LATEST_TAG" >> $GITHUB_OUTPUT
+
+      # ---------------------------
+      # Docker setup
+      # ---------------------------
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name == 'push'
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build & Push Backend Image
-        run: |
-          cd ..
-          docker build -f backend/Dockerfile \
-            --build-arg GIT_COMMIT=${{ github.sha }} \
-            --build-arg LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "") \
-            --build-arg GIT_TAG=$(git describe --tags --exact-match) \
-            -t ghcr.io/${{ github.repository_owner }}/my-recipes-backend:${{ github.sha }} \
-            .
-          docker push ghcr.io/${{ github.repository_owner }}/my-recipes-backend:${{ github.sha }}
-
-          # If this is a tagged release, also push the tag (for prod)
-          if git describe --tags --exact-match >/dev/null 2>&1; then
-            TAG=$(git describe --tags --exact-match)
-            docker tag $IMAGE:${{ github.sha }} $IMAGE:$TAG
-            docker push $IMAGE:$TAG
-            docker tag $IMAGE:${{ github.sha }} $IMAGE:latest
-            docker push $IMAGE:latest
-          fi
+      # ---------------------------
+      # Build backend image with caching
+      # ---------------------------
+      - name: Build Backend Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: backend/Dockerfile
+          build-args: |
+            GIT_COMMIT=${{ steps.tags.outputs.commit }}
+            GIT_TAG=${{ steps.tags.outputs.tag }}
+            LATEST_TAG=${{ steps.tags.outputs.latest }}
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/my-recipes-backend:${{ github.sha }}
+            ${{ steps.tags.outputs.tag != '' && format('ghcr.io/{0}/my-recipes-backend:{1}', github.repository_owner, steps.tags.outputs.tag) || '' }}
+            ${{ steps.tags.outputs.tag != '' && format('ghcr.io/{0}/my-recipes-backend:latest', github.repository_owner) || '' }}
+          cache-to: type=gha,mode=max
+          cache-from: type=gha
+          load: true # <-- makes the image available locally for docker-compose up
+          push: ${{ github.event_name == 'push' }}
 
   build-frontend:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
 
     steps:
-      - name: Checkout Frontend
+      - name: Checkout Repo
         uses: actions/checkout@v4
-
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
         with:
-          node-version: 20
+          fetch-depth: 0 # get tags
+
+      # ---------------------------
+      # Get git info for build tags
+      # ---------------------------
+      - name: Compute Tags
+        id: meta
+        run: |
+          COMMIT=${{ github.sha }}
+          TAG=$(git describe --tags --exact-match 2>/dev/null || echo "")
+
+          echo "commit=$COMMIT" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to GitHub Container Registry
+        if: github.event_name == 'push'
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build & Push Frontend Image
+      - name: Install Frontend Dependencies
+        working-directory: frontend
+        run: yarn install --immutable
+
+      - name: Build Frontend Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: frontend/Dockerfile
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/my-recipes-frontend:${{ steps.tags.outputs.commit }}
+            ${{ steps.tags.outputs.tag != '' && format('ghcr.io/{0}/my-recipes-frontend:{1}', github.repository_owner, steps.tags.outputs.tag) || '' }}
+            ${{ steps.tags.outputs.tag != '' && format('ghcr.io/{0}/my-recipes-frontend:latest', github.repository_owner) || '' }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          load: true
+          push: ${{ github.event_name == 'push' }}
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: [ build-backend, build-frontend ]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      # ---------------------------
+      # Install Node + dependencies
+      # ---------------------------
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'yarn'
+          cache-dependency-path: frontend/yarn.lock
+
+      - name: Install Frontend Dependencies
+        working-directory: frontend
+        run: yarn install --immutable
+
+      # ---------------------------
+      # Cache Playwright Browsers
+      # ---------------------------
+      - name: Cache Playwright Browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('frontend/yarn.lock') }}
+
+      - name: Install Playwright Browsers
+        working-directory: frontend
+        run: npx playwright install --with-deps
+
+      # ---------------------------
+      # Start containers for e2e tests
+      # ---------------------------
+      - name: Start Containers
         run: |
-          cd ..
-          docker build -f frontend/Dockerfile \
-            -t ghcr.io/${{ github.repository_owner }}/my-recipes-frontend:${{ github.sha }} \
-            .
-          docker push ghcr.io/${{ github.repository_owner }}/my-recipes-frontend:${{ github.sha }}
+          docker compose -f docker-compose.yml -f docker-compose.local.yml up -d
+
+          # Wait for frontend health
+          n=0
+          until [ $n -ge 30 ]; do
+            curl -f http://localhost:5173/api/health && break
+            n=$((n+1))
+            sleep 2
+          done
+
+          if [ $n -ge 30 ]; then
+            echo "Service failed to start"
+            exit 1
+          fi
+
+      - name: Run E2E Tests
+        working-directory: frontend
+        run: |
+          E2E_ENV=local npx playwright test
+
+      # ---------------------------
+      # Teardown
+      # ---------------------------
+      - name: Stop Containers
+        if: always()
+        run: docker compose -f docker-compose.yml -f docker-compose.local.yml down
+
+  # ---------------------------
+  # Push Images (after e2e)
+  # ---------------------------
+  push-images:
+    runs-on: ubuntu-latest
+    needs: e2e
+    if: github.event_name == 'push'   # only push on actual pushes, not PRs
+    steps:
+      - name: Login to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push Backend Image
+        run: |
+          BACKEND_IMAGE=ghcr.io/${{ github.repository_owner }}/my-recipes-backend
+          docker tag my-recipes-backend:latest $BACKEND_IMAGE:${{ github.sha }}
+          docker push $BACKEND_IMAGE:${{ github.sha }}
+
+          TAG=${{ needs.build-backend.outputs.tag }}
+          if [ -n "$TAG" ]; then
+            docker tag my-recipes-backend:latest $BACKEND_IMAGE:$TAG
+            docker push $BACKEND_IMAGE:$TAG
+            docker tag my-recipes-backend:latest $BACKEND_IMAGE:latest
+            docker push $BACKEND_IMAGE:latest
+          fi
+
+      - name: Push Frontend Image
+        run: |
+          FRONTEND_IMAGE=ghcr.io/${{ github.repository_owner }}/my-recipes-frontend
+          docker tag my-recipes-frontend:latest $FRONTEND_IMAGE:${{ github.sha }}
+          docker push $FRONTEND_IMAGE:${{ github.sha }}
+
+          TAG=${{ needs.build-frontend.outputs.tag }}
+          if [ -n "$TAG" ]; then
+            docker tag my-recipes-frontend:latest $FRONTEND_IMAGE:$TAG
+            docker push $FRONTEND_IMAGE:$TAG
+            docker tag my-recipes-frontend:latest $FRONTEND_IMAGE:latest
+            docker push $FRONTEND_IMAGE:latest
+          fi

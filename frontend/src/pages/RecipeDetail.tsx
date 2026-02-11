@@ -60,7 +60,7 @@ export default function RecipeDetail() {
             </ul>
 
             <h2 class="text-2xl font-semibold mb-4">Instructions</h2>
-            <ol class="list-disc pl-6 mb-8 space-y-2">
+            <ol class="list-decimal pl-6 mb-8 space-y-2">
               {recipe()!.instructions.map((step) => (
                 <li>
                   <SolidMarkdown>{step}</SolidMarkdown>

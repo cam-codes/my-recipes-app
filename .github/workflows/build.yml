@@ -19,9 +19,13 @@ concurrency:
 jobs:
   build-backend:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
     outputs:
-      commit: ${{ steps.tags.outputs.commit }}
-      tag: ${{ steps.tags.outputs.tag }}
+      commit: ${{ steps.meta.outputs.commit }}
+      tag: ${{ steps.meta.outputs.tag }}
 
     steps:
       - name: Checkout Repo
@@ -66,13 +70,13 @@ jobs:
           context: .
           file: backend/Dockerfile
           build-args: |
-            GIT_COMMIT=${{ steps.tags.outputs.commit }}
-            GIT_TAG=${{ steps.tags.outputs.tag }}
-            LATEST_TAG=${{ steps.tags.outputs.latest }}
+            GIT_COMMIT=${{ steps.meta.outputs.commit }}
+            GIT_TAG=${{ steps.meta.outputs.tag }}
+            LATEST_TAG=${{ steps.meta.outputs.latest }}
           tags: |
             ghcr.io/${{ github.repository_owner }}/my-recipes-backend:${{ github.sha }}
-            ${{ steps.tags.outputs.tag != '' && format('ghcr.io/{0}/my-recipes-backend:{1}', github.repository_owner, steps.tags.outputs.tag) || '' }}
-            ${{ steps.tags.outputs.tag != '' && format('ghcr.io/{0}/my-recipes-backend:latest', github.repository_owner) || '' }}
+            ${{ steps.meta.outputs.tag != '' && format('ghcr.io/{0}/my-recipes-backend:{1}', github.repository_owner, steps.meta.outputs.tag) || '' }}
+            ${{ steps.meta.outputs.tag != '' && format('ghcr.io/{0}/my-recipes-backend:latest', github.repository_owner) || '' }}
           cache-to: type=gha,mode=max
           cache-from: type=gha
           load: true # <-- makes the image available locally for docker-compose up
@@ -80,6 +84,9 @@ jobs:
 
   build-frontend:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
 
     steps:
       - name: Checkout Repo
@@ -130,9 +137,9 @@ jobs:
           context: .
           file: frontend/Dockerfile
           tags: |
-            ghcr.io/${{ github.repository_owner }}/my-recipes-frontend:${{ steps.tags.outputs.commit }}
-            ${{ steps.tags.outputs.tag != '' && format('ghcr.io/{0}/my-recipes-frontend:{1}', github.repository_owner, steps.tags.outputs.tag) || '' }}
-            ${{ steps.tags.outputs.tag != '' && format('ghcr.io/{0}/my-recipes-frontend:latest', github.repository_owner) || '' }}
+            ghcr.io/${{ github.repository_owner }}/my-recipes-frontend:${{ steps.meta.outputs.commit }}
+            ${{ steps.meta.outputs.tag != '' && format('ghcr.io/{0}/my-recipes-frontend:{1}', github.repository_owner, steps.meta.outputs.tag) || '' }}
+            ${{ steps.meta.outputs.tag != '' && format('ghcr.io/{0}/my-recipes-frontend:latest', github.repository_owner) || '' }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           load: true

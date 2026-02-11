@@ -1,10 +1,13 @@
-import { createResource, Show } from 'solid-js';
+import {createResource, onMount, Show} from 'solid-js';
 import { getRecipes } from '../lib/api';
 import RecipeCard from '../components/RecipeCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 export default function Home() {
   const [recipes] = createResource(getRecipes);
+  onMount(() => {
+    document.title = 'Cook with Cam';
+  });
 
   return (
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

@@ -33,8 +33,8 @@ const mockFetch = vi.fn(async (input: RequestInfo) => {
   if (url.endsWith('/build-info')) {
     return new Response(
       JSON.stringify({
-        commit: 'abc123',
-        tag: 'v1.0.0',
+        gitCommit: 'abc123',
+        gitTag: 'v1.0.0',
       }),
       { status: 200 },
     );

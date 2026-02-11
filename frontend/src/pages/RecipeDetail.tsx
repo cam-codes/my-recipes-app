@@ -1,4 +1,4 @@
-import { createResource, Show } from 'solid-js';
+import {createResource, onMount, Show} from 'solid-js';
 import { useParams, A } from '@solidjs/router';
 import { getRecipe } from '../lib/api';
 import { SolidMarkdown } from 'solid-markdown';
@@ -7,6 +7,9 @@ import LoadingSpinner from '../components/LoadingSpinner';
 export default function RecipeDetail() {
   const params = useParams();
   const [recipe] = createResource(() => params.slug, getRecipe);
+  onMount(() => {
+    document.title = 'Cook with Cam';
+  });
 
   return (
     <div class="max-w-4xl mx-auto px-4 py-8">

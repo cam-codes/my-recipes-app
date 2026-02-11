@@ -158,12 +158,15 @@ jobs:
       # ---------------------------
       # Install Node + dependencies
       # ---------------------------
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: 'yarn'
-          cache-dependency-path: frontend/yarn.lock
+          cache-dependency-path: yarn.lock
 
       - name: Install Frontend Dependencies
         working-directory: frontend

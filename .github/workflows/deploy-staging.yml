@@ -2,7 +2,7 @@ name: Deploy to Staging
 
 on:
   workflow_run:
-    workflows: ["Build & Push Images"]
+    workflows: ["Build, Test, & Push"]
     types:
       - completed
 

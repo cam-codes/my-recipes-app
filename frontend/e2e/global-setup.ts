@@ -20,7 +20,7 @@ export default async function globalSetup() {
         return;
       } catch {
         console.log(`Waiting for frontend... (${i + 1}/${maxAttempts})`);
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
       }
     }
     throw new Error('Frontend failed to become healthy');

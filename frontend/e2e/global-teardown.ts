@@ -1,5 +1,5 @@
 import { execSync } from 'child_process';
-import path from "path";
+import path from 'path';
 
 export default async function globalTeardown() {
   console.log('Stopping app...');
@@ -8,7 +8,10 @@ export default async function globalTeardown() {
 
   try {
     // Down containers cleanly
-    execSync(`docker-compose -f ${composePath}/docker-compose.yml -f ${composePath}/docker-compose.local.yml down`, { stdio: 'inherit' });
+    execSync(
+      `docker-compose -f ${composePath}/docker-compose.yml -f ${composePath}/docker-compose.local.yml down`,
+      { stdio: 'inherit' },
+    );
     console.log('App stopped');
   } catch (error) {
     console.error('Failed to stop app:', error);

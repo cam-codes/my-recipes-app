@@ -26,9 +26,15 @@ jobs:
           deno task fmt:check
           deno task lint:check
 
+      # ---------------------------
+      # Unit test backend
+      # ---------------------------
       - name: Test Coverage
         run: deno task test:coverage
 
+      # ---------------------------
+      # Upload coverage artifact
+      # ---------------------------
       - name: Upload backend coverage
         uses: actions/upload-artifact@v4
         with:
@@ -51,7 +57,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: yarn
 
       - name: Install dependencies
@@ -67,9 +73,15 @@ jobs:
       - name: Build
         run: yarn build
 
+      # ---------------------------
+      # Unit test frontend
+      # ---------------------------
       - name: Test Coverage
         run: yarn test:coverage
 
+      # ---------------------------
+      # Upload coverage artifact
+      # ---------------------------
       - name: Upload Frontend Coverage
         uses: actions/upload-artifact@v4
         with:

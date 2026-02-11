@@ -120,6 +120,9 @@ jobs:
       # ---------------------------
       # Install Node + dependencies
       # ---------------------------
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:

@@ -1,11 +1,17 @@
 name: Release Promotion (Staging → E2E → Prod)
 
 on:
-  release:
-    types: [published]
+  workflow_run:
+    workflows: ["Build, Test, & Push"]
+    types:
+      - completed
+
 
 jobs:
   deploy-staging-release:
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      startsWith(github.event.workflow_run.head_branch, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -33,7 +39,7 @@ jobs:
 
             cat <<EOF > .env
             ${{ secrets.ENV_STAGING }}
-            RELEASE_TAG=${{ github.event.release.tag_name }}
+            RELEASE_TAG=${{ github.event.workflow_run.head_branch_name }}
             EOF
             chmod 600 .env
 
@@ -68,16 +74,16 @@ jobs:
           PLAYWRIGHT_BASE_URL: https://staging.cookwith.cam  # or secret
         run: npx playwright test
 
-  # Optional: Manual approval before prod (uncomment if desired)
-  # approval:
-  #   needs: e2e-staging
-  #   runs-on: ubuntu-latest
-  #   environment: production  # requires manual approval in GitHub
-  #   steps:
-  #     - run: echo "Waiting for approval..."
+  # Manual approval before prod
+  approval:
+   needs: e2e-staging
+   runs-on: ubuntu-latest
+   environment: production
+   steps:
+     - run: echo "Waiting for approval..."
 
   deploy-prod:
-    needs: e2e-staging  # or 'approval' if using manual step
+    needs: approval
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -105,7 +111,7 @@ jobs:
 
             cat <<EOF > .env
             ${{ secrets.ENV_PROD }}
-            RELEASE_TAG=${{ github.event.release.tag_name }}
+            RELEASE_TAG=${{ github.event.workflow_run.head_branch_name }}
             EOF
             chmod 600 .env
 

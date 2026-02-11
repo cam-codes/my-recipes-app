@@ -1,4 +1,4 @@
-import {createResource, onMount, Show} from 'solid-js';
+import { createResource, onMount, Show } from 'solid-js';
 import { useParams, A } from '@solidjs/router';
 import { getRecipe } from '../lib/api';
 import { SolidMarkdown } from 'solid-markdown';

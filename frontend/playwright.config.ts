@@ -15,14 +15,12 @@ export default defineConfig({
     headless: true,
     trace: 'on-first-retry',
   },
-  projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-  ],
+  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
 
   // Only run setup/teardown in local dev
   // Global setup: Start servers before all tests
   globalSetup: e2eEnv === 'local' ? './e2e/global-setup' : undefined,
 
   // Global teardown: Stop servers after all tests
-  globalTeardown: e2eEnv === 'local' ? './e2e/global-teardown' : undefined
+  globalTeardown: e2eEnv === 'local' ? './e2e/global-teardown' : undefined,
 });

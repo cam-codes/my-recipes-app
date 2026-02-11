@@ -110,6 +110,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # ---------------------------
+      # Install Node + dependencies
+      # ---------------------------
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'yarn'
+          cache-dependency-path: frontend/yarn.lock
+
       - name: Install Frontend Dependencies
         working-directory: frontend
         run: yarn install --immutable

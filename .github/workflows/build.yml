@@ -185,7 +185,7 @@ jobs:
 
       - name: Install Playwright Browsers
         working-directory: frontend
-        run: npx playwright install --if-needed
+        run: npx playwright install
 
       - name: Run E2E Tests
         working-directory: frontend

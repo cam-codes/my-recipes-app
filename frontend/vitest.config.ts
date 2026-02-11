@@ -10,6 +10,11 @@ export default defineConfig({
     deps: {
       inline: [/solid-js/, /@solidjs\/.*/, /@solidjs\/router/],
     },
+    exclude: [
+      'e2e/**',
+      '/node_modules/**',
+      'dist/**'
+    ],
     // css: true,                // for future testing styled components / tailwind etc.
   },
 });

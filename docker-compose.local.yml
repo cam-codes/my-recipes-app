@@ -8,6 +8,6 @@ services:
       - ./resume:/resume
 
   frontend:
-    container_name: my-recipes-frontend
+    container_name: my-recipes-frontend-local
     ports:
       - "127.0.0.1:5173:80"

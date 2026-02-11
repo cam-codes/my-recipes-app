@@ -189,37 +189,10 @@ jobs:
         working-directory: frontend
         run: npx playwright install --with-deps
 
-      # ---------------------------
-      # Start containers for e2e tests
-      # ---------------------------
-      - name: Start Containers
-        run: |
-          docker compose -f docker-compose.yml -f docker-compose.local.yml up -d
-
-          # Wait for frontend health
-          n=0
-          until [ $n -ge 30 ]; do
-            curl -f http://localhost:5173/api/health && break
-            n=$((n+1))
-            sleep 2
-          done
-
-          if [ $n -ge 30 ]; then
-            echo "Service failed to start"
-            exit 1
-          fi
-
       - name: Run E2E Tests
         working-directory: frontend
         run: |
           E2E_ENV=local npx playwright test
-
-      # ---------------------------
-      # Teardown
-      # ---------------------------
-      - name: Stop Containers
-        if: always()
-        run: docker compose -f docker-compose.yml -f docker-compose.local.yml down
 
   # ---------------------------
   # Push Images (after e2e)

@@ -21,9 +21,9 @@ Deno.test("GET /build-info returns env vars or defaults", async () => {
   const json = JSON.parse(body as string);
 
   assertEquals(status, 200);
-  assertEquals(json.commit, "abc123456789");
+  assertEquals(json.gitCommit, "abc123456789");
   assertEquals(json.compareUrl, `${COMPARE_URL}/v1.0.1...abc123456789`);
-  assertEquals(json.tag, "v1.2.3");
+  assertEquals(json.gitTag, "v1.2.3");
 
   // Cleanup
   Deno.env.delete("GIT_COMMIT");
@@ -41,7 +41,7 @@ Deno.test("GET /build-info falls back to defaults when env vars missing", async 
   const json = JSON.parse(body as string);
 
   assertEquals(status, 200);
-  assertEquals(json.commit, "HEAD");
+  assertEquals(json.gitCommit, "HEAD");
   assertEquals(json.compareUrl, `${COMPARE_URL}/v1.0.0...HEAD`);
-  assertEquals(json.tag, "");
+  assertEquals(json.gitTag, "");
 });

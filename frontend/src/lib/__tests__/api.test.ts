@@ -90,8 +90,8 @@ describe('api', () => {
 
   it('fetches build info', async () => {
     const info = await getBuildInfo();
-    expect(info.commit).toBe('abc123');
-    expect(info.tag).toBe('v1.0.0');
+    expect(info.gitCommit).toBe('abc123');
+    expect(info.gitTag).toBe('v1.0.0');
   });
 
   it("throws 'Failed to load build info' on error", async () => {

@@ -122,13 +122,14 @@ export function createApp(options: CreateAppOptions): Application {
   });
 
   router.get("/build-info", (ctx) => {
-    const commit = Deno.env.get("GIT_COMMIT") || "HEAD";
+    const gitCommit = Deno.env.get("GIT_COMMIT") || "HEAD";
+    const gitTag = Deno.env.get("GIT_TAG") || "";
     const latestTag = Deno.env.get("LATEST_TAG") || "v1.0.0";
-    const tag = Deno.env.get("GIT_TAG") || "";
+
     ctx.response.body = {
-      commit: commit,
-      compareUrl: `${COMPARE_URL}/${latestTag}...${commit}`,
-      tag: tag,
+      gitCommit: gitCommit,
+      compareUrl: `${COMPARE_URL}/${latestTag}...${gitCommit}`,
+      gitTag: gitTag,
     };
   });
 

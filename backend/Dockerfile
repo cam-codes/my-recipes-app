@@ -11,13 +11,13 @@ COPY backend/utils ./utils
 RUN deno cache server.ts
 
 # Inject build info into the site
-ARG GIT_COMMIT=unknown
-
-# Latest tag, for building compare URL
-ARG LATEST_TAG=unknown
+ARG GIT_COMMIT
 
 # Empty git tag by default, only set on tagged releases
-ARG GIT_TAG=""
+ARG GIT_TAG
+
+# Latest tag, for building compare URL
+ARG LATEST_TAG
 
 ENV GIT_COMMIT=$GIT_COMMIT
 ENV LATEST_TAG=$LATEST_TAG

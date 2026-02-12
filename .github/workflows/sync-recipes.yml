@@ -18,7 +18,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Sync recipes to VM
+      - name: Set env vars on VM
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.VM_HOST }}

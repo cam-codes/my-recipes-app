@@ -1,0 +1,64 @@
+name: Sync Resume
+
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        description: 'Target environment'
+        required: true
+        type: choice
+        options:
+          - staging
+          - prod
+
+jobs:
+  sync-resume:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set env vars on VM
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ github.event.inputs.env == 'staging' && secrets.STAGING_USER || secrets.PROD_USER }}
+          key: ${{ github.event.inputs.env == 'staging' && secrets.STAGING_SSH_KEY || secrets.PROD_SSH_KEY }}
+          script: |
+            set -euxo pipefail
+
+            ENV="${{ github.event.inputs.env }}"
+            SRC_DIR="/opt/my-recipes/$ENV/resume-sync"
+            DEST_DIR="/data/resume/$ENV"
+
+            mkdir -p "$SRC_DIR"
+            rm -rf "$SRC_DIR"/*
+
+      - name: Copy resume
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ github.event.inputs.env == 'staging' && secrets.STAGING_USER || secrets.PROD_USER }}
+          key: ${{ github.event.inputs.env == 'staging' && secrets.STAGING_SSH_KEY || secrets.PROD_SSH_KEY }}
+          source: "resume/*"
+          target: /opt/my-recipes/${{ github.event.inputs.env }}/resume-sync/
+          strip_components: 1
+
+      - name: Activate resume
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ github.event.inputs.env == 'staging' && secrets.STAGING_USER || secrets.PROD_USER }}
+          key: ${{ github.event.inputs.env == 'staging' && secrets.STAGING_SSH_KEY || secrets.PROD_SSH_KEY }}
+          script: |
+            set -euxo pipefail
+
+            ENV="${{ github.event.inputs.env }}"
+            SRC_DIR="/opt/my-recipes/$ENV/resume-sync"
+            DEST_DIR="/data/resume/$ENV"
+
+            sudo mkdir -p "$DEST_DIR"
+            sudo rm -rf "$DEST_DIR"/*
+            sudo mv "$SRC_DIR"/* "$DEST_DIR"
+
+            echo "Resume synced for $ENV"

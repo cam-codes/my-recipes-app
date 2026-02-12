@@ -10,6 +10,18 @@ COPY backend/utils ./utils
 # Cache deps -- Cant cache mount here because we want to write the cache into the image
 RUN deno cache server.ts
 
+# Inject build info into the site
+ARG GIT_COMMIT
+
+# Empty git tag by default, only set on tagged releases
+ARG GIT_TAG
+
+# Latest tag, for building compare URL
+ARG LATEST_TAG
+
+ENV GIT_COMMIT=$GIT_COMMIT
+ENV LATEST_TAG=$LATEST_TAG
+ENV GIT_TAG=$GIT_TAG
 EXPOSE 3000
 
 CMD ["deno", "task", "start"]

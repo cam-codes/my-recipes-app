@@ -1,9 +1,17 @@
 import { Application, Context, Router, RouterContext, send } from "oak";
 import { extractYaml } from "@std/front-matter";
-import { RecipeFrontMatter } from "./types.ts";
-import { normalizeRecipe } from "./utils/utils.ts";
+import {
+  CreateAppOptions,
+  RecipeFrontMatter,
+  ResumeFrontMatter,
+} from "./types.ts";
+import { normalizeRecipe } from "./utils/recipe.ts";
 
-export function createApp(recipesDir: URL): Application {
+export const COMPARE_URL =
+  "https://github.com/cam-codes/my-recipes-app/compare";
+
+export function createApp(options: CreateAppOptions): Application {
+  const { recipesDir, resumeFile } = options;
   const app = new Application();
   const router = new Router();
 
@@ -27,11 +35,8 @@ export function createApp(recipesDir: URL): Application {
           },
         );
       } catch (err) {
-        console.error(
-          "Failed to serve static file:",
-          err instanceof Error ? err.message : String(err),
-        );
-        ctx.throw(404, "Not Found");
+        console.error("Failed to serve static file:", err);
+        ctx.throw(404, "Image not found");
       }
       return;
     }
@@ -64,12 +69,13 @@ export function createApp(recipesDir: URL): Application {
         // normalize data and add to response body
         ctx.response.body = normalizeRecipe(slug, attrs);
       } catch (err) {
-        // deno-coverage-ignore-next-line
-        console.error(
-          `"/recipes/:slug" :: [SKIPPED] ${slug}:`,
-          err instanceof Error ? err.message : String(err),
+        console.error(`Failed to load recipe: ${slug} -- `, err);
+        ctx.throw(
+          err instanceof Deno.errors.NotFound ? 404 : 500,
+          err instanceof Deno.errors.NotFound
+            ? "Recipe not found"
+            : "Internal Server Error",
         );
-        ctx.throw(500, "Internal Server Error");
       }
     },
   );
@@ -91,13 +97,40 @@ export function createApp(recipesDir: URL): Application {
         // normalize data and push
         list.push(normalizeRecipe(entry.name, attrs));
       } catch (err) {
-        console.error(
-          `recipes :: [SKIPPED] ${slug}:`,
-          err instanceof Error ? err.message : String(err),
-        );
+        console.error(`Skipped invalid recipe: ${slug} --`, err);
       }
     }
     ctx.response.body = list;
+  });
+
+  // /resume → returns parsed frontmatter as JSON
+  router.get("/resume", async (ctx) => {
+    try {
+      const content = await Deno.readTextFile(resumeFile);
+      const { attrs } = extractYaml<ResumeFrontMatter>(content);
+      ctx.response.body = attrs;
+    } catch (err) {
+      console.error(
+        "could not read resume file:",
+        err instanceof Error ? err.message : String(err),
+      );
+      ctx.throw(
+        err instanceof Deno.errors.NotFound ? 404 : 500,
+        "Internal Server Error",
+      );
+    }
+  });
+
+  router.get("/build-info", (ctx) => {
+    const gitCommit = Deno.env.get("GIT_COMMIT") || "HEAD";
+    const gitTag = Deno.env.get("GIT_TAG") || "";
+    const latestTag = Deno.env.get("LATEST_TAG") || "v1.0.0";
+
+    ctx.response.body = {
+      gitCommit: gitCommit,
+      compareUrl: `${COMPARE_URL}/${latestTag}...${gitCommit}`,
+      gitTag: gitTag,
+    };
   });
 
   app.use(router.routes());

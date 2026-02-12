@@ -1,4 +1,6 @@
 import { render, screen, waitFor } from '@solidjs/testing-library';
+import Home from '../Home.tsx';
+import type { Recipe } from '../../lib/types.ts';
 import Home from './Home';
 import { expect, vi } from 'vitest';
 import type { Recipe } from '../lib/types.ts';
@@ -6,9 +8,9 @@ import makeRecipe from '../test/setup.ts';
 import { ShoppingListProvider } from '../context/ShoppingListContext';
 
 // mock the api module
-import * as api from '../lib/api';
+import * as api from '../../lib/api.ts';
 
-vi.mock('../lib/api', () => ({
+vi.mock('../../lib/api', () => ({
   getRecipes: vi.fn(),
 }));
 
@@ -52,6 +54,6 @@ it('renders recipe list', async () => {
 
     const images = screen.getAllByRole('img');
     expect(images).toHaveLength(2);
-    expect(images[0]).toHaveAttribute('src', '/recipes/miso-salmon/salmon.jpg');
+    expect(images[0]).toHaveAttribute('src', 'api/recipes/miso-salmon/salmon.jpg');
   });
 });

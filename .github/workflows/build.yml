@@ -1,14 +1,20 @@
-name: Build & Push Images
+name: Build, Test, & Push
 
 on:
   pull_request:
     branches: [main]
   push:
     branches: [main]
+    tags:
+      - '*'
 
 permissions:
   contents: read
   packages: write
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-backend:
@@ -17,29 +23,65 @@ jobs:
       run:
         working-directory: backend
 
+    outputs:
+      commit: ${{ steps.meta.outputs.commit }}
+      tag: ${{ steps.meta.outputs.tag }}
+
     steps:
-      - name: Checkout Backend
+      - name: Checkout Repo
         uses: actions/checkout@v4
-
-      - name: Setup Deno
-        uses: denoland/setup-deno@v1
         with:
-          deno-version: 2.6.6
+          fetch-depth: 0 # get tags
 
-      - name: Log in to GitHub Container Registry
+      # ---------------------------
+      # Get git info for build tags
+      # ---------------------------
+      - name: Compute Tags
+        id: meta
+        run: |
+          top_level=$(git rev-parse --show-toplevel)
+          cd $top_level
+          COMMIT=${{ github.sha }}
+          TAG=$(git describe --tags --exact-match 2>/dev/null || echo "")
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+          echo "commit=$COMMIT" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "latest=$LATEST_TAG" >> $GITHUB_OUTPUT
+
+      # ---------------------------
+      # Docker setup
+      # ---------------------------
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name == 'push'
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build & Push Backend Image
-        run: |
-          cd ..
-          docker build -f backend/Dockerfile \
-            -t ghcr.io/${{ github.repository_owner }}/my-recipes-backend:${{ github.sha }} \
-            .
-          docker push ghcr.io/${{ github.repository_owner }}/my-recipes-backend:${{ github.sha }}
+      # ---------------------------
+      # Build backend image with caching
+      # ---------------------------
+      - name: Build Backend Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: backend/Dockerfile
+          build-args: |
+            GIT_COMMIT=${{ steps.meta.outputs.commit }}
+            GIT_TAG=${{ steps.meta.outputs.tag }}
+            LATEST_TAG=${{ steps.meta.outputs.latest }}
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/my-recipes-backend:${{ github.sha }}
+            ${{ steps.meta.outputs.tag != '' && format('ghcr.io/{0}/my-recipes-backend:{1}', github.repository_owner, steps.meta.outputs.tag) || '' }}
+          cache-to: type=gha,mode=max
+          cache-from: type=gha
+          load: true # <-- makes the image available locally for docker-compose up
+          push: ${{ github.event_name == 'push' }}
 
   build-frontend:
     runs-on: ubuntu-latest
@@ -48,28 +90,106 @@ jobs:
         working-directory: frontend
 
     steps:
-      - name: Checkout Frontend
+      - name: Checkout Repo
         uses: actions/checkout@v4
-
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
         with:
-          node-version: 20
+          fetch-depth: 0 # get tags
+
+      # ---------------------------
+      # Get git info for build tags
+      # ---------------------------
+      - name: Compute Tags
+        id: meta
+        run: |
+          top_level=$(git rev-parse --show-toplevel)
+          cd $top_level
+          COMMIT=${{ github.sha }}
+          TAG=$(git describe --tags --exact-match 2>/dev/null || echo "")
+
+          echo "commit=$COMMIT" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to GitHub Container Registry
+        if: github.event_name == 'push'
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build & Push Frontend Image
+      # ---------------------------
+      # Install Node + dependencies
+      # ---------------------------
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+
+      - name: Install Frontend Dependencies
+        working-directory: frontend
+        run: yarn install --immutable
+
+      - name: Build Frontend Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: frontend/Dockerfile
+          build-args: |
+            VITE_GA_MEASUREMENT_ID=${{ secrets.GA_MEASUREMENT_ID }}
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/my-recipes-frontend:${{ steps.meta.outputs.commit }}
+            ${{ steps.meta.outputs.tag != '' && format('ghcr.io/{0}/my-recipes-frontend:{1}', github.repository_owner, steps.meta.outputs.tag) || '' }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          load: true
+          push: ${{ github.event_name == 'push' }}
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: [ build-backend, build-frontend ]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      # ---------------------------
+      # Install Node + dependencies
+      # ---------------------------
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+
+      - name: Install Frontend Dependencies
+        working-directory: frontend
+        run: yarn install --immutable
+
+      # ---------------------------
+      # Cache Playwright Browsers
+      # ---------------------------
+      - name: Cache Playwright Browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('yarn.lock') }}
+
+      - name: Install Playwright Browsers
+        working-directory: frontend
+        run: npx playwright install
+
+      - name: Run E2E Tests
+        working-directory: frontend
         run: |
-          cd ..
-          docker build -f frontend/Dockerfile \
-            -t ghcr.io/${{ github.repository_owner }}/my-recipes-frontend:${{ github.sha }} \
-            .
-          docker push ghcr.io/${{ github.repository_owner }}/my-recipes-frontend:${{ github.sha }}
+          E2E_ENV=local npx playwright test

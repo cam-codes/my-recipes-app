@@ -1,11 +1,10 @@
 import { render, screen, waitFor } from '@solidjs/testing-library';
-import RecipeDetail from './RecipeDetail';
+import RecipeDetail from '../RecipeDetail.tsx';
+import type { Recipe } from '../../lib/types.ts';
 
 // mock the api module
-import * as api from '../lib/api';
-import type { Recipe } from '../lib/types.ts';
-
-vi.mock('../lib/api');
+import * as api from '../../lib/api.ts';
+vi.mock('../../lib/api');
 
 // mock the router before importing the component
 vi.mock('@solidjs/router', () => ({
@@ -26,12 +25,14 @@ const mockRecipe: Recipe = {
   tips: ['Serve hot'],
 };
 
-it('renders recipe detail page', async () => {
-  (api.getRecipe as vi.Mock).mockResolvedValue(mockRecipe);
-  render(() => <RecipeDetail />);
+describe('RecipeDetail', () => {
+  it('renders recipe detail page', async () => {
+    (api.getRecipe as vi.Mock).mockResolvedValue(mockRecipe);
+    render(() => <RecipeDetail />);
 
-  await waitFor(async () => {
-    expect(screen.getByText('Miso Salmon')).toBeInTheDocument();
-    expect(screen.getByText('Bake')).toBeInTheDocument();
+    await waitFor(async () => {
+      expect(screen.getByText('Miso Salmon')).toBeInTheDocument();
+      expect(screen.getByText('Bake')).toBeInTheDocument();
+    });
   });
 });

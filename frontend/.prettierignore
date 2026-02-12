@@ -1,0 +1,7 @@
+# Playwright artifacts
+e2e/__tests__/results
+playwright-report
+
+node_modules
+dist
+coverage

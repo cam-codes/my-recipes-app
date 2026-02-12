@@ -1,136 +1,255 @@
 # My Recipes App
 
-A full-stack recipe browsing application built with **Deno** (backend) + **SolidJS** (frontend).
+A full-stack recipe + resume web app with a **Deno/Oak backend** and a **SolidJS/Vite frontend**.
 
-Browse a collection of recipes stored as markdown files with YAML front-matter, view details, and see associated images — all served locally or deployable.
+The app serves recipe data from Markdown front matter, renders recipe detail pages, exposes build metadata, and includes a dedicated resume page.
 
-## Tech Stack
+---
 
-### Backend (Deno)
-- **Runtime**: Deno 2.x
-- **Web framework**: Oak v12.6.1
-- **YAML parsing**: @std/front-matter@^1.0.9
-- **File system**: Deno.readDir / Deno.readTextFile
-- **Testing**: Deno.test + std/testing/asserts
+## What the app does
 
-### Frontend (SolidJS + Vite)
-- **Framework**: SolidJS 1.9.x
-- **Routing**: @solidjs/router
-- **Testing**: Vitest + @solidjs/testing-library
-- **Build tool**: Vite + vite-plugin-solid
-- **Styling**: Tailwind CSS (via @tailwindcss/vite)
+- Browse all recipes on the home page.
+- Open recipe detail pages with ingredients, instructions, tips, timing, and estimated cost.
+- View a resume page sourced from Markdown front matter.
+- Surface deployment/build metadata from the backend (`commit`, `tag`, compare URL).
+- Optionally track page views with Google Analytics (build-time opt-in).
 
-### Package Manager
-- **Yarn Berry** (v4.12.0) with `nodeLinker: node-modules` (required for Vite/Vitest compatibility)
+---
 
-## Project Structure
+## Architecture
+
+- **Backend**: Deno + Oak HTTP API.
+- **Frontend**: SolidJS SPA (Vite build), served by Nginx in Docker.
+- **Data source**:
+  - `recipes/<slug>/recipe.md` (+ optional `image.jpg`)
+  - `resume/resume.md`
+- **Container orchestration**: Docker Compose with local, staging, and production overlays.
+
+---
+
+## Repository structure
+
+```text
 my-recipes-app/
 ├── backend/
-│   ├── main.ts               # Core app logic (createApp, routes)
-│   ├── server.ts             # Entry point (listens on port 3000)
-│   ├── utils/
-│   │   ├── recipe.ts         # normalizeRecipe (title from slug, defaults, etc.)
-│   │   └── logger.ts         # Structured JSON logger with colors
-│   ├── types.ts              # Recipe front-matter types
-│   ├── lib/
-│   │   └── api.ts            # Frontend-facing fetch helpers (optional)
-│   └── tests/
-│       ├── main_test.ts      # Route tests, normalization, image serving
-│       └── server_test.ts    # Server startup smoke tests
+│   ├── main.ts                  # API routes and app wiring
+│   ├── server.ts                # runtime entrypoint
+│   ├── types.ts                 # recipe/resume TypeScript types
+│   ├── utils/recipe.ts          # recipe normalization logic
+│   ├── tests/                   # Deno tests (API + parsing behavior)
+│   ├── deno.json                # backend tasks/imports
+│   └── Dockerfile
 ├── frontend/
 │   ├── src/
-│   │   ├── pages/
-│   │   │   └── Home.tsx      # Recipe list with createResource + loading state
-│   │   ├── components/
-│   │   │   ├── RecipeCard.tsx
-│   │   │   └── LoadingSpinner.tsx
-│   │   └── lib/
-│   │       ├── api.ts        # getRecipes() wrapper
-│   │       └── config.ts     # API_BASE
-│   ├── tests/
-│   │   └── Home.test.tsx     # Home page rendering + loading → success
+│   │   ├── App.tsx
+│   │   ├── components/          # layout/cards/resume display/spinner
+│   │   ├── pages/               # Home, RecipeDetail, ResumePage
+│   │   ├── lib/                 # API client, analytics, route tracking, types
+│   │   └── test/                # frontend test setup + mocks
+│   ├── e2e/                     # Playwright tests
+│   ├── nginx.conf
 │   ├── vite.config.ts
-│   └── package.json
-├── recipes/                      # Live recipes (served by backend)
-│   ├── miso-salmon/
-│   │   ├── recipe.md
-│   │   └── salmon.jpg
-│   └── ... (other recipes)
-├── tests/fixtures/recipes/       # Test fixtures (used in backend tests)
-└── README.md
+│   ├── vitest.config.ts
+│   ├── playwright.config.ts
+│   ├── package.json
+│   └── Dockerfile
+├── recipes/                     # recipe content (folder per recipe)
+├── resume/                      # resume markdown data
+├── docker-compose.yml           # base services
+├── docker-compose.local.yml     # local ports/volumes
+├── docker-compose.staging.yml   # staging image + ports
+├── docker-compose.prod.yml      # production image + ports
+├── dev-up.sh                    # build+run local stack with build metadata args
+├── ci-up.sh                     # run stack from already-built images
+├── package.json                 # root workspace/tooling scripts
+└── .github/workflows/           # CI/CD/release automation
+```
 
+---
 
-## Features
+## Backend details
 
-### Backend
-- `GET /recipes` → list of all recipes (normalized)
-- `GET /recipes/:slug` → single recipe details
-- `GET /recipes/:slug/image.jpg` → static image serving
-- Automatic title generation from slug (kebab-case → Title Case)
-- Default values for missing fields (description, times, cost, empty arrays)
-- Graceful skipping of invalid/broken recipes with structured logging
-- CORS headers for localhost:5173 dev server
+### Runtime and dependencies
+
+- Deno `2.6.x`
+- Oak `v12.6.1`
+- `@std/front-matter` for YAML front matter extraction
+
+### API endpoints
+
+| Endpoint                   | Method | Description                                                       |
+| -------------------------- | ------ | ----------------------------------------------------------------- |
+| `/health`                  | `GET`  | Health check (`{ status: "OK" }`).                                |
+| `/recipes`                 | `GET`  | Returns normalized recipe list from `recipes/*/recipe.md`.        |
+| `/recipes/:slug`           | `GET`  | Returns one normalized recipe by slug.                            |
+| `/recipes/:slug/image.jpg` | `GET`  | Serves recipe image from filesystem if present.                   |
+| `/resume`                  | `GET`  | Returns parsed resume front matter from `resume/resume.md`.       |
+| `/build-info`              | `GET`  | Returns `gitCommit`, `gitTag`, and compare URL for UI build info. |
+
+### Normalization behavior
+
+For recipes, the backend normalizes missing fields with sensible defaults:
+
+- `title`: generated from slug if omitted
+- `description`: `""`
+- `prepTime`, `cookTime`, `estimatedCost`: `0`
+- `ingredients`, `instructions`, `tips`: `[]`
+- `image`: always exposed as `/recipes/<slug>/image.jpg`
+
+Invalid recipe folders/files are skipped in the list endpoint instead of crashing the app.
+
+---
+
+## Frontend details
+
+### UI and routing
+
+- Routes:
+  - `/` (recipe listing)
+  - `/recipe/:slug` (recipe details)
+  - `/resume` (resume page)
+- Build-info dropdown in header links to release notes or commit compare URL.
+- Loading states for async data fetches.
+
+### Analytics
+
+Analytics is **disabled by default** and enabled only at build-time when:
+
+- `VITE_ANALYTICS_ENABLED=true`
+- `VITE_GA_MEASUREMENT_ID` is set
+
+When enabled, page views are tracked via route changes.
+
+---
+
+## Dependencies and toolchain
+
+### Root
+
+- Yarn Berry `4.12.0` workspaces
+- ESLint + Prettier + TypeScript-ESLint
 
 ### Frontend
-- Responsive recipe grid with Tailwind
-- Loading spinner while fetching
-- Recipe cards with image, title, description, prep/cook time
-- Links to detail pages via `<A>` from `@solidjs/router`
-- Clean, modern UI
 
-## Development Setup
+- SolidJS `1.9.x`
+- `@solidjs/router`
+- Vite `7.x`
+- Tailwind CSS `4.x`
+- Vitest + Testing Library
+- Playwright (E2E)
 
 ### Backend
+
+- Deno task runner (`deno task`)
+- Deno test runner (`deno test`)
+
+---
+
+## Local development
+
+### Prerequisites
+
+- **Node** `24.13.0` (for workspace/frontend toolchain)
+- **Yarn** `4.12.0` (via Corepack recommended)
+- **Deno** `2.x`
+- Optional: **Docker** + Docker Compose
+
+### Install dependencies
+
+```bash
+yarn install
+```
+
+### Run backend (non-Docker)
+
 ```bash
 cd backend
-
-# Run server
 deno task start
-# → http://localhost:3000
+# http://localhost:3000
+```
 
-# Run tests
+### Run frontend (non-Docker)
+
+```bash
+cd frontend
+yarn dev
+# http://localhost:5173
+```
+
+The frontend expects backend APIs under `/api/*` (via dev/proxy or containerized Nginx path mapping).
+
+---
+
+## Testing and quality checks
+
+### Backend
+
+```bash
+cd backend
 deno task test
-
-# Tests with coverage
 deno task test:coverage
+deno task lint:check
+deno task fmt:check
 ```
 
 ### Frontend
+
 ```bash
 cd frontend
-
-# Dev server
-yarn dev
-# → http://localhost:5173
-
-# Run tests
 yarn test
-
-# Tests with coverage
 yarn test:coverage
+yarn lint:check
+yarn format:check
 ```
 
-### Docker (Frontend GA env)
-Analytics is controlled at build time with two variables:
-
-- `VITE_GA_MEASUREMENT_ID` (your GA measurement ID)
-- `VITE_ANALYTICS_ENABLED` (`true` only for production image builds)
+### Root tooling
 
 ```bash
-VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX VITE_ANALYTICS_ENABLED=false docker compose -f docker-compose.yml -f docker-compose.local.yml build frontend
+yarn lint:check
+yarn format:check
 ```
 
-For production builds, set `VITE_ANALYTICS_ENABLED=true`.
-If either analytics is disabled or GA ID is missing during build, `window.gtag` will not be initialized in the bundle.
+---
 
-## Adding a New Recipe
-Create a folder in recipes/ (or tests/fixtures/recipes/ for tests):
+## Docker usage
+
+### Local stack (build + run)
+
+```bash
+./dev-up.sh
 ```
+
+This builds both services and injects build metadata (`GIT_COMMIT`, `GIT_TAG`, `LATEST_TAG`) plus local analytics defaults.
+
+### Run from pre-built images
+
+```bash
+./ci-up.sh
+```
+
+### Compose overlays
+
+- Base: `docker-compose.yml`
+- Local: `docker-compose.local.yml`
+- Staging: `docker-compose.staging.yml`
+- Production: `docker-compose.prod.yml`
+
+---
+
+## Content authoring
+
+### Add a recipe
+
+Create a new folder under `recipes/`:
+
+```text
 recipes/my-new-recipe/
 ├── recipe.md
-└── image.jpg (optional)
+└── image.jpg   # optional but expected by default image path
 ```
-Example recipe.md:
+
+Example `recipe.md`:
+
 ```markdown
 ---
 title: My New Recipe
@@ -147,7 +266,12 @@ instructions:
 tips:
   - Don't overmix!
 ---
-
-Full instructions in markdown...
 ```
-Made with ❤️ by Cam in Anna, Texas
+
+### Update resume data
+
+Edit `resume/resume.md` front matter fields used by the `/resume` endpoint and frontend resume renderer.
+
+---
+
+Made with ❤️ in Anna, Texas.

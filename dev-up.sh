@@ -12,7 +12,7 @@ echo "🚀 Starting local dev with commit '$GIT_COMMIT' and tag '$GIT_TAG' and l
 docker compose -f $top_level/docker-compose.yml -f $top_level/docker-compose.local.yml build --no-cache \
   --build-arg GIT_COMMIT=$GIT_COMMIT \
   --build-arg GIT_TAG=$GIT_TAG \
-  --build-arg VITE_GA_MEASUREMENT_ID=G-HJCLBNRY59 \
+  --build-arg VITE_ANALYTICS_ENABLED=false \
   --build-arg LATEST_TAG=$LATEST_TAG
 
 docker compose -f $top_level/docker-compose.yml -f $top_level/docker-compose.local.yml up -d

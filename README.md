@@ -110,6 +110,15 @@ yarn test
 yarn test:coverage
 ```
 
+### Docker (Frontend GA env)
+When building with Docker Compose, provide the GA measurement ID as an environment variable so Vite can inline it at build time:
+
+```bash
+VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX docker compose -f docker-compose.yml -f docker-compose.local.yml build frontend
+```
+
+If this variable is missing during the image build, `window.gtag` will not be initialized in the production bundle.
+
 ## Adding a New Recipe
 Create a folder in recipes/ (or tests/fixtures/recipes/ for tests):
 ```

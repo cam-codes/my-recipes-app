@@ -10,6 +10,8 @@ yarn-error.log*
 **/coverage/**
 **/coverage.lcov
 **/.yarn/install-state.gz
+frontend/e2e/__tests__/results/**
+frontend/playwright-report/**
 
 .vscode/*
 .idea

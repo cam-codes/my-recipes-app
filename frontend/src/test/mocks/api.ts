@@ -1,5 +1,5 @@
 import type { Recipe } from '../../components/Recipe.tsx';
-import type { RecipeListItem } from "../../components/RecipeListItem.tsx";
+import type { RecipeListItem } from '../../components/RecipeListItem.tsx';
 
 export const mockRecipes: RecipeListItem[] = [
   {

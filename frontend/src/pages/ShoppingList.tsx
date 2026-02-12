@@ -2,7 +2,11 @@ import { createMemo, createResource, createSignal, For, Show, onMount } from 'so
 import { A } from '@solidjs/router';
 import { useShoppingList } from '../context/ShoppingListContext';
 import { getRecipe } from '../lib/api';
-import { INGREDIENT_CATEGORY_MAP, DEFAULT_CATEGORY, type Category } from '../lib/ingredientCategories';
+import {
+  INGREDIENT_CATEGORY_MAP,
+  DEFAULT_CATEGORY,
+  type Category,
+} from '../lib/ingredientCategories';
 import type { Recipe } from '../lib/types';
 import LoadingSpinner from '../components/LoadingSpinner';
 
@@ -116,7 +120,8 @@ export default function ShoppingList() {
                             class="mt-1 scale-125"
                           />
                           <span class={checked().has(item.key) ? 'line-through text-gray-400' : ''}>
-                            {item.ingredient} <span class="text-sm text-gray-500">({item.recipe})</span>
+                            {item.ingredient}{' '}
+                            <span class="text-sm text-gray-500">({item.recipe})</span>
                           </span>
                         </li>
                       )}

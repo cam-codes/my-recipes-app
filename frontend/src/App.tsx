@@ -2,8 +2,8 @@ import { Router, Route } from '@solidjs/router';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import RecipeDetail from './pages/RecipeDetail';
-import { ShoppingListProvider } from "./context/ShoppingListContext.tsx";
-import ShoppingList from "./pages/ShoppingList.tsx";
+import { ShoppingListProvider } from './context/ShoppingListContext.tsx';
+import ShoppingList from './pages/ShoppingList.tsx';
 
 export default function App() {
   return (

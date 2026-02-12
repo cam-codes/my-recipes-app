@@ -1,7 +1,12 @@
 import { render, fireEvent } from '@solidjs/testing-library';
-import { Router } from '@solidjs/router';
-import { ShoppingListProvider } from '../context/ShoppingListContext.tsx';
+import { ShoppingListProvider } from '../context/ShoppingListContext';
 import RecipeListItem from './RecipeListItem';
+import { vi } from 'vitest';
+
+// mock the router
+vi.mock('@solidjs/router', () => ({
+  A: (props: Record<string, unknown>) => <a {...props} />,
+}));
 
 const recipe = {
   slug: 'test-recipe',
@@ -14,11 +19,9 @@ const recipe = {
 
 function renderWithProviders() {
   return render(() => (
-    <Router>
-      <ShoppingListProvider>
-        <RecipeListItem recipe={recipe} selectionEnabled />
-      </ShoppingListProvider>
-    </Router>
+    <ShoppingListProvider>
+      <RecipeListItem recipe={recipe} selectionEnabled />
+    </ShoppingListProvider>
   ));
 }
 

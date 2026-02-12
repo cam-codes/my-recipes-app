@@ -1,11 +1,13 @@
 import { render, screen } from '@solidjs/testing-library';
+import { vi } from 'vitest';
 import RecipeCard from './RecipeCard';
 import makeRecipe from '../test/setup.ts';
+import { ShoppingListProvider } from '../context/ShoppingListContext';
 
 // mock the router before importing the component
 vi.mock('@solidjs/router', () => ({
   useParams: () => ({ slug: 'miso-salmon' }),
-  A: (props: any) => <a {...props} />,
+  A: (props: Record<string, unknown>) => <a {...props} />,
 }));
 
 it('renders recipe card data', () => {
@@ -16,7 +18,11 @@ it('renders recipe card data', () => {
     description: 'Great Recipe',
   });
 
-  render(() => <RecipeCard recipe={recipe} />);
+  render(() => (
+    <ShoppingListProvider>
+      <RecipeCard recipe={recipe} />
+    </ShoppingListProvider>
+  ));
 
   expect(screen.getByText('Miso Salmon')).toBeInTheDocument();
   expect(screen.getByRole('img')).toHaveAttribute('src', 'api/recipes/miso-salmon/image.jpg');

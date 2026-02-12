@@ -1,13 +1,9 @@
-import type { JSX } from 'solid-js';
 import { Show, createResource } from 'solid-js';
+import type { ParentComponent } from 'solid-js';
 import { getBuildInfo } from '../lib/api';
 import RouteTracker from "../lib/routetracker.ts";
 
-type LayoutProps = {
-  children: JSX.Element;
-};
-
-export default function Layout(props: LayoutProps) {
+const Layout: ParentComponent = (props) => {
   const [buildInfo] = createResource(getBuildInfo);
 
   return (
@@ -116,3 +112,5 @@ export default function Layout(props: LayoutProps) {
     </div>
   );
 }
+
+export default Layout;

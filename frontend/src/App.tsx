@@ -6,12 +6,12 @@ import ResumePage from './pages/ResumePage.tsx';
 
 export default function App() {
   return (
-    <Layout>
-      <Router>
+    <Router>
+      <Route path="/" component={Layout}>
         <Route path="/" component={Home} />
         <Route path="/recipe/:slug" component={RecipeDetail} />
         <Route path="/resume" component={ResumePage} />
-      </Router>
-    </Layout>
+      </Route>
+    </Router>
   );
 }

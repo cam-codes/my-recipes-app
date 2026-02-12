@@ -1,5 +1,10 @@
 # Stage 1: Build frontend safely
 FROM node:20-bullseye AS builder
+
+# Inject Google Analytics MID
+ARG VITE_GA_MEASUREMENT_ID
+ENV VITE_GA_MEASUREMENT_ID=$VITE_GA_MEASUREMENT_ID
+
 WORKDIR /app
 
 # Copy only the files needed to install deps
@@ -17,6 +22,10 @@ COPY ./frontend frontend/
 
 # Build production assets
 WORKDIR /app/frontend
+
+# todo: delete debug log
+RUN ls -R /app/frontend
+
 RUN --mount=type=cache,target=/root/.yarn \
     --mount=type=cache,target=/root/.cache/yarn \
     yarn build

@@ -124,6 +124,7 @@ jobs:
             cat <<EOF > .env
             ${{ secrets.ENV_PROD }}
             RELEASE_TAG=${{ github.event.workflow_run.head_branch }}
+            VITE_GA_MEASUREMENT_ID=${{ secrets.GA_MEASUREMENT_ID }}
             EOF
             chmod 600 .env
 

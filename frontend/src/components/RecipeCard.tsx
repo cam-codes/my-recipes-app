@@ -1,7 +1,6 @@
 import { A } from '@solidjs/router';
-import type { RecipeListItem } from './RecipeListItem.tsx';
-import { API_BASE } from '../lib/config.ts';
-import { useShoppingList } from "../context/ShoppingListContext.tsx";
+import type { RecipeListItem } from '../lib/types';
+import { useShoppingList } from "../context/ShoppingListContext";
 
 interface Props {
   recipe: RecipeListItem;

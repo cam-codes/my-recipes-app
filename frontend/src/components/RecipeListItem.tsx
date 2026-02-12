@@ -1,16 +1,15 @@
-import { useShoppingList } from "../context/ShoppingListContext.tsx";
+import type { RecipeListItem as RecipeListItemType } from '../lib/types';
+import { useShoppingList } from '../context/ShoppingListContext';
 import { A } from '@solidjs/router';
 
-export interface RecipeListItem {
-  slug: string;
-  title: string;
-  description: string;
-  prepTime: number;
-  cookTime: number;
-  image: string;
+interface Props {
+  recipe: RecipeListItemType;
+  selectionEnabled?: boolean;
 }
 
-function RecipeListItem(props) {
+export type { RecipeListItemType as RecipeListItem };
+
+export default function RecipeListItem(props: Props) {
   const { toggle, selected } = useShoppingList();
 
   const content = (
@@ -29,7 +28,5 @@ function RecipeListItem(props) {
     </div>
   );
 
-  return props.selectionEnabled
-    ? content
-    : <A href={`/recipe/${props.recipe.slug}`}>{content}</A>;
+  return props.selectionEnabled ? content : <A href={`/recipe/${props.recipe.slug}`}>{content}</A>;
 }

@@ -2,13 +2,12 @@ import { RecipeFrontMatter } from "../types.ts";
 import { Recipe } from "../types.ts";
 
 const toNumber = (v: unknown) =>
-  typeof v === "number"
-    ? v
-    : typeof v === "string"
-      ? Number(v) || 0
-      : 0;
+  typeof v === "number" ? v : typeof v === "string" ? Number(v) || 0 : 0;
 
-export function normalizeRecipe(slug: string, attrs: RecipeFrontMatter): Recipe {
+export function normalizeRecipe(
+  slug: string,
+  attrs: RecipeFrontMatter,
+): Recipe {
   return {
     slug,
     title: attrs.title ??

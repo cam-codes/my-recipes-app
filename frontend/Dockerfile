@@ -23,9 +23,6 @@ COPY ./frontend frontend/
 # Build production assets
 WORKDIR /app/frontend
 
-# todo: delete debug log
-RUN ls -R /app/frontend
-
 RUN --mount=type=cache,target=/root/.yarn \
     --mount=type=cache,target=/root/.cache/yarn \
     yarn build

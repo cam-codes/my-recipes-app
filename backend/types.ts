@@ -1,5 +1,3 @@
-import type { RecipeListItem } from "../frontend/src/lib/types.ts";
-
 export interface RecipeFrontMatter {
   title?: string;
 

@@ -1,7 +1,7 @@
 import { Show, createResource } from 'solid-js';
 import type { ParentComponent } from 'solid-js';
 import { getBuildInfo } from '../lib/api';
-import RouteTracker from "../lib/routetracker.ts";
+import RouteTracker from '../lib/routetracker.ts';
 
 const Layout: ParentComponent = (props) => {
   const [buildInfo] = createResource(getBuildInfo);
@@ -111,6 +111,6 @@ const Layout: ParentComponent = (props) => {
       <main class="flex-1">{props.children}</main>
     </div>
   );
-}
+};
 
 export default Layout;

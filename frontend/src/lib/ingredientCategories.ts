@@ -9,8 +9,7 @@ export type Category =
   | 'Meat'
   | 'Seafood'
   | 'Produce'
-  | 'Unknown'
-  ;
+  | 'Unknown';
 
 export const INGREDIENT_CATEGORY_MAP: Record<string, Category> = {
   // Liquor
@@ -21,26 +20,26 @@ export const INGREDIENT_CATEGORY_MAP: Record<string, Category> = {
   // Spices&Oils
   'bay leaf': 'Spices&Oils',
   'black pepper': 'Spices&Oils',
-  'butter': 'Spices&Oils',
-  'cinnamon': 'Spices&Oils',
-  'cumin': 'Spices&Oils',
+  butter: 'Spices&Oils',
+  cinnamon: 'Spices&Oils',
+  cumin: 'Spices&Oils',
   'garlic powder': 'Spices&Oils',
   'olive oil': 'Spices&Oils',
-  'oregano': 'Spices&Oils',
+  oregano: 'Spices&Oils',
   'red pepper flakes': 'Spices&Oils',
-  'rosemary': 'Spices&Oils',
-  'salt': 'Spices&Oils',
+  rosemary: 'Spices&Oils',
+  salt: 'Spices&Oils',
   'sesame oil': 'Spices&Oils',
   'smoked paprika': 'Spices&Oils',
-  'thyme': 'Spices&Oils',
+  thyme: 'Spices&Oils',
   'truffle oil': 'Spices&Oils',
 
   // International
   'anchovy fillets': 'International',
   'anchovy paste': 'International',
-  'mirin': 'International',
+  mirin: 'International',
   'miso paste': 'International',
-  'saffron': 'International',
+  saffron: 'International',
   'soy sauce': 'International',
   'worcestershire sauce': 'International',
 
@@ -52,12 +51,12 @@ export const INGREDIENT_CATEGORY_MAP: Record<string, Category> = {
   'instant espresso powder': 'Dry Goods',
   'jasmine rice': 'Dry Goods',
   'pure vanilla extract': 'Dry Goods',
-  'spaghetti': 'Dry Goods',
+  spaghetti: 'Dry Goods',
 
   // Canned-Goods&Condiments
   'apple cider': 'Canned-Goods&Condiments',
   'black beans': 'Canned-Goods&Condiments',
-  'capers': 'Canned-Goods&Condiments',
+  capers: 'Canned-Goods&Condiments',
   'diced tomatoes': 'Canned-Goods&Condiments',
   'dijon mustard': 'Canned-Goods&Condiments',
   'kidney beans': 'Canned-Goods&Condiments',
@@ -68,17 +67,17 @@ export const INGREDIENT_CATEGORY_MAP: Record<string, Category> = {
   'tomato paste': 'Canned-Goods&Condiments',
 
   // Bakery
-  'baguette': 'Bakery',
-  'cornbread': 'Bakery',
+  baguette: 'Bakery',
+  cornbread: 'Bakery',
   'country bread': 'Bakery',
   'crusty bread': 'Bakery',
 
   // Dairy
-  'cheddar': 'Dairy',
+  cheddar: 'Dairy',
   'creme fraiche': 'Dairy',
   'egg yolk': 'Dairy',
   'heavy cream': 'Dairy',
-  'parmesan': 'Dairy',
+  parmesan: 'Dairy',
   'unsalted butter': 'Dairy',
   'whole egg': 'Dairy',
 
@@ -92,32 +91,32 @@ export const INGREDIENT_CATEGORY_MAP: Record<string, Category> = {
   'sirloin tips': 'Meat',
 
   // Seafood
-  'salmon': 'Seafood',
+  salmon: 'Seafood',
 
   // Produce
   'ancho chilies': 'Produce',
-  'asparagus': 'Produce',
-  'avocado': 'Produce',
-  'basil': 'Produce',
-  'beet': 'Produce',
+  asparagus: 'Produce',
+  avocado: 'Produce',
+  basil: 'Produce',
+  beet: 'Produce',
   'beet greens': 'Produce',
-  'berries': 'Produce',
+  berries: 'Produce',
   'bok choy': 'Produce',
-  'carrot': 'Produce',
-  'celery': 'Produce',
-  'cilantro': 'Produce',
-  'garlic': 'Produce',
+  carrot: 'Produce',
+  celery: 'Produce',
+  cilantro: 'Produce',
+  garlic: 'Produce',
   'green bean': 'Produce',
   'guajillo chilies': 'Produce',
-  'lemon': 'Produce',
-  'mushrooms': 'Produce',
-  'onion': 'Produce',
-  'parsley': 'Produce',
-  'parsnip': 'Produce',
-  'romaine': 'Produce',
-  'spinach': 'Produce',
+  lemon: 'Produce',
+  mushrooms: 'Produce',
+  onion: 'Produce',
+  parsley: 'Produce',
+  parsnip: 'Produce',
+  romaine: 'Produce',
+  spinach: 'Produce',
   'sweet potato': 'Produce',
-  'turnip': 'Produce',
+  turnip: 'Produce',
 };
 
 export const DEFAULT_CATEGORY: Category = 'Unknown';

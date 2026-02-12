@@ -1,6 +1,7 @@
 import type { RecipeListItem as RecipeListItemType } from '../lib/types';
 import { useShoppingList } from '../context/ShoppingListContext';
 import { A } from '@solidjs/router';
+import { Show } from 'solid-js';
 
 interface Props {
   recipe: RecipeListItemType;
@@ -28,5 +29,12 @@ export default function RecipeListItem(props: Props) {
     </div>
   );
 
-  return props.selectionEnabled ? content : <A href={`/recipe/${props.recipe.slug}`}>{content}</A>;
+  return (
+    <Show
+      when={props.selectionEnabled}
+      fallback={<A href={`/recipe/${props.recipe.slug}`}>{content}</A>}
+    >
+      {content}
+    </Show>
+  );
 }

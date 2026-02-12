@@ -24,7 +24,7 @@ function renderWithProviders() {
 
 describe('RecipeListItem selection mode', () => {
   it('toggles selection instead of navigating', async () => {
-    const { getByRole, getByText } = renderWithProviders();
+    const { getByRole } = renderWithProviders();
 
     const checkbox = getByRole('checkbox');
 

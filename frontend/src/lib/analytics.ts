@@ -1,10 +1,8 @@
 const GA_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;
-const isProd = import.meta.env.PROD;
+const analyticsEnabled = import.meta.env.VITE_ANALYTICS_ENABLED === 'true';
 
 export function initGA() {
-  console.log(`Initializing GA`);
-  console.info(`GA_ID: ${GA_ID}`);
-  if (!GA_ID) return;
+  if (!GA_ID || !analyticsEnabled) return;
 
   const script1 = document.createElement('script');
   script1.async = true;
@@ -23,10 +21,9 @@ export function initGA() {
 }
 
 export function trackPageView(path: string) {
-  if (!GA_ID || !isProd || !(window as any).gtag) return;
+  if (!GA_ID || !analyticsEnabled || !window.gtag) return;
 
-  console.log('Tracking page_view:', path);
-  (window as any).gtag('event', 'page_view', {
+  window.gtag('event', 'page_view', {
     page_path: path,
   });
 }

@@ -1,6 +1,7 @@
 import type { JSX } from 'solid-js';
 import { Show, createResource } from 'solid-js';
 import { getBuildInfo } from '../lib/api';
+import RouteTracker from "../lib/routetracker.ts";
 
 type LayoutProps = {
   children: JSX.Element;
@@ -11,6 +12,7 @@ export default function Layout(props: LayoutProps) {
 
   return (
     <div class="min-h-screen bg-gray-50 flex flex-col">
+      <RouteTracker />
       <header class="bg-white shadow-sm print:hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <div class="flex justify-between items-center">

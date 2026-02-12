@@ -7,6 +7,11 @@ vi.mock('../../lib/api', () => ({
   getBuildInfo: vi.fn(),
 }));
 
+// mock RouteTracker to not depend on router internals
+vi.mock('../../lib/routetracker.ts', () => ({
+  default: () => null,
+}));
+
 import { getBuildInfo } from '../../lib/api.ts';
 
 describe('Layout build info', () => {

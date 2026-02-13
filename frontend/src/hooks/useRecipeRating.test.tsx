@@ -1,4 +1,3 @@
-import { createSignal } from 'solid-js';
 import { fireEvent, render, screen, waitFor } from '@solidjs/testing-library';
 import type { Recipe } from '../lib/types';
 import { useRecipeRating } from './useRecipeRating';
@@ -17,12 +16,10 @@ vi.mock('../lib/api', () => ({
   },
 }));
 
-const Harness = (props: { slug?: string; recipe?: Recipe }) => {
-  const [slug] = createSignal(props.slug);
-  const [recipe] = createSignal(props.recipe);
+const Harness = ({ slug, recipe }: { slug?: string; recipe?: Recipe }) => {
   const { ratingAverage, ratingCount, ratingMessage, isCoolingDown, handleRate } = useRecipeRating(
-    slug,
-    recipe,
+    () => slug,
+    () => recipe,
   );
 
   return (

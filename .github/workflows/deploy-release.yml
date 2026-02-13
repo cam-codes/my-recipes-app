@@ -37,7 +37,6 @@ jobs:
             cd $VM_DIR
 
             cat <<EOF > .env
-            ${{ secrets.ENV_STAGING }}
             RELEASE_TAG=${{ github.event.workflow_run.head_branch }}
             EOF
             chmod 600 .env
@@ -121,9 +120,7 @@ jobs:
             cd $VM_DIR
 
             cat <<EOF > .env
-            ${{ secrets.ENV_PROD }}
             RELEASE_TAG=${{ github.event.workflow_run.head_branch }}
-            VITE_GA_MEASUREMENT_ID=${{ secrets.GA_MEASUREMENT_ID }}
             EOF
             chmod 600 .env
 

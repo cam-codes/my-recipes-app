@@ -24,6 +24,7 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 0
           persist-credentials: true
+          token: ${{ secrets.GH_PAT_FOR_RUNNERS || github.token }}
 
       - name: Setup Node
         if: github.event_name == 'pull_request'

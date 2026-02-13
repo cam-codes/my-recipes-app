@@ -200,13 +200,16 @@ export default function Home() {
                               <div class="absolute inset-0 pointer-events-none">
                                 <For each={previewItems()}>
                                   {(recipe, index) => {
-                                    const transform =
-                                      PREVIEW_TRANSFORMS[index()] ??
-                                      PREVIEW_TRANSFORMS[PREVIEW_TRANSFORMS.length - 1];
+                                    const transform = createMemo(
+                                      () =>
+                                        PREVIEW_TRANSFORMS[index()] ??
+                                        PREVIEW_TRANSFORMS[PREVIEW_TRANSFORMS.length - 1],
+                                    );
+                                    const zIndex = createMemo(() => index() + 1);
                                     return (
                                       <div
                                         class="absolute inset-0 flex items-center justify-center"
-                                        style={`transform: translate(${transform.x}px, ${transform.y}px) rotate(${transform.rotate}deg) scale(${transform.scale}); z-index: ${index() + 1};`}
+                                        style={`transform: translate(${transform().x}px, ${transform().y}px) rotate(${transform().rotate}deg) scale(${transform().scale}); z-index: ${zIndex()};`}
                                       >
                                         <div class="w-52 sm:w-56 shadow-xl">
                                           <RecipePreviewCard recipe={recipe} />

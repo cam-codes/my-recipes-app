@@ -1,5 +1,5 @@
 import { render, screen } from '@solidjs/testing-library';
-import LoadingSpinner from '../LoadingSpinner.tsx';
+import LoadingSpinner from './LoadingSpinner';
 
 it('renders loading spinner', () => {
   render(() => <LoadingSpinner />);

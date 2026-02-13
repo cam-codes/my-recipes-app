@@ -1,16 +1,16 @@
 import { fireEvent, render, screen, waitFor } from '@solidjs/testing-library';
-import Home from '../Home.tsx';
-import type { Recipe } from '../../lib/types.ts';
-import { ShoppingListProvider } from '../../context/ShoppingListContext.tsx';
+import Home from './Home';
+import type { Recipe } from '../lib/types';
+import { ShoppingListProvider } from '../context/ShoppingListContext';
 
 // mock the api module
-import * as api from '../../lib/api.ts';
+import * as api from '../lib/api';
 
-vi.mock('../../lib/api', () => ({
+vi.mock('../lib/api', () => ({
   getRecipes: vi.fn(),
 }));
 
-import makeRecipe from '../../test/setup.ts';
+import makeRecipe from '../test/setup';
 
 const navigateMock = vi.hoisted(() => vi.fn());
 

@@ -11,6 +11,7 @@ export type Category =
   | 'Produce'
   | 'Unknown';
 
+// prettier-ignore
 export const INGREDIENT_CATEGORY_MAP: Record<string, Category> = {
   // Bakery
   'baguette': 'Bakery',

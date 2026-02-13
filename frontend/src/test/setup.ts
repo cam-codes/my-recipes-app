@@ -14,6 +14,8 @@ export default function makeRecipe(overrides: Partial<Recipe> = {}): Recipe {
     instructions: ['shake', 'bake'],
     tips: ['Initialize me'],
     image: './image.jpg',
+    ratingAverage: 0,
+    ratingCount: 0,
     ...overrides,
   };
 }

@@ -30,3 +30,31 @@ export async function getBuildInfo(): Promise<{
   if (!res.ok) throw new Error('Failed to load build info');
   return res.json();
 }
+
+export class RateLimitError extends Error {
+  retryAfterMs: number;
+
+  constructor(retryAfterMs: number) {
+    super('Rate limit exceeded');
+    this.retryAfterMs = retryAfterMs;
+  }
+}
+
+export async function rateRecipe(
+  slug: string,
+  rating: number,
+): Promise<{ ratingAverage: number; ratingCount: number }> {
+  const res = await fetch(`/api/recipes/${slug}/ratings`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ rating }),
+  });
+
+  if (res.status === 429) {
+    const data = await res.json().catch(() => ({ retryAfterMs: 0 }));
+    throw new RateLimitError(Number(data.retryAfterMs) || 0);
+  }
+
+  if (!res.ok) throw new Error('Failed to submit rating');
+  return res.json();
+}

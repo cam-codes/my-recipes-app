@@ -1,5 +1,6 @@
 import { A } from '@solidjs/router';
 import { Show } from 'solid-js';
+import RatingStars from './RatingStars';
 import type { RecipeListItem } from '../lib/types';
 
 interface Props {
@@ -37,6 +38,13 @@ export default function RecipeCard(props: Props) {
                 {props.recipe.description}
               </p>
             )}
+            <div class="mb-3">
+              <RatingStars
+                average={props.recipe.ratingAverage}
+                count={props.recipe.ratingCount}
+                size="sm"
+              />
+            </div>
             {/* Prep & Cook Time */}
             <div class="text-sm text-gray-500 dark:text-gray-400 mb-2 flex gap-4">
               <span>Prep: {props.recipe.prepTime} min</span>
@@ -73,6 +81,13 @@ export default function RecipeCard(props: Props) {
               {props.recipe.description}
             </p>
           )}
+          <div class="mb-3">
+            <RatingStars
+              average={props.recipe.ratingAverage}
+              count={props.recipe.ratingCount}
+              size="sm"
+            />
+          </div>
           <div class="text-sm text-gray-500 dark:text-gray-400 mb-2 flex gap-4">
             <span>Prep: {props.recipe.prepTime} min</span>
             <span>Cook: {props.recipe.cookTime} min</span>

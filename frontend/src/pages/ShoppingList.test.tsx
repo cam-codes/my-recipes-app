@@ -1,4 +1,4 @@
-import { render, fireEvent, screen } from '@solidjs/testing-library';
+import { render, fireEvent, screen, waitFor } from '@solidjs/testing-library';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { onMount } from 'solid-js';
 import ShoppingList from './ShoppingList';
@@ -6,6 +6,7 @@ import { ShoppingListProvider, useShoppingList } from '../context/ShoppingListCo
 import type { Recipe } from '../lib/types';
 
 const getRecipeMock = vi.hoisted(() => vi.fn());
+const clipboardWriteMock = vi.hoisted(() => vi.fn());
 
 vi.mock('../lib/api', () => ({
   getRecipe: getRecipeMock,
@@ -43,6 +44,11 @@ const SeedSelections = (props: { slugs: string[] }) => {
 describe('ShoppingList', () => {
   beforeEach(() => {
     getRecipeMock.mockReset();
+    clipboardWriteMock.mockReset();
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText: clipboardWriteMock },
+      configurable: true,
+    });
   });
 
   it('shows an empty state when no recipes are selected', async () => {
@@ -93,5 +99,54 @@ describe('ShoppingList', () => {
     ));
 
     expect(await screen.findByRole('status', { name: /loading/i })).toBeInTheDocument();
+  });
+
+  it('imports a line-separated list and categorizes items', async () => {
+    render(() => (
+      <ShoppingListProvider>
+        <ShoppingList />
+      </ShoppingListProvider>
+    ));
+
+    const textarea = screen.getByLabelText(/import list/i);
+    fireEvent.input(textarea, {
+      target: { value: '1 cup sugar\n2 cups flour' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /import list/i }));
+
+    expect(await screen.findByText(/1 cup sugar/i)).toBeInTheDocument();
+    expect(screen.getByText(/2 cups flour/i)).toBeInTheDocument();
+    expect(screen.getByText(/dry goods/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/imported/i).length).toBeGreaterThan(0);
+  });
+
+  it('copies the list to the clipboard as plain text', async () => {
+    const recipe = buildRecipe({
+      slug: 'garlic-recipe',
+      title: 'Garlic Recipe',
+      ingredients: ['1 clove garlic', '2 cloves garlic, minced'],
+    });
+
+    getRecipeMock.mockResolvedValue(recipe);
+
+    render(() => (
+      <ShoppingListProvider>
+        <SeedSelections slugs={['garlic-recipe']} />
+        <ShoppingList />
+      </ShoppingListProvider>
+    ));
+
+    await screen.findByText(/3 cloves garlic/i);
+
+    fireEvent.click(screen.getByRole('button', { name: /copy list to clipboard/i }));
+
+    await waitFor(() => {
+      expect(clipboardWriteMock).toHaveBeenCalled();
+    });
+
+    const copiedText = clipboardWriteMock.mock.calls[0]?.[0];
+    expect(copiedText).toMatch(/Produce/);
+    expect(copiedText).toMatch(/3 cloves garlic/i);
   });
 });

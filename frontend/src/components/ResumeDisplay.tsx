@@ -38,7 +38,10 @@ export default function ResumeDisplay(props: ResumeData) {
       <header class="text-center">
         <h1 class="text-5xl font-bold text-gray-900 dark:text-gray-100">{props.name}</h1>
         <div class="mt-3 text-lg">
-          <a href={`mailto:${props.email}`} class="text-blue-600 dark:text-blue-400 hover:underline">
+          <a
+            href={`mailto:${props.email}`}
+            class="text-blue-600 dark:text-blue-400 hover:underline"
+          >
             {props.email}
           </a>
           <span class="mx-4 text-gray-600 dark:text-gray-400">|</span>
@@ -90,9 +93,7 @@ export default function ResumeDisplay(props: ResumeData) {
               <div class="flex flex-col md:flex-row justify-between items-start mb-3">
                 <div>
                   <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{job.role}</h3>
-                  <p class="text-lg font-medium text-gray-800 dark:text-gray-200">
-                    {job.company}
-                  </p>
+                  <p class="text-lg font-medium text-gray-800 dark:text-gray-200">{job.company}</p>
                 </div>
                 <div class="text-right mt-2 md:mt-0">
                   <p class="text-gray-700 dark:text-gray-300">{job.location}</p>
@@ -117,12 +118,8 @@ export default function ResumeDisplay(props: ResumeData) {
             <div class="mb-8 last:mb-0">
               <div class="flex flex-col md:flex-row justify-between items-start mb-3">
                 <div>
-                  <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                    {edu.degree}
-                  </h3>
-                  <p class="text-lg font-medium text-gray-800 dark:text-gray-200">
-                    {edu.school}
-                  </p>
+                  <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{edu.degree}</h3>
+                  <p class="text-lg font-medium text-gray-800 dark:text-gray-200">{edu.school}</p>
                 </div>
                 <div class="text-right mt-2 md:mt-0">
                   <p class="text-gray-700 dark:text-gray-300">{edu.location}</p>

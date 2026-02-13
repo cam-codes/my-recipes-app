@@ -1,12 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import {
-  getRecipes,
-  getRecipe,
-  getResume,
-  getBuildInfo,
-  rateRecipe,
-  RateLimitError,
-} from './api';
+import { getRecipes, getRecipe, getResume, getBuildInfo, rateRecipe, RateLimitError } from './api';
 import { mockRecipes, mockRecipe } from '../test/mocks/api';
 
 const mockFetch = vi.fn(async (input: RequestInfo) => {

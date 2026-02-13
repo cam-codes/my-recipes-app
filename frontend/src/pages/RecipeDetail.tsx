@@ -9,14 +9,11 @@ import { useRecipeRating } from '../hooks/useRecipeRating';
 export default function RecipeDetail() {
   const params = useParams();
   const [recipe] = createResource(() => params.slug, getRecipe);
-  const {
-    ratingAverage,
-    ratingCount,
-    ratingMessage,
-    isSubmitting,
-    isCoolingDown,
-    handleRate,
-  } = useRecipeRating(() => params.slug, () => recipe());
+  const { ratingAverage, ratingCount, ratingMessage, isSubmitting, isCoolingDown, handleRate } =
+    useRecipeRating(
+      () => params.slug,
+      () => recipe(),
+    );
   onMount(() => {
     document.title = 'Cook with Cam';
   });

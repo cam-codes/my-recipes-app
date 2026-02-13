@@ -20,8 +20,10 @@ vi.mock('../lib/api', () => ({
 const Harness = (props: { slug?: string; recipe?: Recipe }) => {
   const [slug] = createSignal(props.slug);
   const [recipe] = createSignal(props.recipe);
-  const { ratingAverage, ratingCount, ratingMessage, isCoolingDown, handleRate } =
-    useRecipeRating(slug, recipe);
+  const { ratingAverage, ratingCount, ratingMessage, isCoolingDown, handleRate } = useRecipeRating(
+    slug,
+    recipe,
+  );
 
   return (
     <div>
@@ -102,9 +104,7 @@ describe('useRecipeRating', () => {
     fireEvent.click(screen.getByRole('button', { name: /rate/i }));
 
     await waitFor(() => {
-      expect(screen.getByTestId('message')).toHaveTextContent(
-        'Rating failed. Please try again.',
-      );
+      expect(screen.getByTestId('message')).toHaveTextContent('Rating failed. Please try again.');
     });
   });
 });

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@solidjs/testing-library';
+import { fireEvent, render, screen, waitFor } from '@solidjs/testing-library';
 import Layout from '../Layout.tsx';
 
 // mock the entire api module
@@ -17,6 +17,8 @@ import { getBuildInfo } from '../../lib/api.ts';
 describe('Layout build info', () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    localStorage.clear();
+    document.documentElement.classList.remove('dark');
   });
 
   it('renders children', () => {
@@ -128,5 +130,40 @@ describe('Layout build info', () => {
     ));
 
     expect(screen.queryByText(/v/)).not.toBeInTheDocument();
+  });
+
+  it('loads the stored theme on mount', async () => {
+    localStorage.setItem('theme', 'dark');
+
+    render(() => (
+      <Layout>
+        <div>Content</div>
+      </Layout>
+    ));
+
+    const toggle = await screen.findByLabelText('Toggle dark mode');
+    await waitFor(() => {
+      expect(document.documentElement.classList.contains('dark')).toBe(true);
+      expect(toggle).toBeChecked();
+    });
+  });
+
+  it('toggles theme and updates localStorage', async () => {
+    render(() => (
+      <Layout>
+        <div>Content</div>
+      </Layout>
+    ));
+
+    const toggle = await screen.findByLabelText('Toggle dark mode');
+    expect(toggle).not.toBeChecked();
+
+    fireEvent.click(toggle);
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
+    expect(localStorage.getItem('theme')).toBe('dark');
+
+    fireEvent.click(toggle);
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
+    expect(localStorage.getItem('theme')).toBe('light');
   });
 });

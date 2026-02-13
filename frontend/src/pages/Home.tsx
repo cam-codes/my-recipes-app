@@ -27,8 +27,10 @@ export default function Home() {
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Page Heading */}
       <div class="text-center mb-12">
-        <h1 class="text-4xl font-extrabold text-center mb-8 text-gray-900">Delicious Recipes</h1>
-        <p class="text-center text-gray-500 mb-8">
+        <h1 class="text-4xl font-extrabold text-center mb-8 text-gray-900 dark:text-gray-100">
+          Delicious Recipes
+        </h1>
+        <p class="text-center text-gray-500 dark:text-gray-400 mb-8">
           Browse our collection of tasty recipes and find your next favorite meal!
         </p>
 
@@ -39,7 +41,7 @@ export default function Home() {
               <button
                 type="button"
                 onClick={startSelecting}
-                class="px-4 py-2 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700 transition"
+                class="px-4 py-2 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-400 transition"
               >
                 Select Recipes for Grocery List
               </button>
@@ -48,14 +50,14 @@ export default function Home() {
             <button
               type="button"
               onClick={clearSelections}
-              class="px-4 py-2 rounded-md bg-red-600 text-white font-medium hover:bg-red-700 transition"
+              class="px-4 py-2 rounded-md bg-red-600 text-white font-medium hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-400 transition"
             >
               Clear Selections
             </button>
             <button
               type="button"
               onClick={generateShoppingList}
-              class="px-4 py-2 rounded-md bg-green-600 text-white font-medium hover:bg-green-700 transition text-sm sm:text-base whitespace-normal leading-snug"
+              class="px-4 py-2 rounded-md bg-green-600 text-white font-medium hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-400 transition text-sm sm:text-base whitespace-normal leading-snug"
             >
               Generate Grocery List From Selections
             </button>
@@ -63,7 +65,7 @@ export default function Home() {
         </div>
 
         <Show when={isSelecting()}>
-          <p class="text-sm text-gray-500 mt-3">
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-3">
             Tap recipe cards to select ingredients for your list.
           </p>
         </Show>
@@ -80,7 +82,11 @@ export default function Home() {
       >
         <Show
           when={recipes() && recipes()!.length > 0}
-          fallback={<p class="text-center text-gray-500 py-20 text-lg">No recipes found.</p>}
+          fallback={
+            <p class="text-center text-gray-500 dark:text-gray-400 py-20 text-lg">
+              No recipes found.
+            </p>
+          }
         >
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {recipes()!.map((recipe) => (

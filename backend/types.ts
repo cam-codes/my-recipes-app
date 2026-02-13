@@ -12,7 +12,7 @@ export interface RecipeFrontMatter {
   estimatedCost?: number | string;
 
   // content
-  ingredients?: string[];
+  ingredients?: Array<string | Record<string, string>>;
   instructions?: string[];
   tips?: string[];
 

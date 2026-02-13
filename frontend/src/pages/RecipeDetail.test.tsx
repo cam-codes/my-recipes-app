@@ -36,6 +36,7 @@ const mockRecipe: Recipe = {
   tips: ['Serve hot'],
   ratingAverage: 3.5,
   ratingCount: 2,
+  collection: 'savory',
 };
 
 describe('RecipeDetail', () => {
@@ -119,5 +120,26 @@ describe('RecipeDetail', () => {
     await waitFor(() => {
       expect(screen.getByText(/rating failed\. please try again\./i)).toBeInTheDocument();
     });
+  });
+
+  it('renders sectioned ingredient lists', async () => {
+    const sectionedRecipe: Recipe = {
+      ...mockRecipe,
+      ingredients: [
+        { 'Apple Filling': '2 apples, sliced' },
+        { 'Apple Filling': '1/2 cup sugar' },
+        { 'Crumble Topping': '1 cup flour' },
+      ],
+    };
+    (api.getRecipe as vi.Mock).mockResolvedValue(sectionedRecipe);
+
+    render(() => <RecipeDetail />);
+
+    await screen.findByText('Miso Salmon');
+
+    expect(screen.getByText('Apple Filling')).toBeInTheDocument();
+    expect(screen.getByText('Crumble Topping')).toBeInTheDocument();
+    expect(screen.getByText(/2 apples/i)).toBeInTheDocument();
+    expect(screen.getByText(/1 cup flour/i)).toBeInTheDocument();
   });
 });

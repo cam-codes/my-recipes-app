@@ -35,6 +35,7 @@ export class RatingsStore {
     entry.total += rating;
     entry.count += 1;
     this.ratings.set(slug, entry);
+    this.dirty = true;
     return this.getSummary(slug);
   }
 

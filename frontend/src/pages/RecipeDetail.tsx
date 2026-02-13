@@ -27,7 +27,9 @@ export default function RecipeDetail() {
       >
         <Show
           when={recipe()}
-          fallback={<p class="text-center text-red-600 dark:text-red-400 py-10">Recipe not found.</p>}
+          fallback={
+            <p class="text-center text-red-600 dark:text-red-400 py-10">Recipe not found.</p>
+          }
         >
           <article class="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-8">
             {/* Hero Image */}

@@ -10,6 +10,7 @@ vi.mock('../../lib/api');
 vi.mock('@solidjs/router', () => ({
   useParams: () => ({ slug: 'miso-salmon' }),
   A: (props: any) => <a {...props} />,
+  useNavigate: () => () => {},
 }));
 
 const mockRecipe: Recipe = {

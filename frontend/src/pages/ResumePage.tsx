@@ -14,8 +14,11 @@ export default function ResumePage() {
   });
 
   return (
-    <div class="min-h-screen bg-gray-50 py-12 px-4">
-      <A href="/" class="text-blue-600 hover:underline mb-6 inline-block print:hidden">
+    <div class="min-h-screen bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-gray-100 py-12 px-4">
+      <A
+        href="/"
+        class="text-blue-600 dark:text-blue-400 hover:underline mb-6 inline-block print:hidden"
+      >
         ← Back to home
       </A>
       <Show

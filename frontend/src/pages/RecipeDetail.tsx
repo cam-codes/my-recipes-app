@@ -13,7 +13,7 @@ export default function RecipeDetail() {
 
   return (
     <div class="max-w-4xl mx-auto px-4 py-8">
-      <A href="/" class="text-blue-600 hover:underline mb-6 inline-block">
+      <A href="/" class="text-blue-600 dark:text-blue-400 hover:underline mb-6 inline-block">
         ← Back to recipes
       </A>
 
@@ -27,9 +27,9 @@ export default function RecipeDetail() {
       >
         <Show
           when={recipe()}
-          fallback={<p class="text-center text-red-600 py-10">Recipe not found.</p>}
+          fallback={<p class="text-center text-red-600 dark:text-red-400 py-10">Recipe not found.</p>}
         >
-          <article class="bg-white rounded-xl shadow-sm p-8">
+          <article class="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-8">
             {/* Hero Image */}
             {recipe()!.image && (
               <img
@@ -40,7 +40,7 @@ export default function RecipeDetail() {
             )}
             <h1 class="text-4xl font-bold mb-4">{recipe()!.title}</h1>
 
-            <div class="grid grid-cols-3 gap-6 mb-8 text-sm text-gray-600">
+            <div class="grid grid-cols-3 gap-6 mb-8 text-sm text-gray-600 dark:text-gray-300">
               <div>
                 <span class="font-semibold">Prep:</span> {recipe()!.prepTime} min
               </div>
@@ -80,7 +80,7 @@ export default function RecipeDetail() {
         </Show>
       </Show>
 
-      <A href="/" class="text-blue-600 hover:underline mb-6 inline-block">
+      <A href="/" class="text-blue-600 dark:text-blue-400 hover:underline mb-6 inline-block">
         ← Back to recipes
       </A>
     </div>

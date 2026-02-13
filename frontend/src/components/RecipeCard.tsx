@@ -11,7 +11,7 @@ interface Props {
 
 export default function RecipeCard(props: Props) {
   const cardClasses =
-    'block bg-white rounded-lg shadow-md transition-all duration-200 overflow-hidden border-2';
+    'block bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 rounded-lg shadow-md transition-all duration-200 overflow-hidden border-2';
 
   return (
     <Show
@@ -19,7 +19,7 @@ export default function RecipeCard(props: Props) {
       fallback={
         <A
           href={`/recipe/${props.recipe.slug}`}
-          class={`${cardClasses} border-transparent hover:shadow-xl transform hover:-translate-y-1`}
+          class={`${cardClasses} border-transparent dark:border-slate-800 hover:shadow-xl transform hover:-translate-y-1`}
         >
           {/* Recipe Image */}
           {props.recipe.image && (
@@ -33,10 +33,12 @@ export default function RecipeCard(props: Props) {
           <div class="p-6">
             <h3 class="text-xl font-semibold mb-2 line-clamp-2">{props.recipe.title}</h3>
             {props.recipe.description && (
-              <p class="text-sm text-gray-600 mb-4 line-clamp-3">{props.recipe.description}</p>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+                {props.recipe.description}
+              </p>
             )}
             {/* Prep & Cook Time */}
-            <div class="text-sm text-gray-500 mb-2 flex gap-4">
+            <div class="text-sm text-gray-500 dark:text-gray-400 mb-2 flex gap-4">
               <span>Prep: {props.recipe.prepTime} min</span>
               <span>Cook: {props.recipe.cookTime} min</span>
             </div>
@@ -47,7 +49,7 @@ export default function RecipeCard(props: Props) {
       <button
         type="button"
         onClick={() => props.onToggleSelect?.(props.recipe.slug)}
-        class={`${cardClasses} text-left w-full ${props.isSelected ? 'border-blue-500 shadow-xl -translate-y-1' : 'border-transparent hover:shadow-xl hover:-translate-y-1'}`}
+        class={`${cardClasses} text-left w-full ${props.isSelected ? 'border-blue-500 dark:border-blue-400 shadow-xl -translate-y-1' : 'border-transparent dark:border-slate-800 hover:shadow-xl hover:-translate-y-1'}`}
       >
         {props.recipe.image && (
           <img
@@ -61,15 +63,17 @@ export default function RecipeCard(props: Props) {
           <div class="flex items-start justify-between gap-2">
             <h3 class="text-xl font-semibold mb-2 line-clamp-2">{props.recipe.title}</h3>
             <span
-              class={`text-xs font-medium px-2 py-1 rounded ${props.isSelected ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-500'}`}
+              class={`text-xs font-medium px-2 py-1 rounded ${props.isSelected ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200' : 'bg-gray-100 text-gray-500 dark:bg-slate-800 dark:text-gray-300'}`}
             >
               {props.isSelected ? 'Selected' : 'Tap to select'}
             </span>
           </div>
           {props.recipe.description && (
-            <p class="text-sm text-gray-600 mb-4 line-clamp-3">{props.recipe.description}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+              {props.recipe.description}
+            </p>
           )}
-          <div class="text-sm text-gray-500 mb-2 flex gap-4">
+          <div class="text-sm text-gray-500 dark:text-gray-400 mb-2 flex gap-4">
             <span>Prep: {props.recipe.prepTime} min</span>
             <span>Cook: {props.recipe.cookTime} min</span>
           </div>

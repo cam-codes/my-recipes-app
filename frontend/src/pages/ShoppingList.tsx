@@ -41,8 +41,8 @@ export default function ShoppingList() {
   const clearChecked = () => setChecked(new Set<string>());
 
   return (
-    <div class="bg-gray-50">
-      <div class="sticky top-0 z-10 bg-white shadow px-4 py-3 flex items-center">
+    <div class="bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-gray-100">
+      <div class="sticky top-0 z-10 bg-white dark:bg-slate-900 shadow px-4 py-3 flex items-center">
         <h1 class="text-lg font-semibold">Shopping List ({remainingCount()} left)</h1>
       </div>
 
@@ -58,9 +58,9 @@ export default function ShoppingList() {
           <Show
             when={Object.keys(groupedItems()).length > 0}
             fallback={
-              <p class="text-center text-gray-500">
+              <p class="text-center text-gray-500 dark:text-gray-400">
                 No recipes selected.{' '}
-                <A href="/" class="underline text-blue-500">
+                <A href="/" class="underline text-blue-500 dark:text-blue-400">
                   Go back
                 </A>
               </p>
@@ -74,7 +74,7 @@ export default function ShoppingList() {
                     <For each={items as GroupedIngredient[]}>
                       {(item) => (
                         <li
-                          class="flex gap-4 items-start p-3 rounded-lg bg-white active:bg-gray-100 cursor-pointer select-none"
+                          class="flex gap-4 items-start p-3 rounded-lg bg-white dark:bg-slate-900 active:bg-gray-100 dark:active:bg-slate-800 cursor-pointer select-none"
                           onClick={() => toggleChecked(item.key)}
                         >
                           <input
@@ -83,9 +83,17 @@ export default function ShoppingList() {
                             readOnly
                             class="mt-1 scale-125"
                           />
-                          <span class={checked().has(item.key) ? 'line-through text-gray-400' : ''}>
+                          <span
+                            class={
+                              checked().has(item.key)
+                                ? 'line-through text-gray-400 dark:text-gray-500'
+                                : ''
+                            }
+                          >
                             {item.display}{' '}
-                            <span class="text-sm text-gray-500">({item.recipes.join(', ')})</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">
+                              ({item.recipes.join(', ')})
+                            </span>
                           </span>
                         </li>
                       )}
@@ -98,10 +106,10 @@ export default function ShoppingList() {
         </Show>
 
         <div class="mt-10 flex justify-between">
-          <A href="/" class="text-blue-500">
+          <A href="/" class="text-blue-500 dark:text-blue-400">
             ← Back
           </A>
-          <button onClick={clearChecked} class="text-red-500">
+          <button onClick={clearChecked} class="text-red-500 dark:text-red-400">
             Clear checked items
           </button>
         </div>

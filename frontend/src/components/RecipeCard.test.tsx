@@ -29,12 +29,7 @@ describe('RecipeCard', () => {
   it('renders a selectable card and calls toggle', () => {
     const onToggleSelect = vi.fn();
     render(() => (
-      <RecipeCard
-        recipe={recipe}
-        isSelectable
-        isSelected={false}
-        onToggleSelect={onToggleSelect}
-      />
+      <RecipeCard recipe={recipe} isSelectable isSelected={false} onToggleSelect={onToggleSelect} />
     ));
 
     fireEvent.click(screen.getByRole('button'));
@@ -43,9 +38,7 @@ describe('RecipeCard', () => {
   });
 
   it('shows selected state when selected', () => {
-    render(() => (
-      <RecipeCard recipe={recipe} isSelectable isSelected onToggleSelect={() => {}} />
-    ));
+    render(() => <RecipeCard recipe={recipe} isSelectable isSelected onToggleSelect={() => {}} />);
 
     expect(screen.getByText(/selected/i)).toBeInTheDocument();
   });

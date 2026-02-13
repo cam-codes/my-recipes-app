@@ -1,6 +1,13 @@
 import { describe, it, expect, vi } from 'vitest';
-import { getRecipes, getRecipe, getResume, getBuildInfo } from '../api.ts';
-import { mockRecipes, mockRecipe } from '../../test/mocks/api.ts';
+import {
+  getRecipes,
+  getRecipe,
+  getResume,
+  getBuildInfo,
+  rateRecipe,
+  RateLimitError,
+} from './api';
+import { mockRecipes, mockRecipe } from '../test/mocks/api';
 
 const mockFetch = vi.fn(async (input: RequestInfo) => {
   const url = input.toString();
@@ -11,6 +18,10 @@ const mockFetch = vi.fn(async (input: RequestInfo) => {
 
   if (url.endsWith('/recipes/miso-salmon')) {
     return new Response(JSON.stringify(mockRecipe), { status: 200 });
+  }
+
+  if (url.endsWith('/recipes/miso-salmon/ratings')) {
+    return new Response(JSON.stringify({ ratingAverage: 4.8, ratingCount: 5 }), { status: 200 });
   }
 
   if (url.endsWith('/resume')) {
@@ -98,5 +109,21 @@ describe('api', () => {
     globalThis.fetch = vi.fn().mockResolvedValue(new Response(null, { status: 500 })) as any;
 
     await expect(getBuildInfo()).rejects.toThrow('Failed to load build info');
+  });
+
+  it('submits recipe ratings', async () => {
+    const summary = await rateRecipe('miso-salmon', 5);
+    expect(summary.ratingAverage).toBe(4.8);
+    expect(summary.ratingCount).toBe(5);
+  });
+
+  it('throws RateLimitError on 429 response', async () => {
+    globalThis.fetch = vi
+      .fn()
+      .mockResolvedValue(
+        new Response(JSON.stringify({ retryAfterMs: 25000 }), { status: 429 }),
+      ) as any;
+
+    await expect(rateRecipe('miso-salmon', 3)).rejects.toBeInstanceOf(RateLimitError);
   });
 });

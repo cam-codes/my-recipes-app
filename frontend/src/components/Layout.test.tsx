@@ -1,18 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@solidjs/testing-library';
-import Layout from '../Layout.tsx';
+import Layout from './Layout';
 
 // mock the entire api module
-vi.mock('../../lib/api', () => ({
+vi.mock('../lib/api', () => ({
   getBuildInfo: vi.fn(),
 }));
 
 // mock RouteTracker to not depend on router internals
-vi.mock('../../lib/routetracker.ts', () => ({
+vi.mock('../lib/routetracker', () => ({
   default: () => null,
 }));
 
-import { getBuildInfo } from '../../lib/api.ts';
+import { getBuildInfo } from '../lib/api.ts';
 
 describe('Layout build info', () => {
   beforeEach(() => {

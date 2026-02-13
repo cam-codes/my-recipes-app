@@ -12,40 +12,44 @@ concurrency:
 jobs:
   recipes:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout Repo
+        if: github.event_name == 'pull_request'
         uses: actions/checkout@v4
-
-      - name: Detect recipe changes
-        id: changes
-        uses: dorny/paths-filter@v3
         with:
-          filters: |
-            recipes:
-              - 'recipes/**'
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          fetch-depth: 0
+          persist-credentials: true
 
       - name: Setup Node
-        if: steps.changes.outputs.recipes == 'true'
+        if: github.event_name == 'pull_request'
         uses: actions/setup-node@v4
         with:
           node-version: 24
 
-      - name: Auto-fix non-ASCII recipe text
-        if: steps.changes.outputs.recipes == 'true'
-        run: node scripts/fix-recipes-ascii.mjs
-
-      - name: Verify recipe files are ASCII-only
-        if: steps.changes.outputs.recipes == 'true'
-        run: node scripts/check-recipes-ascii.mjs
-
-      - name: Ensure recipes are committed after auto-fix
-        if: steps.changes.outputs.recipes == 'true'
-        run: git diff --exit-code recipes
-
-      - name: Skip ASCII check (no recipe changes)
-        if: steps.changes.outputs.recipes != 'true'
-        run: echo "No recipe changes detected."
+      - name: Verify recipes are ASCII-only (autofix)
+        if: >-
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          if node scripts/check-recipes-ascii.mjs; then
+            echo "All recipe files are ASCII-only."
+            exit 0
+          fi
+          node scripts/fix-recipes-ascii.mjs
+          if git diff --quiet -- recipes; then
+            echo "No recipe changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add recipes
+          git commit -m "chore: normalize recipes to ASCII"
+          git push origin HEAD:${{ github.head_ref }}
 
   backend:
     runs-on: ubuntu-latest

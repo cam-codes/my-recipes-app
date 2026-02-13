@@ -1,6 +1,7 @@
 ---
 title: Giant Cast Iron Chocolate Chip Cookie
 description: Thick, chewy skillet cookie with crispy edges and gooey center-baked in cast iron for pizzeria-style perfection, served warm with ice cream or plain.
+collection: sweet
 prepTime: 15
 cookTime: 25
 estimatedCost: 10

@@ -16,6 +16,7 @@ export default function makeRecipe(overrides: Partial<Recipe> = {}): Recipe {
     image: './image.jpg',
     ratingAverage: 0,
     ratingCount: 0,
+    collection: 'savory',
     ...overrides,
   };
 }

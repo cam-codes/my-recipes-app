@@ -15,6 +15,7 @@ const buildRecipe = (overrides: Partial<Recipe>): Recipe => ({
   image: '/image.jpg',
   ratingAverage: 0,
   ratingCount: 0,
+  collection: 'savory',
   ...overrides,
 });
 
@@ -105,5 +106,42 @@ describe('groupIngredientsByCategory', () => {
 
     const sugar = items.find((item) => item.display.startsWith('2 cups sugar'));
     expect(sugar).toBeDefined();
+  });
+
+  it('skips non-string ingredients', () => {
+    const recipes: Recipe[] = [
+      buildRecipe({
+        slug: 'mixed-types',
+        title: 'Mixed Types',
+        ingredients: ['1 cup sugar', 2 as unknown as string],
+      }),
+    ];
+
+    const groups = groupIngredientsByCategory(recipes);
+    const items = Object.values(groups).flat();
+
+    expect(items.some((item) => item.display.includes('sugar'))).toBe(true);
+    expect(items.some((item) => item.display === '2')).toBe(false);
+  });
+
+  it('includes record-based ingredient entries', () => {
+    const recipes: Recipe[] = [
+      buildRecipe({
+        slug: 'sectioned',
+        title: 'Sectioned',
+        ingredients: [
+          { Filling: '2 cups flour' },
+          { Topping: '1 cup sugar' },
+          '1 teaspoon salt',
+        ],
+      }),
+    ];
+
+    const groups = groupIngredientsByCategory(recipes);
+    const items = Object.values(groups).flat();
+
+    expect(items.some((item) => item.display.includes('flour'))).toBe(true);
+    expect(items.some((item) => item.display.includes('sugar'))).toBe(true);
+    expect(items.some((item) => item.display.includes('salt'))).toBe(true);
   });
 });

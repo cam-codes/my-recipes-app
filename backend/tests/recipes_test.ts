@@ -105,6 +105,12 @@ Deno.test("normalizeRecipe fills in defaults", () => {
   assertEquals(recipe.instructions, []);
   assertEquals(recipe.tips, []);
   assertEquals(recipe.image, "/recipes/empty-fields-recipe/image.jpg");
+  assertEquals(recipe.collection, "savory");
+});
+
+Deno.test("normalizeRecipe honors sweet collection", () => {
+  const recipe = normalizeRecipe("sweet-recipe", { collection: "sweet" });
+  assertEquals(recipe.collection, "sweet");
 });
 
 Deno.test("POST /recipes/:slug/ratings stores rating and returns average", async () => {

@@ -46,6 +46,7 @@ export default function ShoppingList() {
       image: '',
       ratingAverage: 0,
       ratingCount: 0,
+      collection: 'savory',
     };
   });
 

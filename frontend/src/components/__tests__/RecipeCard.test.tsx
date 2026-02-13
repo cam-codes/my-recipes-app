@@ -6,6 +6,7 @@ import makeRecipe from '../../test/setup.ts';
 vi.mock('@solidjs/router', () => ({
   useParams: () => ({ slug: 'miso-salmon' }),
   A: (props: any) => <a {...props} />,
+  useNavigate: () => () => {},
 }));
 
 it('renders recipe card data', () => {

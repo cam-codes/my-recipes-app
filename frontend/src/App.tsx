@@ -3,6 +3,7 @@ import Layout from './components/Layout';
 import Home from './pages/Home';
 import RecipeDetail from './pages/RecipeDetail';
 import ResumePage from './pages/ResumePage.tsx';
+import ShoppingList from './pages/ShoppingList';
 import { ShoppingListProvider } from './context/ShoppingListContext.tsx';
 
 export default function App() {
@@ -13,6 +14,7 @@ export default function App() {
           <Route path="/" component={Home} />
           <Route path="/recipe/:slug" component={RecipeDetail} />
           <Route path="/resume" component={ResumePage} />
+          <Route path="/shopping-list" component={ShoppingList} />
         </Route>
       </Router>
     </ShoppingListProvider>

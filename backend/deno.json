@@ -13,8 +13,8 @@
     "fmt:fix": "deno fmt",
     "lint:check": "deno lint",
     "lint:fix": "deno lint --fix",
-    "start": "deno run --cached-only --allow-net --allow-read --allow-env server.ts",
-    "test": "deno test --allow-read --allow-net --allow-import --allow-env",
-    "test:coverage": "deno test --allow-read --allow-net --allow-import --allow-env --coverage=coverage && deno coverage coverage --lcov > coverage.lcov"
+    "start": "deno run --cached-only --allow-net --allow-read --allow-write --allow-env server.ts",
+    "test": "deno test --allow-read --allow-net --allow-import --allow-env --allow-write",
+    "test:coverage": "deno test --allow-read --allow-net --allow-import --allow-env --allow-write --coverage=coverage && deno coverage coverage --lcov > coverage.lcov"
   }
 }

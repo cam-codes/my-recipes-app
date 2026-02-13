@@ -7,12 +7,15 @@ import {
 import { createApp } from "../main.ts";
 import { request } from "./fixtures/utils/utils.ts";
 import { vi } from "vitest";
+import { toFileUrl } from "std/path/mod.ts";
 
 const fixturesDir = new URL("./fixtures/recipes/", import.meta.url);
 const resumeFile = new URL("./fixtures/resume/resume.md", import.meta.url);
+const ratingsFile = toFileUrl(Deno.makeTempFileSync({ suffix: ".json" }));
 const app = createApp({
   recipesDir: fixturesDir,
   resumeFile: resumeFile,
+  ratingsFile,
 });
 
 Deno.test("GET /resume returns resume data", async () => {
@@ -71,6 +74,14 @@ Deno.test("GET /resume returns 404 when resume file is missing", async () => {
 Deno.test("GET /resume returns 500 for unexpected errors", async () => {
   const readSpy = vi.spyOn(Deno, "readTextFile");
   readSpy.mockRejectedValue(new Error("nope"));
+  const { status, body } = await request(app, "/resume");
+  assertEquals(status, 500);
+  assertEquals(body, "Internal Server Error");
+});
+
+Deno.test("GET /resume handles non-error throws", async () => {
+  const readSpy = vi.spyOn(Deno, "readTextFile");
+  readSpy.mockRejectedValue("nope");
   const { status, body } = await request(app, "/resume");
   assertEquals(status, 500);
   assertEquals(body, "Internal Server Error");

@@ -6,6 +6,7 @@ services:
     volumes:
       - ./recipes:/recipes
       - ./resume:/resume
+      - ./data/ratings:/ratings
 
   frontend:
     container_name: my-recipes-frontend-local

@@ -46,4 +46,5 @@ export interface ResumeFrontMatter {
 export interface CreateAppOptions {
   recipesDir: URL;
   resumeFile: URL;
+  ratingsFile?: URL;
 }

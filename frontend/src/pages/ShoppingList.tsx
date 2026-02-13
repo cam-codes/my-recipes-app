@@ -1,25 +1,14 @@
-import { createMemo, createResource, createSignal, For, Show, onMount } from 'solid-js';
+import { createMemo, createResource, createSignal, For, Show } from 'solid-js';
 import { A } from '@solidjs/router';
 import { useShoppingList } from '../context/ShoppingListContext';
 import { getRecipe } from '../lib/api';
-import {
-  INGREDIENT_CATEGORY_MAP,
-  DEFAULT_CATEGORY,
-  type Category,
-} from '../lib/ingredientCategories';
-import type { Recipe } from '../lib/types';
+import type { GroupedIngredient } from '../lib/types';
 import LoadingSpinner from '../components/LoadingSpinner';
-
-type GroupedIngredient = {
-  key: string;
-  ingredient: string;
-  recipe: string;
-};
+import { groupIngredientsByCategory } from '../lib/utils';
 
 export default function ShoppingList() {
-  const { selected, clear } = useShoppingList();
+  const { selected } = useShoppingList();
   const [checked, setChecked] = createSignal<Set<string>>(new Set());
-  const [dark, setDark] = createSignal(false);
 
   const selectedSlugs = createMemo(() => Array.from(selected()));
 
@@ -28,35 +17,7 @@ export default function ShoppingList() {
     return Promise.all(slugs.map((slug) => getRecipe(slug)));
   });
 
-  onMount(() => {
-    const stored = localStorage.getItem('dark');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setDark(stored ? stored === 'true' : prefersDark);
-  });
-
-  const toggleDark = () => {
-    setDark((enabled) => {
-      localStorage.setItem('dark', String(!enabled));
-      return !enabled;
-    });
-  };
-
-  const groupedItems = createMemo(() => {
-    const recipeList = recipes() ?? [];
-    const groups: Partial<Record<Category, GroupedIngredient[]>> = {};
-
-    for (const recipe of recipeList as Recipe[]) {
-      for (const ingredient of recipe.ingredients) {
-        const key = `${ingredient}-${recipe.slug}`;
-        const normalized = ingredient.toLowerCase();
-        const category = INGREDIENT_CATEGORY_MAP[normalized] ?? DEFAULT_CATEGORY;
-        groups[category] ??= [];
-        groups[category]!.push({ key, ingredient, recipe: recipe.title });
-      }
-    }
-
-    return groups;
-  });
+  const groupedItems = createMemo(() => groupIngredientsByCategory(recipes() ?? []));
 
   const remainingCount = createMemo(
     () =>
@@ -77,13 +38,12 @@ export default function ShoppingList() {
     });
   };
 
+  const clearChecked = () => setChecked(new Set<string>());
+
   return (
-    <div class={dark() ? 'dark bg-gray-900 text-gray-100' : 'bg-gray-50'}>
-      <div class="sticky top-0 z-10 bg-white dark:bg-gray-800 shadow px-4 py-3 flex justify-between items-center">
+    <div class="bg-gray-50">
+      <div class="sticky top-0 z-10 bg-white shadow px-4 py-3 flex items-center">
         <h1 class="text-lg font-semibold">Shopping List ({remainingCount()} left)</h1>
-        <button onClick={toggleDark} class="text-sm px-3 py-1 rounded bg-gray-200 dark:bg-gray-700">
-          {dark() ? 'Light' : 'Dark'}
-        </button>
       </div>
 
       <div class="max-w-3xl mx-auto px-4 py-6">
@@ -114,7 +74,7 @@ export default function ShoppingList() {
                     <For each={items as GroupedIngredient[]}>
                       {(item) => (
                         <li
-                          class="flex gap-4 items-start p-3 rounded-lg bg-white dark:bg-gray-800 active:bg-gray-100 dark:active:bg-gray-700 cursor-pointer select-none"
+                          class="flex gap-4 items-start p-3 rounded-lg bg-white active:bg-gray-100 cursor-pointer select-none"
                           onClick={() => toggleChecked(item.key)}
                         >
                           <input
@@ -124,8 +84,8 @@ export default function ShoppingList() {
                             class="mt-1 scale-125"
                           />
                           <span class={checked().has(item.key) ? 'line-through text-gray-400' : ''}>
-                            {item.ingredient}{' '}
-                            <span class="text-sm text-gray-500">({item.recipe})</span>
+                            {item.display}{' '}
+                            <span class="text-sm text-gray-500">({item.recipes.join(', ')})</span>
                           </span>
                         </li>
                       )}
@@ -141,8 +101,8 @@ export default function ShoppingList() {
           <A href="/" class="text-blue-500">
             ← Back
           </A>
-          <button onClick={clear} class="text-red-500">
-            Clear selection
+          <button onClick={clearChecked} class="text-red-500">
+            Clear checked items
           </button>
         </div>
       </div>

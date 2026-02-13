@@ -1,10 +1,10 @@
 import { Show } from 'solid-js';
 import { createResource } from 'solid-js';
-import ResumeDisplay from '../components/ResumeDisplay.tsx';
-import { getResume } from '../lib/api.ts';
-import LoadingSpinner from '../components/LoadingSpinner.tsx';
+import ResumeDisplay from '../components/ResumeDisplay';
+import { getResume } from '../lib/api';
+import LoadingSpinner from '../components/LoadingSpinner';
 import { A } from '@solidjs/router';
-import type { ResumeData } from '../lib/types.ts';
+import type { ResumeData } from '../lib/types';
 import { onMount } from 'solid-js';
 
 export default function ResumePage() {

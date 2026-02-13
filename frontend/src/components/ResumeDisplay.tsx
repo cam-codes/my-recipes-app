@@ -1,5 +1,5 @@
 import { For } from 'solid-js';
-import type { ResumeData } from '../lib/types.ts';
+import type { ResumeData } from '../lib/types';
 
 export default function ResumeDisplay(props: ResumeData) {
   return (

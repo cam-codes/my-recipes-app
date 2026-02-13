@@ -1,3 +1,5 @@
+import type { Category } from './ingredientCategories';
+
 export interface RecipeListItem {
   slug: string;
   title: string;
@@ -19,6 +21,34 @@ export interface Recipe extends RecipeListItem {
   tips: string[];
   image: string;
 }
+
+export type GroupedIngredient = {
+  key: string;
+  display: string;
+  recipes: string[];
+};
+
+export type ParsedIngredient = {
+  key: string;
+  nameKey: string;
+  displayName: string;
+  categoryName: string;
+  unit: string | null;
+  quantityMin: number | null;
+  quantityMax: number | null;
+  hasQuantity: boolean;
+};
+
+export type AggregatedIngredient = {
+  key: string;
+  nameKey: string;
+  displayName: string;
+  unit: string | null;
+  quantityMin: number | null;
+  quantityMax: number | null;
+  recipes: string[];
+  category: Category;
+};
 
 export interface ResumeData {
   name: string;

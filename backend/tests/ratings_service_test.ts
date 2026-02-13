@@ -33,7 +33,9 @@ Deno.test("RatingsStore sanitizes invalid entries on load", () => {
 Deno.test("RatingsStore normalizes invalid in-memory entries and persists", async () => {
   const ratingsFile = createRatingsFile(JSON.stringify({}));
   const store = new RatingsStore(ratingsFile);
-  (store as unknown as { ratings: Map<string, { total: number; count: number }> })
+  (store as unknown as {
+    ratings: Map<string, { total: number; count: number }>;
+  })
     .ratings.set("bad", { total: -1, count: 1 });
 
   const summary = store.getSummary("bad");

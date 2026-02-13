@@ -129,11 +129,7 @@ describe('groupIngredientsByCategory', () => {
       buildRecipe({
         slug: 'sectioned',
         title: 'Sectioned',
-        ingredients: [
-          { Filling: '2 cups flour' },
-          { Topping: '1 cup sugar' },
-          '1 teaspoon salt',
-        ],
+        ingredients: [{ Filling: '2 cups flour' }, { Topping: '1 cup sugar' }, '1 teaspoon salt'],
       }),
     ];
 

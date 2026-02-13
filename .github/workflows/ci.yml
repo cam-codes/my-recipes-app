@@ -5,6 +5,10 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   recipes:
     runs-on: ubuntu-latest
@@ -27,9 +31,17 @@ jobs:
         with:
           node-version: 24
 
+      - name: Auto-fix non-ASCII recipe text
+        if: steps.changes.outputs.recipes == 'true'
+        run: node scripts/fix-recipes-ascii.mjs
+
       - name: Verify recipe files are ASCII-only
         if: steps.changes.outputs.recipes == 'true'
         run: node scripts/check-recipes-ascii.mjs
+
+      - name: Ensure recipes are committed after auto-fix
+        if: steps.changes.outputs.recipes == 'true'
+        run: git diff --exit-code recipes
 
       - name: Skip ASCII check (no recipe changes)
         if: steps.changes.outputs.recipes != 'true'

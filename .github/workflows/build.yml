@@ -143,7 +143,8 @@ jobs:
           context: .
           file: frontend/Dockerfile
           build-args: |
-            VITE_GA_MEASUREMENT_ID=${{ secrets.GA_MEASUREMENT_ID }}
+            VITE_GA_MEASUREMENT_ID=${{ steps.meta.outputs.tag != '' && secrets.GA_MEASUREMENT_ID || '' }}
+            VITE_ANALYTICS_ENABLED=${{ steps.meta.outputs.tag != '' && 'true' || 'false' }}
           tags: |
             ghcr.io/${{ github.repository_owner }}/my-recipes-frontend:${{ steps.meta.outputs.commit }}
             ${{ steps.meta.outputs.tag != '' && format('ghcr.io/{0}/my-recipes-frontend:{1}', github.repository_owner, steps.meta.outputs.tag) || '' }}

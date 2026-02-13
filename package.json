@@ -16,7 +16,8 @@
     "lint:fix": "eslint . --fix",
     "format:check": "prettier . --check",
     "format:fix": "prettier . --write",
-    "recipes:ascii": "node scripts/check-recipes-ascii.mjs"
+    "recipes:ascii": "node scripts/check-recipes-ascii.mjs",
+    "recipes:ascii:fix": "node scripts/fix-recipes-ascii.mjs"
   },
   "type": "module",
   "packageManager": "yarn@4.12.0",

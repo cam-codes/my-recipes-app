@@ -12,6 +12,7 @@ yarn-error.log*
 **/.yarn/install-state.gz
 frontend/e2e/__tests__/results/**
 frontend/playwright-report/**
+data/**
 
 .vscode/*
 .idea

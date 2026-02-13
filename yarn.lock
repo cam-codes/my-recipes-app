@@ -620,14 +620,14 @@ __metadata:
   linkType: hard
 
 "@exodus/bytes@npm:^1.6.0":
-  version: 1.14.0
-  resolution: "@exodus/bytes@npm:1.14.0"
+  version: 1.14.1
+  resolution: "@exodus/bytes@npm:1.14.1"
   peerDependencies:
     "@noble/hashes": ^1.8.0 || ^2.0.0
   peerDependenciesMeta:
     "@noble/hashes":
       optional: true
-  checksum: 10c0/47e4a5231dd55a3d969ac7cdf3180e2f5275a7e0ae8047826019da507856b6b71a1b3ecc5ffbffab299e487b7ec3f03a50bd08f8df93557f947d105cb751253b
+  checksum: 10c0/486dad30992a8c81058b6b59341ee934c10a7e8016b440770de0f86d2e270950c5d37fc6724ea017295b8654c7564abf6a21cc49bed569d74721b545f571e416
   languageName: node
   linkType: hard
 

@@ -66,7 +66,7 @@ it('toggles selection mode and clears selections', async () => {
 
   expect(screen.getByRole('button', { name: /clear selections/i })).toBeInTheDocument();
   expect(
-    screen.getByRole('button', { name: /generate shopping list from selections/i }),
+    screen.getByRole('button', { name: /generate grocery list from selections/i }),
   ).toBeInTheDocument();
   expect(
     screen.getByText(/tap recipe cards to select ingredients for your list/i),
@@ -92,7 +92,7 @@ it('navigates to the shopping list when generating with selections', async () =>
 
   fireEvent.click(screen.getByRole('button', { name: /select recipes/i }));
   fireEvent.click(screen.getByRole('button', { name: /miso salmon/i }));
-  fireEvent.click(screen.getByRole('button', { name: /generate shopping list from selections/i }));
+  fireEvent.click(screen.getByRole('button', { name: /generate grocery list from selections/i }));
 
   expect(navigateMock).toHaveBeenCalledWith('/shopping-list');
 });

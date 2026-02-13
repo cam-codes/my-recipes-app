@@ -41,7 +41,7 @@ export default function Home() {
                 onClick={startSelecting}
                 class="px-4 py-2 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700 transition"
               >
-                Select Recipes
+                Select Recipes for Grocery List
               </button>
             }
           >
@@ -57,7 +57,7 @@ export default function Home() {
               onClick={generateShoppingList}
               class="px-4 py-2 rounded-md bg-green-600 text-white font-medium hover:bg-green-700 transition text-sm sm:text-base whitespace-normal leading-snug"
             >
-              Generate Shopping List From Selections
+              Generate Grocery List From Selections
             </button>
           </Show>
         </div>

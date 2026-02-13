@@ -49,7 +49,6 @@ jobs:
 
             # Write env vars to .env
             cat <<EOF > $VM_DIR/.env
-            ${{ secrets.ENV_STAGING }}
             RELEASE_TAG=${{ github.event.workflow_run.head_sha }}
             EOF
             chmod 600 .env

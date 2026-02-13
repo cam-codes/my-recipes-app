@@ -7,6 +7,8 @@ export interface RecipeListItem {
   prepTime: number;
   cookTime: number;
   image: string;
+  ratingAverage: number;
+  ratingCount: number;
 }
 
 export interface Recipe extends RecipeListItem {
@@ -20,6 +22,8 @@ export interface Recipe extends RecipeListItem {
   instructions: string[];
   tips: string[];
   image: string;
+  ratingAverage: number;
+  ratingCount: number;
 }
 
 export type GroupedIngredient = {

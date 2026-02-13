@@ -27,6 +27,8 @@ const buildRecipe = (overrides: Partial<Recipe>): Recipe => ({
   instructions: [],
   tips: [],
   image: '/image.jpg',
+  ratingAverage: 0,
+  ratingCount: 0,
   ...overrides,
 });
 

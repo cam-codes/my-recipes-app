@@ -8,6 +8,8 @@ export const mockRecipes: RecipeListItem[] = [
     description: 'Savory and fast',
     prepTime: 10,
     cookTime: 15,
+    ratingAverage: 4.5,
+    ratingCount: 2,
   },
 ];
 
@@ -22,4 +24,6 @@ export const mockRecipe: Recipe = {
   ingredients: ['Salmon', 'Miso'],
   instructions: ['Mix', 'Bake'],
   tips: [],
+  ratingAverage: 4.5,
+  ratingCount: 2,
 };

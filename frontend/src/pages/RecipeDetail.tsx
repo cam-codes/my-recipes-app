@@ -3,10 +3,20 @@ import { useParams, A } from '@solidjs/router';
 import { getRecipe } from '../lib/api';
 import { SolidMarkdown } from 'solid-markdown';
 import LoadingSpinner from '../components/LoadingSpinner';
+import RatingStars from '../components/RatingStars';
+import { useRecipeRating } from '../hooks/useRecipeRating';
 
 export default function RecipeDetail() {
   const params = useParams();
   const [recipe] = createResource(() => params.slug, getRecipe);
+  const {
+    ratingAverage,
+    ratingCount,
+    ratingMessage,
+    isSubmitting,
+    isCoolingDown,
+    handleRate,
+  } = useRecipeRating(() => params.slug, () => recipe());
   onMount(() => {
     document.title = 'Cook with Cam';
   });
@@ -41,6 +51,18 @@ export default function RecipeDetail() {
               />
             )}
             <h1 class="text-4xl font-bold mb-4">{recipe()!.title}</h1>
+
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2 mb-6">
+              <RatingStars
+                average={ratingAverage()}
+                count={ratingCount()}
+                onRate={handleRate}
+                disabled={isSubmitting() || isCoolingDown()}
+              />
+              <Show when={ratingMessage()}>
+                <p class="text-xs text-gray-500 dark:text-gray-400">{ratingMessage()}</p>
+              </Show>
+            </div>
 
             <div class="grid grid-cols-3 gap-6 mb-8 text-sm text-gray-600 dark:text-gray-300">
               <div>

@@ -97,8 +97,8 @@ const parseIngredient = (ingredient: string): ParsedIngredient => {
   //  1) quantity min (integer, fraction, or mixed number)
   //  2) quantity max (optional; same forms as min)
   //  3) the remainder of the ingredient (unit + name)
-  const quantityPattern = String.raw`\\d+(?:\\s+\\d+\\/\\d+)?|\\d+\\/\\d+`;
-  const ingredientPattern = String.raw`^(${quantityPattern})(?:\\s*-\\s*(${quantityPattern}))?\\s+(.*)$`;
+  const quantityPattern = String.raw`\d+(?:\s+\d+/\d+)?|\d+/\d+`;
+  const ingredientPattern = String.raw`^(${quantityPattern})(?:\s*-\s*(${quantityPattern}))?\s+(.*)$`;
   const match = cleaned.match(new RegExp(ingredientPattern));
 
   if (!match) {

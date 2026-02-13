@@ -1,7 +1,7 @@
 import { Show, createResource, createSignal, onMount } from 'solid-js';
 import type { ParentComponent } from 'solid-js';
 import { getBuildInfo } from '../lib/api';
-import RouteTracker from '../lib/routetracker.ts';
+import RouteTracker from '../lib/routetracker';
 
 const Layout: ParentComponent = (props) => {
   const [buildInfo] = createResource(getBuildInfo);

@@ -2,9 +2,9 @@ import { Router, Route } from '@solidjs/router';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import RecipeDetail from './pages/RecipeDetail';
-import ResumePage from './pages/ResumePage.tsx';
+import ResumePage from './pages/ResumePage';
 import ShoppingList from './pages/ShoppingList';
-import { ShoppingListProvider } from './context/ShoppingListContext.tsx';
+import { ShoppingListProvider } from './context/ShoppingListContext';
 
 export default function App() {
   return (

@@ -104,9 +104,7 @@ export default function ResumeDisplay(props: ResumeData) {
                   </p>
                 </div>
                 <div class="text-right mt-2 md:mt-0">
-                  <p class="text-gray-700 dark:text-gray-300 print:text-gray-800">
-                    {job.location}
-                  </p>
+                  <p class="text-gray-700 dark:text-gray-300 print:text-gray-800">{job.location}</p>
                   <p class="text-gray-600 dark:text-gray-400 print:text-gray-600 italic">
                     {job.dates}
                   </p>
@@ -138,9 +136,7 @@ export default function ResumeDisplay(props: ResumeData) {
                   </p>
                 </div>
                 <div class="text-right mt-2 md:mt-0">
-                  <p class="text-gray-700 dark:text-gray-300 print:text-gray-800">
-                    {edu.location}
-                  </p>
+                  <p class="text-gray-700 dark:text-gray-300 print:text-gray-800">{edu.location}</p>
                   <p class="text-gray-600 dark:text-gray-400 print:text-gray-600 italic">
                     {edu.dates}
                   </p>

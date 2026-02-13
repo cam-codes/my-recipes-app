@@ -6,6 +6,35 @@ on:
     branches: [main]
 
 jobs:
+  recipes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Detect recipe changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            recipes:
+              - 'recipes/**'
+
+      - name: Setup Node
+        if: steps.changes.outputs.recipes == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Verify recipe files are ASCII-only
+        if: steps.changes.outputs.recipes == 'true'
+        run: node scripts/check-recipes-ascii.mjs
+
+      - name: Skip ASCII check (no recipe changes)
+        if: steps.changes.outputs.recipes != 'true'
+        run: echo "No recipe changes detected."
+
   backend:
     runs-on: ubuntu-latest
     defaults:

@@ -67,3 +67,35 @@ Deno.test("RatingsStore persist is a no-op without a file path", async () => {
   await store.persist();
   await store.persistIfDirty();
 });
+
+Deno.test("RatingsStore retries persist after transient failure", async () => {
+  const ratingsFile = createRatingsFile(JSON.stringify({}));
+  const store = new RatingsStore(ratingsFile);
+  store.record("miso-salmon", 5);
+
+  const originalWrite = Deno.writeTextFile;
+  let calls = 0;
+  const writeStub = stub(Deno, "writeTextFile", async (...args) => {
+    calls += 1;
+    if (calls === 1) {
+      throw new Error("transient");
+    }
+    return await originalWrite(
+      ...(args as Parameters<typeof Deno.writeTextFile>),
+    );
+  });
+  const errorStub = stub(console, "error");
+
+  try {
+    await store.persistIfDirty();
+    await store.persistIfDirty();
+  } finally {
+    writeStub.restore();
+    errorStub.restore();
+  }
+
+  const persisted = JSON.parse(Deno.readTextFileSync(fromFileUrl(ratingsFile)));
+  assertEquals(persisted["miso-salmon"].total, 5);
+  assertEquals(persisted["miso-salmon"].count, 1);
+  assertEquals(calls, 2);
+});

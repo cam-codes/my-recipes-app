@@ -1,5 +1,5 @@
 ---
-title: Osso Buco alla Milanese (Beef Shank Version)
+title: Osso Buco alla Milanese
 description: Tender braised beef shanks in white wine-tomato sauce, served over saffron risotto and topped with bright gremolata—classic Italian comfort with rich marrow flavor.
 prepTime: 30
 cookTime: 120

@@ -86,9 +86,20 @@ const formatQuantityRange = (min: number, max: number) => {
 
 const parseIngredient = (ingredient: string): ParsedIngredient => {
   const cleaned = cleanIngredient(ingredient);
-  const match = cleaned.match(
-    /^(\d+(?:\s+\d+\/\d+)?|\d+\/\d+)(?:\s*-\s*(\d+(?:\s+\d+\/\d+)?|\d+\/\d+))?\s+(.*)$/,
-  );
+  // Match a leading quantity (with optional range) plus the rest of the ingredient.
+  // Examples that should match:
+  // - "1 cup sugar" -> min=1, max=1, rest="cup sugar"
+  // - "1/2 cup sugar" -> min=1/2, max=1/2, rest="cup sugar"
+  // - "1 1/2 cups sugar" -> min=1 1/2, max=1 1/2, rest="cups sugar"
+  // - "1-2 lbs chicken" -> min=1, max=2, rest="lbs chicken"
+  // - "1 1/2 - 2 1/2 lbs chicken" -> min=1 1/2, max=2 1/2, rest="lbs chicken"
+  // Captures:
+  //  1) quantity min (integer, fraction, or mixed number)
+  //  2) quantity max (optional; same forms as min)
+  //  3) the remainder of the ingredient (unit + name)
+  const quantityPattern = String.raw`\\d+(?:\\s+\\d+\\/\\d+)?|\\d+\\/\\d+`;
+  const ingredientPattern = String.raw`^(${quantityPattern})(?:\\s*-\\s*(${quantityPattern}))?\\s+(.*)$`;
+  const match = cleaned.match(new RegExp(ingredientPattern));
 
   if (!match) {
     return {

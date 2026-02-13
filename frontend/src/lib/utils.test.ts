@@ -88,4 +88,20 @@ describe('groupIngredientsByCategory', () => {
     const items = Object.values(groups).flat();
     expect(items[0]?.display).toBe('1 clove garlic');
   });
+
+  it('parses fractional quantities', () => {
+    const recipes: Recipe[] = [
+      buildRecipe({
+        slug: 'fractional',
+        title: 'Fractional',
+        ingredients: ['1/2 cup sugar', '1 1/2 cups sugar'],
+      }),
+    ];
+
+    const groups = groupIngredientsByCategory(recipes);
+    const items = Object.values(groups).flat();
+
+    const sugar = items.find((item) => item.display.startsWith('2 cups sugar'));
+    expect(sugar).toBeDefined();
+  });
 });

@@ -1,12 +1,15 @@
 import { assertEquals } from "@std/assert";
 import { COMPARE_URL, createApp } from "../main.ts";
 import { request } from "./fixtures/utils/utils.ts";
+import { toFileUrl } from "std/path/mod.ts";
 
 const fixturesDir = new URL("./fixtures/recipes/", import.meta.url);
 const resumeFile = new URL("./fixtures/resume/resume.md", import.meta.url);
+const ratingsFile = toFileUrl(Deno.makeTempFileSync({ suffix: ".json" }));
 const options = {
   recipesDir: fixturesDir,
   resumeFile: resumeFile,
+  ratingsFile,
 };
 
 Deno.test("GET /build-info returns env vars or defaults", async () => {

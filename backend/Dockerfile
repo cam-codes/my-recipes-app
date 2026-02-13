@@ -4,8 +4,11 @@ WORKDIR /app
 
 # Copy only what we need
 COPY backend/deno.json backend/deno.lock ./
-COPY backend/main.ts backend/server.ts backend/types.ts ./
+COPY backend/main.ts backend/server.ts backend/types.ts backend/constants.ts ./
 COPY backend/utils ./utils
+COPY backend/routes ./routes
+COPY backend/services ./services
+COPY backend/middleware ./middleware
 
 # Cache deps -- Cant cache mount here because we want to write the cache into the image
 RUN deno cache server.ts

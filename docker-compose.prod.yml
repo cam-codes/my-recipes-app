@@ -7,6 +7,7 @@ services:
     volumes:
       - /data/recipes/prod:/recipes:rw
       - /data/resume/prod:/resume:ro
+      - /data/ratings/prod:/ratings:rw
 
   frontend:
     image: ghcr.io/cam-codes/my-recipes-frontend:${RELEASE_TAG}

@@ -9,10 +9,19 @@ if (import.meta.main) {
   const resumeFileStr = Deno.env.get("RESUME_FILE") ?? "../resume/resume.md";
   const RESUME_FILE = new URL(resumeFileStr, import.meta.url);
 
+  // Use RATINGS_FILE env var in Docker; fallback for local dev
+  const ratingsFileStr = Deno.env.get("RATINGS_FILE") ??
+    "../data/ratings.json";
+  const RATINGS_FILE = new URL(ratingsFileStr, import.meta.url);
+
   // Use BACKEND_PORT env var in Docker; fallback for local dev
   const PORT = Number(Deno.env.get("BACKEND_PORT") ?? 3000);
 
-  const app = createApp({ recipesDir: RECIPES_DIR, resumeFile: RESUME_FILE });
+  const app = createApp({
+    recipesDir: RECIPES_DIR,
+    resumeFile: RESUME_FILE,
+    ratingsFile: RATINGS_FILE,
+  });
   console.log(`🚀 Server running at http://localhost:${PORT}`);
   await app.listen({
     port: PORT,

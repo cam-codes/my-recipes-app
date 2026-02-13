@@ -8,6 +8,7 @@ services:
     environment:
       RECIPES_DIRECTORY: /recipes
       RESUME_FILE: /resume/resume.md
+      RATINGS_FILE: /ratings/ratings.json
       BACKEND_PORT: 3000
     healthcheck:
       test: ["CMD", "deno", "eval", "fetch('http://localhost:3000/health').then(r=>{if(!r.ok)Deno.exit(1)})"]

@@ -18,9 +18,7 @@ export default function RecipeDetail() {
   onMount(() => {
     document.title = 'Cook with Cam';
   });
-  const ingredientSections = createMemo(() =>
-    buildIngredientSections(recipe()?.ingredients ?? []),
-  );
+  const ingredientSections = createMemo(() => buildIngredientSections(recipe()?.ingredients ?? []));
 
   return (
     <div class="max-w-4xl mx-auto px-4 py-8">

@@ -83,8 +83,8 @@ export default function Home() {
           Delicious Recipes
         </h1>
         <p class="text-center text-gray-500 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
-          Browse curated collections, expand the set you want, and build a grocery list in a
-          couple of clicks.
+          Browse curated collections, expand the set you want, and build a grocery list in a couple
+          of clicks.
         </p>
 
         <div class="flex flex-wrap justify-center items-center gap-3">
@@ -182,8 +182,7 @@ export default function Home() {
                               <span>{items().length} recipes</span>
                               <span>-</span>
                               <span>
-                                Sorted{' '}
-                                {currentSort() === 'alpha' ? 'alphabetically' : 'by rating'}
+                                Sorted {currentSort() === 'alpha' ? 'alphabetically' : 'by rating'}
                               </span>
                               <span>-</span>
                               <span>{isExpanded() ? 'Click to collapse' : 'Click to expand'}</span>

@@ -1,11 +1,10 @@
 import { RecipeFrontMatter } from "../types.ts";
 
 export function normalizeRecipe(slug: string, attrs: RecipeFrontMatter) {
-  const collection =
-    typeof attrs.collection === "string" &&
+  const collection = typeof attrs.collection === "string" &&
       attrs.collection.toLowerCase() === "sweet"
-      ? "sweet"
-      : "savory";
+    ? "sweet"
+    : "savory";
   return {
     slug,
     title: attrs.title ??

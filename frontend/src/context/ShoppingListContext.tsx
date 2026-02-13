@@ -1,4 +1,4 @@
-import { createContext, useContext, createSignal, JSX } from 'solid-js';
+import { createContext, useContext, createSignal, type JSX } from 'solid-js';
 type ShoppingListContextValue = {
   selected: () => Set<string>;
   toggle: (slug: string) => void;

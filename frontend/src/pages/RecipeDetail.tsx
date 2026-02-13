@@ -1,10 +1,11 @@
-import { createResource, onMount, Show } from 'solid-js';
+import { createMemo, createResource, For, onMount, Show } from 'solid-js';
 import { useParams, A } from '@solidjs/router';
 import { getRecipe } from '../lib/api';
 import { SolidMarkdown } from 'solid-markdown';
 import LoadingSpinner from '../components/LoadingSpinner';
 import RatingStars from '../components/RatingStars';
 import { useRecipeRating } from '../hooks/useRecipeRating';
+import { buildIngredientSections } from '../lib/ingredients';
 
 export default function RecipeDetail() {
   const params = useParams();
@@ -17,6 +18,9 @@ export default function RecipeDetail() {
   onMount(() => {
     document.title = 'Cook with Cam';
   });
+  const ingredientSections = createMemo(() =>
+    buildIngredientSections(recipe()?.ingredients ?? []),
+  );
 
   return (
     <div class="max-w-4xl mx-auto px-4 py-8">
@@ -74,11 +78,22 @@ export default function RecipeDetail() {
             </div>
 
             <h2 class="text-2xl font-semibold mb-4">Ingredients</h2>
-            <ul class="list-disc pl-6 mb-8 space-y-2">
-              {recipe()!.ingredients.map((ing) => (
-                <li>{ing}</li>
-              ))}
-            </ul>
+            <div class="mb-8 space-y-6">
+              <For each={ingredientSections()}>
+                {(section) => (
+                  <div>
+                    <Show when={section.title}>
+                      <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                        {section.title}
+                      </h3>
+                    </Show>
+                    <ul class="list-disc pl-6 space-y-2">
+                      <For each={section.items}>{(item) => <li>{item}</li>}</For>
+                    </ul>
+                  </div>
+                )}
+              </For>
+            </div>
 
             <h2 class="text-2xl font-semibold mb-4">Instructions</h2>
             <ol class="list-decimal pl-6 mb-8 space-y-2">

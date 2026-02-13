@@ -12,6 +12,8 @@ export interface RecipeListItem {
   collection: 'savory' | 'sweet';
 }
 
+export type IngredientEntry = string | Record<string, string>;
+
 export interface Recipe extends RecipeListItem {
   slug: string;
   title: string;
@@ -19,7 +21,7 @@ export interface Recipe extends RecipeListItem {
   prepTime: number;
   cookTime: number;
   estimatedCost: number;
-  ingredients: string[];
+  ingredients: IngredientEntry[];
   instructions: string[];
   tips: string[];
   image: string;

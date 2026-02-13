@@ -1,6 +1,7 @@
 ---
 title: Silky Dark Chocolate Mousse
-description: Rich, airy dark chocolate mousse with a subtle espresso note for depth, served in glasses with sweetened vanilla whipped cream and fresh berries-luxurious yet simple no-bake elegance.
+description: Rich, airy dark chocolate mousse with a subtle espresso note for depth, served in glasses with sweetened vanilla whipped cream and fresh berries—luxurious yet simple no-bake elegance.
+collection: sweet
 prepTime: 20
 cookTime: 0
 estimatedCost: 15

@@ -9,6 +9,7 @@ export interface RecipeListItem {
   image: string;
   ratingAverage: number;
   ratingCount: number;
+  collection: 'savory' | 'sweet';
 }
 
 export interface Recipe extends RecipeListItem {

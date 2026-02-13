@@ -10,6 +10,7 @@ export const mockRecipes: RecipeListItem[] = [
     cookTime: 15,
     ratingAverage: 4.5,
     ratingCount: 2,
+    collection: 'savory',
   },
 ];
 
@@ -26,4 +27,5 @@ export const mockRecipe: Recipe = {
   tips: [],
   ratingAverage: 4.5,
   ratingCount: 2,
+  collection: 'savory',
 };

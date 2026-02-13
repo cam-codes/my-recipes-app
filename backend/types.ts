@@ -4,6 +4,7 @@ export interface RecipeFrontMatter {
   // meta
   description?: string;
   image?: string;
+  collection?: string;
 
   // timing/cost
   prepTime?: number | string; // allow string since YAML can parse as string

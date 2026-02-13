@@ -1,5 +1,6 @@
 import type { AggregatedIngredient, GroupedIngredient, ParsedIngredient, Recipe } from './types';
 import { type Category, getIngredientCategory } from './ingredientCategories';
+import { flattenIngredients } from './ingredients';
 import {
   EXCLUDED_INGREDIENTS,
   IRREGULAR_PLURAL_MAP,
@@ -175,7 +176,7 @@ export const groupIngredientsByCategory = (
   const aggregated = new Map<string, AggregatedIngredient>();
 
   for (const recipe of recipes) {
-    for (const ingredient of recipe.ingredients) {
+    for (const ingredient of flattenIngredients(recipe.ingredients)) {
       const parsed = parseIngredient(ingredient);
       if (shouldExcludeIngredient(parsed)) continue;
       const existing = aggregated.get(parsed.key);

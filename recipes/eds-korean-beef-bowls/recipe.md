@@ -1,5 +1,5 @@
 ---
-title: Korean Beef Bowls with Coconut Aminos & Soft-Boiled Eggs
+title: Ed's Korean Beef Bowls with Soft-Boiled Eggs
 description: Quick, flavorful ground beef stir-fried in a savory-sweet coconut aminos sauce with garlic and ginger, served over rice with fresh veggies, jammy soft-boiled eggs, and a drizzle of extra sauce-simple, balanced, and elevated weeknight comfort.
 prepTime: 15
 cookTime: 20

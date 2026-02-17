@@ -36,5 +36,5 @@ instructions:
 tips:
   - Start eggs when beef is browning so everything finishes together.
   - Make drizzle sauce ahead-flavors meld nicely.
-  - Optional add-ons: avocado slices, kimchi, pickled red onions, or extra sriracha/chili crisp.
+  - Optional add-ons can include avocado slices, kimchi, pickled red onions, or extra sriracha/chili crisp.
 ---

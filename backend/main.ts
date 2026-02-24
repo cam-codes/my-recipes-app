@@ -7,6 +7,7 @@ import { registerResumeRoutes } from "./routes/resume.ts";
 import { registerBuildInfoRoutes } from "./routes/build_info.ts";
 import { RatingsStore } from "./services/ratings.ts";
 import { RateLimiter } from "./services/rate_limiter.ts";
+import { requestLogger } from "./middleware/request_logger.ts";
 
 export { COMPARE_URL } from "./constants.ts";
 
@@ -17,6 +18,7 @@ export function createApp(options: CreateAppOptions): Application {
   const ratingsStore = new RatingsStore(ratingsFile);
   const rateLimiter = new RateLimiter(30_000);
 
+  app.use(requestLogger());
   app.use(createStaticImagesMiddleware(recipesDir));
   registerHealthRoutes(router);
   registerRecipeRoutes(router, {

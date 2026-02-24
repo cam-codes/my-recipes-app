@@ -23,6 +23,25 @@ sudo apt install -y --no-install-recommends \
   fail2ban
 
 # ---------------------------
+# Google Cloud Ops Agent
+# ---------------------------
+curl -sSO https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh
+sudo bash add-google-cloud-ops-agent-repo.sh --also-install
+
+sudo tee /etc/google-cloud-ops-agent/config.yaml > /dev/null <<'EOF'
+logging:
+  receivers:
+    journald:
+      type: systemd_journald
+  service:
+    pipelines:
+      journald:
+        receivers: [journald]
+EOF
+
+sudo systemctl restart google-cloud-ops-agent
+
+# ---------------------------
 # Add Caddy repo
 # ---------------------------
 curl -1sLf https://dl.cloudsmith.io/public/caddy/stable/gpg.key \
@@ -55,6 +74,15 @@ sudo apt install -y \
   containerd.io \
   docker-buildx-plugin \
   docker-compose-plugin
+
+# ---------------------------
+# Docker logging (journald)
+# ---------------------------
+sudo tee /etc/docker/daemon.json > /dev/null <<'EOF'
+{
+  "log-driver": "journald"
+}
+EOF
 
 # Enable/start caddy/docker
 sudo systemctl enable caddy docker
@@ -151,6 +179,15 @@ sudo tee /etc/caddy/Caddyfile > /dev/null <<EOF
 }
 
 $STAGING_DOMAIN {
+    # Block wordpress scanners
+    handle /wp* {
+        respond 404
+    }
+
+    handle /wordpress* {
+        respond 404
+    }
+
     # Proxy API requests to backend (strips /api prefix)
     handle_path /api/* {
         reverse_proxy http://127.0.0.1:3001
@@ -168,6 +205,15 @@ $STAGING_DOMAIN {
 }
 
 $PROD_DOMAIN {
+    # Block wordpress scanners
+    handle /wp* {
+        respond 404
+    }
+
+    handle /wordpress* {
+        respond 404
+    }
+
     # Proxy API requests to backend (strips /api prefix)
     handle_path /api/* {
         reverse_proxy http://127.0.0.1:3000  # prod backend port

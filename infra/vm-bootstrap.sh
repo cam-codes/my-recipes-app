@@ -86,7 +86,7 @@ EOF
 
 # Enable/start caddy/docker
 sudo systemctl enable caddy docker
-sudo systemctl start docker
+sudo systemctl restart docker
 sudo systemctl start caddy
 
 # ---------------------------
